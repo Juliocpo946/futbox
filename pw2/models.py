@@ -8,12 +8,19 @@ from django.db import models
 # TABLA USUARIO
 # ==============================
 class Usuario(models.Model):
+    GENERO_CHOICES = [
+        ('masculino', 'Masculino'),
+        ('femenino', 'Femenino'),
+        ('otro', 'Otro'),
+    ]
+    
     nombre = models.CharField(max_length=255)
     apellido_paterno = models.CharField(max_length=255, null=True, blank=True)
     apellido_materno = models.CharField(max_length=255, null=True, blank=True)
     correo = models.EmailField(unique=True)
     contraseña = models.CharField(max_length=255)
     foto_perfil = models.CharField(max_length=255, null=True, blank=True)
+    genero = models.CharField(max_length=50, choices=GENERO_CHOICES, null=True, blank=True)
     nickname = models.CharField(max_length=255, unique=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
