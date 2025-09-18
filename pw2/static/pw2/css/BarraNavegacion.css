@@ -42,6 +42,10 @@ body {
     padding: 25px 50px;
     color: black;
     gap: 10px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .buscador {
@@ -60,6 +64,12 @@ body {
     flex-grow: 1;
     font-size: 1em;
     color: #000000;
+}
+
+.buscador i.fas {
+  margin-right: 10px; /* <--- Ajusta este valor para el espacio deseado */
+  color: #000000;
+  font-size: 1.1em;
 }
 
 .filtros {
