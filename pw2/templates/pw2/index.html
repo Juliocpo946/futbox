@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"FutBOX"}}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+</head>
+
+<body>
+    <nav class="barra">
+        <div class="logo">
+            <img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina">
+        </div>
+        <div class="barra_busqueda">
+            <div class="buscador">
+                <input type="text" placeholder="Buscar">
+            </div>
+            <div class="filtros">
+                <select id="mundial">
+                    <div class="opciones">
+                        <option value="all">Todos</option>
+                        <option value="mexico70">Mexico 1970</option>
+                        <option value="alemania74">Alemania 1974</option>
+                        <option value="argentina78">Argentina 1978</option>
+                        <option value="espana82">España 1982</option>
+                        <option value="mexico86">Mexico 1986</option>
+                        <option value="italia90">Italia 1990</option>
+                        <option value="estadosunidos94">Estados Unidos 1994</option>
+                        <option value="francia98">Francia 1998</option>
+                        <option value="coreajapon02">Corea del Sur y Japon 2002</option>
+                        <option value="alemania06">Alemania 2006</option>
+                        <option value="sudafrica10">Sudafrica 2010</option>
+                        <option value="brasil14">Brasil 2014</option>
+                        <option value="rusia18">Rusia 2018</option>
+                        <option value="catar2022">Catar 2022</option>
+                        <option value="mexicoeuacanada26">Mexico, EUA y Canada 2026</option>
+                    </div>
+                </select>
+                <select id="ordenamiento">
+                    <div class="opciones">
+                        <option value="ordencronologico">Orden cronologico</option>
+                        <option value="maslikes">Mas likes</option>
+                        <option value="mascomentarios">Mas comentarios</option>
+                    </div>
+                </select>
+            </div>
+        </div>
+        <div class="login">
+            <button>Iniciar sesion</button>
+        </div>
+        <div class="registro">
+            <button>Registrar</button>
+        </div>
+    </nav>
+
+    <main class="pantallaprincipal">
+        <div class="parteizq">
+            <div class="profile-box">
+                <div class="perfilseccion">
+                    <img src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
+                    <div class="usuarioinfo">
+                        <span class="nombreusuario">{{ user_name|default:"Nombre de usuario" }}</span>
+                        <p class="username-handle">{{ username_handle|default:"@Username" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="parteder">
+            <div class="carrusel-contenedor">
+                <div class="carrusel-inner">
+                    <div class="carrusel-item active">
+                        <img src="{% static 'pw2/images/Mundial2026.png' %}" alt="Mundial 2026">
+                        <div class="carrusel-caption">
+                            <div class="captiontext">
+                                <h3>Mundial 2026</h3>
+                                <p>Descripción breve de la primera novedad, con información relevante sobre el tema.</p>
+                            </div>
+                            <a href="#" class="botonleer">Leer más</a>
+                        </div>
+                    </div>
+
+                    <div class="carrusel-item">
+                        <img src="{% static 'pw2/images/Estadios.jpg' %}" alt="Estadios México 2026">
+                        <div class="carrusel-caption">
+                            <div class="captiontext">
+                                <h3>Estadios de Mexico que seran sede del Mundial 2026</h3>
+                                <p>Enterate de los estadios Mexicanos que estaran participando en el Mundial de Futbol
+                                    2026
+                                    Mexico, Estados Unidos y Canada.</p>
+                            </div>
+                            <a href="#" class="botonleer">Leer más</a>
+                        </div>
+                    </div>
+
+                    <div class="carrusel-item">
+                        <img src="{% static 'pw2/images/bluelock.jpg' %}" alt="Blue Lock anime">
+                        <div class="carrusel-caption">
+                            <div class="captiontext">
+                                <h3>Por que Blue Lock es el mejor manga/anime de futbol?</h3>
+                                <p> Debate con los demas usuarios el porque blue lock es el mejor manga/anime de futbol.
+                                </p>
+                            </div>
+                            <a href="#" class="botonleer">Leer más</a>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'pw2/js/Carrusel.js' %}"></script>
+
+</body>
+
+</html>

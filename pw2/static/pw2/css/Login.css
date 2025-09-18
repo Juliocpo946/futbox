@@ -1,0 +1,177 @@
+/* --- Estilos Globales y Reinicio --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+}
+
+/* --- Contenedor de Inicio de Sesión --- */
+.login-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(to right, #000000, #004B09);
+    background-size: cover;
+}
+
+/* --- Sección del Logo --- */
+.logo-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-section img {
+    max-width: 60%;
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
+}
+
+/* --- Sección del Formulario --- */
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.login-box:hover {
+    transform: translateY(-5px);
+}
+
+.login-box h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 2em;
+}
+
+/* --- Grupos de Entrada --- */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #0d6a40;
+    outline: none;
+}
+
+/* --- Botones --- */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background: #0d6a40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: rgb(108, 163, 53);
+}
+
+/* --- Enlaces para Alternar Formularios --- */
+.toggle-form-text,
+.register-text {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.toggle-form-text a,
+.register-text a {
+    color: #0d6a40;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.toggle-form-text a:hover,
+.register-text a:hover {
+    color: rgb(108, 163, 53);
+    text-decoration: underline;
+}
+
+/* --- Enlaces Adicionales --- */
+.forgot-password {
+    display: block;
+    margin-top: 15px;
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* --- ESTILOS ADICIONALES PARA EL FORMULARIO DE REGISTRO --- */
+
+/* Estilos para las filas con múltiples campos */
+.input-row {
+    display: flex;
+    gap: 20px; /* Espacio entre los campos en la misma línea */
+    margin-bottom: 20px;
+}
+
+/* Para que los campos dentro de una fila Flexbox se distribuyan uniformemente */
+.input-row .input-group {
+    flex: 1;
+}
+
+/* Estilos para el campo de tipo file */
+input[type="file"]::-webkit-file-upload-button {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: #e0e0e0;
+}
