@@ -19,4 +19,4 @@ def login(request):
         'title': 'FutBOX - Iniciar Sesión',
     }
     
-    return render(request, 'pw2/Login.html')
+    return render(request, 'pw2/Login.html', context)
