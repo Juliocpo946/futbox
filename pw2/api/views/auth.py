@@ -8,6 +8,11 @@ from pw2.utils.logger import log_critical_error
 
 class RegistroView(APIView):
     def post(self, request):
+        print("=" * 50)
+        print("DATOS RECIBIDOS EN REGISTRO:")
+        print(request.data)
+        print("=" * 50)
+        
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             try:
@@ -19,6 +24,10 @@ class RegistroView(APIView):
             except Exception as e:
                 log_critical_error("Error inesperado en el registro de usuario.", e)
                 return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        print("ERRORES DE VALIDACIÓN:")
+        print(serializer.errors)
+        print("=" * 50)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):

@@ -21,7 +21,6 @@ class AuthService:
     def login_user(self, data):
         usuario = self.usuario_repo.get_by_email(data['correo'])
         
-        # CORRECCIÓN AQUÍ: Usar 'password'
         if usuario is None or not check_password(data['password'], usuario.password):
             raise ValueError("Credenciales inválidas.")
             

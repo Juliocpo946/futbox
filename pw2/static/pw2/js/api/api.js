@@ -23,7 +23,19 @@ async function fetchAPI(endpoint, options = {}) {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            const errorMessage = errorData.error || `Error HTTP: ${response.status}`;
+            console.error('Error del servidor:', errorData);
+            
+            let errorMessage = '';
+            if (errorData.error) {
+                errorMessage = errorData.error;
+            } else if (errorData.correo) {
+                errorMessage = 'El correo electrónico ya está en uso.';
+            } else if (errorData.nickname) {
+                errorMessage = 'El nickname ya está en uso.';
+            } else {
+                errorMessage = JSON.stringify(errorData) || `Error HTTP: ${response.status}`;
+            }
+            
             throw new Error(errorMessage);
         }
 

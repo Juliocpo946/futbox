@@ -23,7 +23,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'password', 'nickname', 'fecha_nacimiento', 'genero']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'apellido_paterno': {'required': False},
+            'apellido_materno': {'required': False},
+            'fecha_nacimiento': {'required': False},
+            'genero': {'required': False}
+        }
 
 class LoginSerializer(serializers.Serializer):
     correo = serializers.EmailField()
@@ -34,7 +40,6 @@ class ActualizarUsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero']
 
-# ... (El resto de los serializadores no cambia)
 class PaisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pais

@@ -37,16 +37,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(registerForm);
         const data = Object.fromEntries(formData.entries());
 
+        delete data.csrfmiddlewaretoken;
+
+        Object.keys(data).forEach(key => {
+            if (data[key] === '') {
+                delete data[key];
+            }
+        });
+
+        console.log('Datos a enviar:', JSON.stringify(data, null, 2));
+
         try {
             await window.api.fetchAPI('/usuarios/registro/', {
                 method: 'POST',
                 body: JSON.stringify(data),
             });
 
-            // CORRECCIÓN AQUÍ: Usar 'password' en lugar de 'contraseña'
             const loginData = {
                 correo: data.correo,
-                password: data.password 
+                password: data.password
             };
 
             const result = await window.api.fetchAPI('/usuarios/login/', {
