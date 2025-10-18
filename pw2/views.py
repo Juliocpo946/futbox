@@ -1,9 +1,6 @@
 from django.shortcuts import render
 
 def index(request):
-    """
-    View function for the home page of the site.
-    """
     context = {
         'title': 'Fútbol - Portal de la Copa Mundial de la FIFA',
         'user_name': 'Nombre de Usuario',
@@ -12,11 +9,7 @@ def index(request):
     return render(request, 'pw2/index.html', context)
 
 def login(request):
-    """
-    View function for the login page.
-    """
     context = {
         'title': 'FutBOX - Iniciar Sesión',
     }
-    
     return render(request, 'pw2/Login.html', context)

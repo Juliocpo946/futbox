@@ -1,19 +1,8 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
-
-# ==============================
-# TABLA USUARIO
-# ==============================
 class Usuario(models.Model):
-    GENERO_CHOICES = [
-        ('masculino', 'Masculino'),
-        ('femenino', 'Femenino'),
-        ('otro', 'Otro'),
-    ]
-    
+    GENERO_CHOICES = [('masculino', 'Masculino'), ('femenino', 'Femenino'), ('otro', 'Otro')]
+    ROL_CHOICES = [('usuario', 'Usuario'), ('admin', 'Admin')]
     nombre = models.CharField(max_length=255)
     apellido_paterno = models.CharField(max_length=255, null=True, blank=True)
     apellido_materno = models.CharField(max_length=255, null=True, blank=True)
@@ -24,61 +13,30 @@ class Usuario(models.Model):
     nickname = models.CharField(max_length=255, unique=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    rol = models.CharField(max_length=50, choices=ROL_CHOICES, default='usuario')
+    def __str__(self): return self.nickname
 
-    def __str__(self):
-        return self.nickname
-
-
-# ==============================
-# TABLA PAIS
-# ==============================
 class Pais(models.Model):
     pais = models.CharField(max_length=255)
+    def __str__(self): return self.pais
 
-    def __str__(self):
-        return self.pais
-
-
-# ==============================
-# TABLA MUNDIAL
-# ==============================
 class Mundial(models.Model):
     año = models.PositiveIntegerField()
     descripcion = models.TextField()
-
     sedes = models.ManyToManyField("Pais", through="Sede")
-
-    def __str__(self):
-        return f"Mundial {self.año}"
-
+    def __str__(self): return f"Mundial {self.año}"
 
 class Sede(models.Model):
     mundial = models.ForeignKey("Mundial", on_delete=models.DO_NOTHING)
     sede = models.ForeignKey("Pais", on_delete=models.DO_NOTHING)
+    class Meta: unique_together = ("mundial", "sede")
 
-    class Meta:
-        unique_together = ("mundial", "sede")
-
-
-# ==============================
-# TABLA CATEGORIA
-# ==============================
 class Categoria(models.Model):
     nombre = models.CharField(max_length=255)
+    def __str__(self): return self.nombre
 
-    def __str__(self):
-        return self.nombre
-
-
-# ==============================
-# TABLA PUBLICACION
-# ==============================
 class Publicacion(models.Model):
-    ESTATUS_CHOICES = [
-        ("publicada", "Publicada"),
-        ("eliminada", "Eliminada"),
-    ]
-
+    ESTATUS_CHOICES = [("pendiente", "Pendiente"), ("aprobada", "Aprobada"), ("rechazada", "Rechazada"), ("eliminada", "Eliminada")]
     autor = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING)
     categoria = models.ForeignKey("Categoria", on_delete=models.DO_NOTHING)
     mundial = models.ForeignKey("Mundial", on_delete=models.DO_NOTHING, null=True, blank=True)
@@ -86,64 +44,39 @@ class Publicacion(models.Model):
     descripcion = models.TextField()
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     fecha_edicion = models.DateTimeField(auto_now=True)
-    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="publicada")
+    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="pendiente")
+    def __str__(self): return self.titulo
 
-    def __str__(self):
-        return self.titulo
-
-
-# ==============================
-# TABLA MULTIMEDIA
-# ==============================
 class Multimedia(models.Model):
     path = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.path
-
+    def __str__(self): return self.path
 
 class MultimediaPublicacion(models.Model):
-    ESTATUS_CHOICES = [
-        ("agregada", "Agregada"),
-        ("eliminada", "Eliminada"),
-    ]
-
+    ESTATUS_CHOICES = [("agregada", "Agregada"), ("eliminada", "Eliminada")]
     multimedia = models.ForeignKey("Multimedia", on_delete=models.DO_NOTHING)
     publicacion = models.ForeignKey("Publicacion", on_delete=models.DO_NOTHING)
     estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="agregada")
-
 
 class MultimediaMundial(models.Model):
     multimedia = models.ForeignKey("Multimedia", on_delete=models.DO_NOTHING)
     mundial = models.ForeignKey("Mundial", on_delete=models.DO_NOTHING)
 
-
-# ==============================
-# TABLA COMENTARIO
-# ==============================
 class Comentario(models.Model):
     ESTATUS_CHOICES = [
-        ("publicado", "Publicado"),
+        ("pendiente", "Pendiente"),
+        ("aprobado", "Aprobado"),
+        ("rechazado", "Rechazado"),
         ("eliminado", "Eliminado"),
     ]
-
     comentario = models.TextField()
-    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="publicado")
+    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="pendiente")
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_edicion = models.DateTimeField(auto_now=True)
     usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING)
     publicacion = models.ForeignKey("Publicacion", on_delete=models.DO_NOTHING)
+    def __str__(self): return f"Comentario de {self.usuario.nickname}"
 
-    def __str__(self):
-        return f"Comentario de {self.usuario.nickname}"
-
-
-# ==============================
-# TABLA REACCION
-# ==============================
 class Reaccion(models.Model):
     usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING)
     publicacion = models.ForeignKey("Publicacion", on_delete=models.DO_NOTHING, null=True, blank=True)
-
-    def __str__(self):
-        return f"Reacción de {self.usuario.nickname} en {self.publicacion.titulo if self.publicacion else '---'}"
+    def __str__(self): return f"Reacción de {self.usuario.nickname} en {self.publicacion.titulo if self.publicacion else '---'}"

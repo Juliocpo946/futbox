@@ -1,0 +1,89 @@
+from rest_framework import serializers
+from pw2.models import (
+    Usuario, Publicacion, Comentario, Reaccion, Pais, Mundial, Categoria,
+    Multimedia, MultimediaPublicacion
+)
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol']
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'contraseña', 'nickname', 'fecha_nacimiento', 'genero']
+        extra_kwargs = {'contraseña': {'write_only': True}}
+
+class LoginSerializer(serializers.Serializer):
+    correo = serializers.EmailField()
+    contraseña = serializers.CharField(write_only=True)
+
+class ActualizarUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero']
+
+class PaisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pais
+        fields = ['id', 'pais']
+
+class MundialSerializer(serializers.ModelSerializer):
+    sedes = serializers.PrimaryKeyRelatedField(queryset=Pais.objects.all(), many=True, required=False)
+    class Meta:
+        model = Mundial
+        fields = ['id', 'año', 'descripcion', 'sedes']
+
+class MundialDetalleSerializer(MundialSerializer):
+    sedes = PaisSerializer(many=True, read_only=True)
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['id', 'nombre']
+
+class MultimediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Multimedia
+        fields = ['id', 'path']
+
+class PublicacionSerializer(serializers.ModelSerializer):
+    autor = UsuarioSerializer(read_only=True)
+    reacciones_count = serializers.SerializerMethodField()
+    categoria = CategoriaSerializer(read_only=True)
+    mundial = MundialSerializer(read_only=True)
+    multimedia = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Publicacion
+        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'multimedia']
+    
+    def get_reacciones_count(self, obj):
+        return obj.reaccion_set.count()
+
+    def get_multimedia(self, obj):
+        multimedia_relations = MultimediaPublicacion.objects.filter(publicacion=obj, estatus='agregada')
+        multimedia_items = [relation.multimedia for relation in multimedia_relations]
+        return MultimediaSerializer(multimedia_items, many=True).data
+
+class PublicacionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Publicacion
+        fields = ['titulo', 'descripcion', 'categoria', 'mundial']
+
+class ComentarioSerializer(serializers.ModelSerializer):
+    usuario = UsuarioSerializer(read_only=True)
+    class Meta:
+        model = Comentario
+        fields = ['id', 'comentario', 'fecha_creacion', 'usuario']
+
+class ComentarioCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comentario
+        fields = ['comentario']
+
+class ReaccionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reaccion
+        fields = '__all__'

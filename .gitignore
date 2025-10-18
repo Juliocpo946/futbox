@@ -1,53 +1,44 @@
-# ====================================
-# Archivos de Python
-# ====================================
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-
-# ====================================
-# Entorno virtual
-# ====================================
+# Entornos Virtuales
 venv/
 env/
 .venv/
 ENV/
 
-# ====================================
-# Archivos de base de datos
-# ====================================
+# Archivos de Bytecode de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de Base de Datos
 db.sqlite3
+*.sqlite3
 *.db
 
-# ====================================
-# Migraciones (si no quieres subir todas las autogeneradas)
-# Puedes comentar esta sección si quieres versionarlas
-*/migrations/__pycache__/
-*/migrations/*.py
-!*/migrations/__init__.py
+# Archivos de Dependencias
+*.egg-info/
+pip-wheel-metadata/
 
-# ====================================
 # Archivos de Django
-# ====================================
-/static/
-/media/
+.env
+staticfiles/
+media/
 
-# ====================================
-# Archivos de logs
-# ====================================
+# Archivos de Logs
+logs/
 *.log
 
-# ====================================
-# Archivos de IDE/Editor
-# ====================================
-.vscode/
-.idea/
-*.swp
-
-# ====================================
-# Archivos del sistema operativo
-# ====================================
+# Archivos de Sistema Operativo
 .DS_Store
 Thumbs.db
+
+# Archivos de configuración de IDEs/Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos de Cobertura de Pruebas
+.coverage
+.coverage.*
+htmlcov/
