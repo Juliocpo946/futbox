@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const container = document.getElementById('resultados-container');
     const titulo = document.getElementById('titulo-resultados');
-
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get('q');
 

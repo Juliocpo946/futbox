@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('perfil-nombre').textContent = `${userData.nombre} ${userData.apellido_paterno || ''}`;
             document.getElementById('perfil-nickname').textContent = `@${userData.nickname}`;
             document.getElementById('perfil-correo').textContent = userData.correo;
+            if (userData.foto_perfil) {
+                document.getElementById('perfil-foto').src = userData.foto_perfil;
+            }
         } catch (error) {
             console.error("Error al cargar datos del perfil:", error);
         }
@@ -33,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             publicaciones.forEach(pub => {
                 const card = document.createElement('div');
                 card.className = 'publicacion-card';
-                // Solo las publicaciones aprobadas son clickeables para ver el detalle
                 if(pub.estatus === 'aprobada') {
                     card.style.cursor = 'pointer';
                     card.onclick = () => { window.location.href = `/publicaciones/${pub.id}/`; };

@@ -1,20 +1,53 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-class Usuario(models.Model):
+class UsuarioManager(BaseUserManager):
+    def create_user(self, correo, password=None, **extra_fields):
+        if not correo:
+            raise ValueError('El correo electrónico es obligatorio')
+        correo = self.normalize_email(correo)
+        user = self.model(correo=correo, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, correo, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(correo, password, **extra_fields)
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
     GENERO_CHOICES = [('masculino', 'Masculino'), ('femenino', 'Femenino'), ('otro', 'Otro')]
-    ROL_CHOICES = [('usuario', 'Usuario'), ('admin', 'Admin')]
+    
     nombre = models.CharField(max_length=255)
     apellido_paterno = models.CharField(max_length=255, null=True, blank=True)
     apellido_materno = models.CharField(max_length=255, null=True, blank=True)
     correo = models.EmailField(unique=True)
-    contraseña = models.CharField(max_length=255)
     foto_perfil = models.CharField(max_length=255, null=True, blank=True)
     genero = models.CharField(max_length=50, choices=GENERO_CHOICES, null=True, blank=True)
     nickname = models.CharField(max_length=255, unique=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
-    rol = models.CharField(max_length=50, choices=ROL_CHOICES, default='usuario')
-    def __str__(self): return self.nickname
+    
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    rol = models.CharField(max_length=50, default='usuario') # Mantenemos tu campo rol
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'correo'
+    REQUIRED_FIELDS = ['nombre', 'nickname']
+
+    def __str__(self):
+        return self.nickname
+
+# --- El resto de tus modelos permanecen exactamente igual ---
 
 class Pais(models.Model):
     pais = models.CharField(max_length=255)

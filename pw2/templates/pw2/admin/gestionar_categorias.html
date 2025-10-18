@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>FutBOX - Gestionar Categorías</title>
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Formulario.css' %}">
 </head>
 <body>
     <nav class="barra">
@@ -15,10 +15,13 @@
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
     </nav>
-    <main class="perfil-container" id="perfil-publico-container"></main>
-    <script> const NICKNAME_PERFIL = "{{ nickname }}"; </script>
+    <main class="pantallaprincipal-form">
+        <div class="form-container">
+            <h1>Gestionar Categorías</h1>
+            <div id="categorias-list"></div>
+        </div>
+    </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
-    <script src="{% static 'pw2/js/pages/perfilPublico.js' %}"></script>
-</body>
+    </body>
 </html>

@@ -96,7 +96,6 @@
 .estatus-pendiente { background-color: #ffc107; color: #333; }
 .estatus-rechazada { background-color: #dc3545; }
 
-/* Estilos para la página de editar perfil */
 .perfil-foto-editor {
     display: flex;
     flex-direction: column;

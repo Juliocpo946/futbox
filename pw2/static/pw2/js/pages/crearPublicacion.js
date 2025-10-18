@@ -11,16 +11,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function cargarSelects() {
         try {
-            // Cargar categorías (requiere endpoint de admin, pero se usa para el usuario)
             const categorias = await window.api.fetchAPI('/admin/categorias/');
             categorias.forEach(cat => {
                 const option = new Option(cat.nombre, cat.id);
                 categoriaSelect.add(option);
             });
 
-            // Cargar mundiales
             const mundiales = await window.api.fetchAPI('/admin/mundiales/');
-            mundialSelect.add(new Option('Ninguno', '')); // Opción por defecto
+            mundialSelect.add(new Option('Ninguno', ''));
             mundiales.forEach(mun => {
                 const option = new Option(mun.año, mun.id);
                 mundialSelect.add(option);
@@ -49,13 +47,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            // 1. Crear la publicación
             const nuevaPublicacion = await window.api.fetchAPI('/publicaciones/', {
                 method: 'POST',
                 body: JSON.stringify(datosPublicacion),
             });
 
-            // 2. Subir la imagen si existe
             const archivoInput = document.getElementById('multimedia');
             if (archivoInput.files.length > 0) {
                 const formData = new FormData();
@@ -64,12 +60,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await window.api.fetchAPI(`/publicaciones/${nuevaPublicacion.id}/multimedia/`, {
                     method: 'POST',
                     body: formData,
-                    // No se establece 'Content-Type', el navegador lo hace por nosotros con FormData
                     headers: {} 
                 });
             }
 
-            // 3. Redirigir a la página de la nueva publicación
             window.location.href = `/publicaciones/${nuevaPublicacion.id}/`;
 
         } catch (error) {

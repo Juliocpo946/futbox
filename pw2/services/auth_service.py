@@ -1,4 +1,4 @@
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from pw2.repositories.usuario_repository import UsuarioRepository
 from pw2.api.serializers import UsuarioSerializer, PublicProfileSerializer
@@ -15,15 +15,14 @@ class AuthService:
         if self.usuario_repo.exists_by_nickname(data['nickname']):
             raise ValueError("El nickname ya está en uso.")
 
-        data['contraseña'] = make_password(data['contraseña'])
-        
         usuario = self.usuario_repo.create(data)
         return UsuarioSerializer(usuario).data
 
     def login_user(self, data):
         usuario = self.usuario_repo.get_by_email(data['correo'])
         
-        if usuario is None or not check_password(data['contraseña'], usuario.contraseña):
+        # CORRECCIÓN AQUÍ: Usar 'password'
+        if usuario is None or not check_password(data['password'], usuario.password):
             raise ValueError("Credenciales inválidas.")
             
         refresh = RefreshToken.for_user(usuario)

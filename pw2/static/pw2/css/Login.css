@@ -1,4 +1,3 @@
-/* --- Estilos Globales y Reinicio --- */
 body, html {
     margin: 0;
     padding: 0;
@@ -8,7 +7,6 @@ body, html {
     background-color: #f0f2f5;
 }
 
-/* --- Contenedor de Inicio de Sesión --- */
 .login-container {
     display: flex;
     height: 100%;
@@ -17,7 +15,6 @@ body, html {
     background-size: cover;
 }
 
-/* --- Sección del Logo --- */
 .logo-section {
     flex: 1;
     display: flex;
@@ -31,7 +28,6 @@ body, html {
     filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
 }
 
-/* --- Sección del Formulario --- */
 .form-section {
     flex: 1;
     display: flex;
@@ -61,7 +57,6 @@ body, html {
     font-size: 2em;
 }
 
-/* --- Grupos de Entrada --- */
 .input-group {
     margin-bottom: 20px;
     text-align: left;
@@ -93,7 +88,6 @@ body, html {
     outline: none;
 }
 
-/* --- Botones --- */
 .login-button {
     width: 100%;
     padding: 12px;
@@ -111,7 +105,6 @@ body, html {
     background-color: rgb(108, 163, 53);
 }
 
-/* --- Enlaces para Alternar Formularios --- */
 .toggle-form-text,
 .register-text {
     margin-top: 20px;
@@ -134,44 +127,12 @@ body, html {
     text-decoration: underline;
 }
 
-/* --- Enlaces Adicionales --- */
-.forgot-password {
-    display: block;
-    margin-top: 15px;
-    color: #3498db;
-    text-decoration: none;
-    font-size: 0.9em;
-}
-
-.forgot-password:hover {
-    text-decoration: underline;
-}
-
-/* --- ESTILOS ADICIONALES PARA EL FORMULARIO DE REGISTRO --- */
-
-/* Estilos para las filas con múltiples campos */
 .input-row {
     display: flex;
-    gap: 20px; /* Espacio entre los campos en la misma línea */
+    gap: 20px;
     margin-bottom: 20px;
 }
 
-/* Para que los campos dentro de una fila Flexbox se distribuyan uniformemente */
 .input-row .input-group {
     flex: 1;
-}
-
-/* Estilos para el campo de tipo file */
-input[type="file"]::-webkit-file-upload-button {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-input[type="file"]::-webkit-file-upload-button:hover {
-  background-color: #e0e0e0;
 }

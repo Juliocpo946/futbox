@@ -1,22 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Selectores de elementos del DOM
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const registerLink = document.getElementById('register-link');
     const loginLink = document.getElementById('login-link');
     const errorMessageDiv = document.getElementById('error-message');
 
-    // Función para mostrar errores
     function displayError(message) {
         errorMessageDiv.textContent = message;
     }
 
-    // --- MANEJO DE FORMULARIOS ---
-
-    // Evento para el formulario de Login
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        displayError(''); // Limpiar errores previos
+        displayError('');
 
         const formData = new FormData(loginForm);
         const data = Object.fromEntries(formData.entries());
@@ -27,10 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data),
             });
             
-            // Guardar el token y los datos del usuario
             window.auth.saveAuthData(result.access, result.usuario);
-
-            // Redirigir a la página principal
             window.location.href = '/';
 
         } catch (error) {
@@ -38,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Evento para el formulario de Registro
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         displayError('');
@@ -52,10 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data),
             });
 
-            // Si el registro es exitoso, intenta hacer login automáticamente
+            // CORRECCIÓN AQUÍ: Usar 'password' en lugar de 'contraseña'
             const loginData = {
                 correo: data.correo,
-                contraseña: data.contraseña
+                password: data.password 
             };
 
             const result = await window.api.fetchAPI('/usuarios/login/', {
@@ -70,8 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayError(error.message || 'Error en el registro. Verifica los datos ingresados.');
         }
     });
-
-    // --- INTERCAMBIO DE FORMULARIOS VISUALMENTE ---
 
     registerLink.addEventListener('click', (e) => {
         e.preventDefault();

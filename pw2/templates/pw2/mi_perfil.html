@@ -5,11 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
 </head>
 <body>
     <nav class="barra">
@@ -17,7 +15,6 @@
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
     </nav>
-
     <main class="perfil-container">
         <div class="perfil-header">
             <img id="perfil-foto" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de Perfil" class="perfil-foto-grande">
@@ -31,16 +28,13 @@
                 </div>
             </div>
         </div>
-
         <div class="perfil-contenido">
             <h2>Mis Publicaciones</h2>
-            <div id="mis-publicaciones-container" class="publicaciones-grid">
-                </div>
+            <div id="mis-publicaciones-container" class="publicaciones-grid"></div>
         </div>
     </main>
-    
-    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
-    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
-    <script src="{% static 'pw2/js/perfil/mi_perfil.js' %}"></script>
+    <script src="{% static 'pw2/js/api/api.js' %}"></script>
+    <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/pages/miPerfil.js' %}"></script>
 </body>
 </html>

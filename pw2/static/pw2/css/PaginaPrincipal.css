@@ -41,14 +41,6 @@
     padding: 15px;
     margin-bottom: 20px;
     position: relative;
-}
-
-.profile-box {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -77,7 +69,6 @@
     margin-top: 2px;
 }
 
-/* Contenedor del carrusel */
 .carrusel-contenedor {
     position: relative;
     width: 100%;
@@ -89,7 +80,6 @@
     overflow: hidden;
 }
 
-/* Contenedor de las imágenes (este es el que define la relación de aspecto) */
 .carrusel-inner {
     position: relative;
     width: 100%;
@@ -98,7 +88,6 @@
     overflow: hidden;
 }
 
-/* Cada slide individual */
 .carrusel-item {
     position: absolute;
     top: 0;
@@ -120,7 +109,6 @@
     display: block;
 }
 
-/* Contenedor del título, descripción y botón */
 .carrusel-caption {
     position: absolute;
     bottom: 0;
@@ -129,17 +117,14 @@
     padding: 20px;
     background: rgba(0, 0, 0, 0.5);
     color: white;
-
     display: flex;
     justify-content: space-between;
-    /* Empuja los elementos a los extremos */
     align-items: flex-end;
 }
 
 .captiontext {
     flex-grow: 1;
     padding-right: 20px;
-    /* <--- Esto es lo que separa el texto del botón */
     overflow: hidden;
 }
 
@@ -161,7 +146,6 @@
     text-overflow: ellipsis;
 }
 
-/* El botón de "Leer más" */
 .botonleer {
     flex-shrink: 0;
     background-color: #147b4d;
@@ -173,7 +157,6 @@
     font-weight: bold;
     transition: background-color 0.3s ease;
     white-space: nowrap;
-
     margin-right: 35px;
 }
 
@@ -181,7 +164,6 @@
     background-color: #0d6a40;
 }
 
-/* Flechas de navegación */
 .prev,
 .next {
     cursor: pointer;
@@ -201,12 +183,8 @@
 }
 
 .prev:hover,
-.next:hover,
-.prev:focus,
-.next:focus {
+.next:hover {
     background-color: rgba(0, 0, 0, 0.8);
-    outline: 2px solid white;
-    outline-offset: 2px;
 }
 
 .prev {
@@ -226,12 +204,10 @@
     font-weight: bold;
 }
 
-/* Contenedor Flexbox para tus tarjetas */
 .tarjetascontenedor {
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
-    /* Espacio entre las tarjetas */
     justify-content: center;
 
 }
@@ -310,49 +286,6 @@
     color: #0d6a40;
 }
 
-.hashtags-box {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.hashtags-titulo {
-    font-size: 1.1em;
-    color: #333;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
-
-.hashtag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.hashtag-item {
-    text-decoration: none;
-    background-color: #e9ecef;
-    color: #555;
-    font-size: 0.85em;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.hashtag-item:hover {
-    background-color: #d1d9df;
-    color: #0d6a40;
-}
-
-/* --- ESTILOS PARA EL BOTÓN PUBLICAR --- */
-.post-button-box {
-    padding: 0 15px;
-    margin-top: auto;
-}
-
 .btn-publicar {
     width: 100%;
     background-color: #0d6a40;
@@ -372,28 +305,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.sidebar-footer {
-    padding: 15px;
-    font-size: 0.8em;
-    color: #777;
-    background-color: #f0f2f5;
-
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 999;
-
-    width: 280px;
-    box-sizing: border-box;
-}
-
-.sidebar-footer p {
-    margin: 0;
-    text-align: right;
-}
-
-
-/* --- ESTILOS DE LA SECCIÓN DE PERFIL (perfilseccion) --- */
 .perfilseccion {
     display: flex;
     align-items: center;

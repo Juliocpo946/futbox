@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutBOX - Panel de Administración</title>
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+</head>
+<body>
+    <nav class="barra">
+        <div class="logo">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+        <div style="color: white; font-weight: bold;">PANEL DE ADMINISTRACIÓN</div>
+    </nav>
+    <main class="pantallaprincipal">
+        <div class="parteizq">
+            <div class="quick-nav-box">
+                <a href="#" class="nav-link"><i class="fas fa-tasks"></i> Moderación</a>
+                <a href="#" class="nav-link"><i class="fas fa-globe-americas"></i> Países</a>
+                <a href="#" class="nav-link"><i class="fas fa-trophy"></i> Mundiales</a>
+                <a href="#" class="nav-link"><i class="fas fa-tags"></i> Categorías</a>
+                <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a>
+            </div>
+        </div>
+        <div class="parteder">
+            <h1 class="seccion-titulo1">Bienvenido, Admin</h1>
+            <p>Selecciona una opción del menú para comenzar a gestionar el contenido de FutBOX.</p>
+        </div>
+    </main>
+    <script src="{% static 'pw2/js/api/api.js' %}"></script>
+    <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+</body>
+</html>

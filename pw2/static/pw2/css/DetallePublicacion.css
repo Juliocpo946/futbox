@@ -63,7 +63,6 @@
     border-top: 1px solid #eee;
 }
 
-/* Estilos para el botón de reacción */
 .reaccion-btn {
     background-color: #f0f2f5;
     border: 1px solid #ccc;
@@ -82,12 +81,10 @@
 }
 
 .reaccion-btn.reaccionado {
-    background-color: #ffdddd; /* Fondo rojo claro cuando se reacciona */
+    background-color: #ffdddd;
     border-color: #ff9999;
-    color: #d63333; /* Color del ícono y texto */
+    color: #d63333;
 }
-
-/* --- Sección de Comentarios --- */
 
 .comentarios-section {
     margin-top: 30px;

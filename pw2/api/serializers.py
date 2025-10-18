@@ -22,18 +22,19 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'contraseña', 'nickname', 'fecha_nacimiento', 'genero']
-        extra_kwargs = {'contraseña': {'write_only': True}}
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'password', 'nickname', 'fecha_nacimiento', 'genero']
+        extra_kwargs = {'password': {'write_only': True}}
 
 class LoginSerializer(serializers.Serializer):
     correo = serializers.EmailField()
-    contraseña = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
 class ActualizarUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero']
 
+# ... (El resto de los serializadores no cambia)
 class PaisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pais

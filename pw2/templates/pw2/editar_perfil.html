@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/FormularioPublicacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Formulario.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
 </head>
@@ -20,13 +20,11 @@
         <div class="form-container">
             <h1>Editar Perfil</h1>
             <div id="error-message" class="error-message" style="display: none;"></div>
-            
             <div class="perfil-foto-editor">
                 <img id="perfil-foto-preview" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de Perfil">
                 <input type="file" id="input-foto" accept="image/*" style="display: none;">
                 <button id="btn-cambiar-foto" class="btn-cambiar-foto">Cambiar Foto</button>
             </div>
-
             <form id="form-editar-perfil">
                 <div class="input-row">
                     <div class="input-group">
@@ -42,45 +40,28 @@
                     <label for="nickname">Nickname</label>
                     <input type="text" id="nickname" name="nickname">
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento">
-                    </div>
-                    <div class="input-group">
-                        <label for="genero">Género</label>
-                        <select id="genero" name="genero">
-                            <option value="masculino">Masculino</option>
-                            <option value="femenino">Femenino</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancelar" onclick="window.location.href='{% url 'pw2:mi_perfil' %}'">Cancelar</button>
                     <button type="submit" class="btn-publicar">Guardar Cambios</button>
                 </div>
             </form>
-            
             <div class="danger-zone">
                 <button id="btn-mostrar-eliminar" class="btn-eliminar">Eliminar Cuenta</button>
             </div>
         </div>
     </main>
-
     <div id="confirmar-eliminacion-modal" class="modal-oculto">
         <div class="modal-contenido">
             <h2>¿Estás seguro?</h2>
-            <p>Esta acción es irreversible. Toda tu información, incluyendo tus publicaciones y comentarios, se eliminará permanentemente.</p>
+            <p>Esta acción es irreversible. Se eliminará toda tu información.</p>
             <div class="modal-acciones">
                 <button id="btn-cancelar-eliminar" class="btn-cancelar">Cancelar</button>
                 <button id="btn-confirmar-eliminar" class="btn-eliminar">Sí, eliminar mi cuenta</button>
             </div>
         </div>
     </div>
-    
-    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
-    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
-    <script src="{% static 'pw2/js/perfil/editar_perfil.js' %}"></script>
+    <script src="{% static 'pw2/js/api/api.js' %}"></script>
+    <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/pages/editarPerfil.js' %}"></script>
 </body>
 </html>

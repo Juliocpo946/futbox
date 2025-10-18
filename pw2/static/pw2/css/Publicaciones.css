@@ -1,6 +1,6 @@
 .publicaciones-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Una columna por defecto */
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 

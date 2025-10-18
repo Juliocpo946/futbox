@@ -33,6 +33,9 @@
 }
 
 .input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="date"],
 .input-group textarea,
 .input-group select {
     width: 100%;

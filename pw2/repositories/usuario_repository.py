@@ -1,9 +1,10 @@
 from pw2.models import Usuario
 
 class UsuarioRepository:
-
     def create(self, usuario_data):
-        return Usuario.objects.create(**usuario_data)
+        password = usuario_data.pop('password')
+        user = Usuario.objects.create_user(password=password, **usuario_data)
+        return user
 
     def get_by_email(self, correo):
         try:
