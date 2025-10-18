@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+</head>
+<body>
+    <nav class="barra">
+        <div class="logo">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+    </nav>
+    <main class="perfil-container" id="perfil-publico-container">
+        </main>
+    <script> const NICKNAME_PERFIL = "{{ nickname }}"; </script>
+    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/perfil/perfil_publico.js' %}"></script>
+</body>
+</html>

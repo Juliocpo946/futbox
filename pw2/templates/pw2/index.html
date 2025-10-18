@@ -13,7 +13,6 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <!-- Archivos CSS usando Django static -->
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
 </head>
@@ -21,187 +20,75 @@
 <body>
     <nav class="barra">
         <div class="logo">
-            <img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
-        <div class="barra_busqueda">
+        <form class="barra_busqueda" id="search-form-nav">
             <div class="buscador">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar">
+                <input type="text" id="search-input-nav" placeholder="Buscar publicaciones...">
             </div>
             <div class="filtros">
                 <select id="mundial">
                     <option value="all">Todos</option>
                     <option value="uruguay30">Uruguay 1930</option>
-                    <option value="italia34">Italia 1934</option>
-                    <option value="francia38">Francia 1938</option>
-                    <option value="brasil50">Brasil 1950</option>
-                    <option value="suiza54">Suiza 1954</option>
-                    <option value="suecia58">Suecia 1958</option>
-                    <option value="chile62">Chile 1962</option>
-                    <option value="inglaterra66">Inglaterra 1966</option>
-                    <option value="mexico70">México 1970</option>
-                    <option value="alemania74">Alemania 1974</option>
-                    <option value="argentina78">Argentina 1978</option>
-                    <option value="espana82">España 1982</option>
-                    <option value="mexico86">México 1986</option>
-                    <option value="italia90">Italia 1990</option>
-                    <option value="estadosunidos94">Estados Unidos 1994</option>
-                    <option value="francia98">Francia 1998</option>
-                    <option value="coreajapon02">Corea del Sur y Japón 2002</option>
-                    <option value="alemania06">Alemania 2006</option>
-                    <option value="sudafrica10">Sudáfrica 2010</option>
-                    <option value="brasil14">Brasil 2014</option>
-                    <option value="rusia18">Rusia 2018</option>
-                    <option value="catar22">Catar 2022</option>
-                    <option value="mexicoeuacanada26">México, EUA y Canadá 2026</option>
                 </select>
             </div>
-        </div>
-        <div class="login">
-            <a href="{% url 'pw2:login' %}"><button>Iniciar sesión</button></a>
-        </div>
-        <div class="registro">
-            <a href="{% url 'pw2:login' %}"><button>Registrar</button></a>
+        </form>
+        
+        <div id="nav-unauthenticated" class="nav-user-section" style="display: none;">
+            <div class="login">
+                <a href="{% url 'pw2:login' %}"><button>Iniciar sesión</button></a>
+            </div>
+            <div class="registro">
+                <a href="{% url 'pw2:login' %}"><button>Registrar</button></a>
+            </div>
         </div>
     </nav>
 
     <main class="pantallaprincipal">
         <div class="parteizq">
-            <div class="profile-box">
-                <div class="perfilseccion" id="profile-dropdown-btn">
-                    <img src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
-                    <div class="usuarioinfo">
-                        <span class="nombreusuario">{{ user_name|default:"Abraham Ramirez" }}</span>
-                        <p class="username-handle">{{ username_handle|default:"@Abranchill" }}</p>
+            <div id="profile-section-authenticated" style="display: none;">
+                <div class="profile-box">
+                    <div class="perfilseccion" id="profile-dropdown-btn">
+                        <img id="profile-pic" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
+                        <div class="usuarioinfo">
+                            <span id="profile-name" class="nombreusuario"></span>
+                            <p id="profile-nickname" class="username-handle"></p>
+                        </div>
+                        <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                     </div>
-                    <i class="fas fa-chevron-down profile-dropdown-icon"></i>
-                </div>
-
-                <div class="dropdown-menu" id="profile-dropdown-menu">
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-user-circle"></i> Perfil de usuario
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                    </a>
+                    <div class="dropdown-menu" id="profile-dropdown-menu">
+                        <a href="{% url 'pw2:mi_perfil' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> Perfil</a>
+                        <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
                 </div>
             </div>
 
             <div class="quick-nav-box">
                 <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
-                <a href="#" class="nav-link"> <i class="fas fa-fire"></i> Comunidad</a>
-            </div>
-
-            <div class="hashtags-box">
-                <h3 class="hashtags-titulo"><i class="fas fa-bolt"></i> Popular</h3>
-                <div class="hashtag-list">
-                    <a href="#" class="hashtag-item">#Mundial2026</a>
-                    <a href="#" class="hashtag-item">#FutbolMexicano</a>
-                    <a href="#" class="hashtag-item">#Leyendas</a>
-                    <a href="#" class="hashtag-item">#Goles</a>
-                    <a href="#" class="hashtag-item">#Qatar2022</a>
-                    <a href="#" class="hashtag-item">#BlueLock</a>
-                </div>
+                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-fire"></i> Comunidad</a>
             </div>
 
             <div class="post-button-box">
-                <button class="btn-publicar"><i class="fas fa-edit"></i> Publicar</button>
-            </div>
-
-            <div class="sidebar-footer">
-                <p>&copy; 2025 FutBOX</p>
+                <a href="{% url 'pw2:crear_publicacion' %}" style="text-decoration: none;">
+                    <button class="btn-publicar"><i class="fas fa-edit"></i> Publicar</button>
+                </a>
             </div>
         </div>
 
         <div class="parteder">
             <h2 class="seccion-titulo1">Publicaciones recientes</h2>
-
-            <div class="carrusel-contenedor">
-                <div class="carrusel-inner">
-                    <div class="carrusel-item active">
-                        <img src="{% static 'pw2/images/bluelock.jpg' %}" alt="Blue Lock anime">
-                        <div class="carrusel-caption">
-                            <div class="captiontext">
-                                <h3>¿Por qué Blue Lock es el mejor manga/anime de fútbol?</h3>
-                                <p>Debate con los demás usuarios el porqué Blue Lock es el mejor manga/anime de fútbol.</p>
-                            </div>
-                            <a href="#" class="botonleer">Mirar publicación</a>
-                        </div>
-                    </div>
-
-                    <div class="carrusel-item">
-                        <img src="{% static 'pw2/images/Estadios.jpg' %}" alt="Estadios México 2026">
-                        <div class="carrusel-caption">
-                            <div class="captiontext">
-                                <h3>Estadios de México que serán sede del Mundial 2026</h3>
-                                <p>Entérate de los estadios mexicanos que estarán participando en el Mundial de Fútbol 2026 México, Estados Unidos y Canadá.</p>
-                            </div>
-                            <a href="#" class="botonleer">Mirar publicación</a>
-                        </div>
-                    </div>
-
-                    <div class="carrusel-item">
-                        <img src="{% static 'pw2/images/Mundial2026.png' %}" alt="Mundial 2026">
-                        <div class="carrusel-caption">
-                            <div class="captiontext">
-                                <h3>Mundial 2026</h3>
-                                <p>Entérate de las últimas preparaciones para el mundial.</p>
-                            </div>
-                            <a href="#" class="botonleer">Mirar publicación</a>
-                        </div>
-                    </div>
-
-                    <div class="carrusel-item">
-                        <img src="{% static 'pw2/images/Cinderace.jpg' %}" alt="Cinderace Pokemon">
-                        <div class="carrusel-caption">
-                            <div class="captiontext">
-                                <h3>Pokemon futbolista</h3>
-                                <p>Conoce todo sobre Cinderace, el inicial tipo fuego de la región de Galar que tiene temática de fútbol.</p>
-                            </div>
-                            <a href="#" class="botonleer">Mirar publicación</a>
-                        </div>
-                    </div>
-                </div>
-
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-            </div>
-
+            <div class="carrusel-contenedor"></div>
             <h2 class="seccion-titulo">Mundiales</h2>
-
-            <div class="tarjetascontenedor">
-                <div class="tarjeta">
-                    <img src="{% static 'pw2/images/BanderaUruguay.jpg' %}" alt="Uruguay 1930">
-                    <div class="tarjetainfo">
-                        <h3 class="tarjetatitulo">Uruguay 1930</h3>
-                        <p class="tarjetadescripcion">Primer Mundial de la historia</p>
-                        <a href="#"></a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <img src="{% static 'pw2/images/BanderaItalia.jpg' %}" alt="Italia 1934">
-                    <div class="tarjetainfo">
-                        <h3 class="tarjetatitulo">Italia 1934</h3>
-                        <p class="tarjetadescripcion">Segundo Mundial, organizado en Italia</p>
-                        <a href="#"></a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <img src="{% static 'pw2/images/BanderaFrancia.jpg' %}" alt="Francia 1938">
-                    <div class="tarjetainfo">
-                        <h3 class="tarjetatitulo">Francia 1938</h3>
-                        <p class="tarjetadescripcion">Último antes de la Segunda Guerra Mundial</p>
-                        <a href="#"></a>
-                    </div>
-                </div>
-            </div>
+            <div class="tarjetascontenedor"></div>
         </div>
     </main>
 
-    <!-- Archivos JavaScript usando Django static -->
+    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/perfil/cargar_perfil.js' %}"></script>
     <script src="{% static 'pw2/js/Carrusel.js' %}"></script>
     <script src="{% static 'pw2/js/MenuPerfil.js' %}"></script>
+    <script src="{% static 'pw2/js/busqueda/buscar.js' %}"></script>
 </body>
 </html>

@@ -7,9 +7,13 @@ class PublicacionService:
     def crear_publicacion(self, autor, data):
         return self.repo.create(autor, data)
 
-    def listar_publicaciones(self):
-        return self.repo.get_all_aprobadas()
+    def listar_publicaciones(self, search_query=None):
+        return self.repo.get_all_aprobadas(search_query)
 
+    # Nuevo método en el servicio
+    def listar_publicaciones_por_autor(self, user_id):
+        return self.repo.get_by_author(user_id)
+    
     def obtener_detalle(self, publicacion_id):
         publicacion = self.repo.get_by_id(publicacion_id)
         if not publicacion or publicacion.estatus != 'aprobada':

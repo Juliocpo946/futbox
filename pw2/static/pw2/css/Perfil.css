@@ -1,0 +1,122 @@
+.perfil-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.perfil-foto-grande {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.perfil-info h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #333;
+}
+
+.nickname-perfil {
+    font-size: 1.2em;
+    color: #777;
+    margin-top: 5px;
+}
+
+.correo-perfil {
+    font-size: 1em;
+    color: #555;
+    margin-top: 15px;
+}
+
+.perfil-acciones {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.perfil-acciones a,
+.perfil-acciones button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+.btn-editar-perfil {
+    background-color: #0d6a40;
+    color: #fff;
+}
+.btn-editar-perfil:hover {
+    background-color: #0c5a36;
+}
+
+.btn-cerrar-sesion {
+    background-color: #e0e0e0;
+    color: #333;
+}
+.btn-cerrar-sesion:hover {
+    background-color: #ccc;
+}
+
+.perfil-contenido h2 {
+    font-size: 1.8em;
+    border-bottom: 2px solid #0d6a40;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.estatus-publicacion {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 10px;
+}
+.estatus-aprobada { background-color: #28a745; }
+.estatus-pendiente { background-color: #ffc107; color: #333; }
+.estatus-rechazada { background-color: #dc3545; }
+
+/* Estilos para la página de editar perfil */
+.perfil-foto-editor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.perfil-foto-editor img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn-cambiar-foto {
+    background-color: #f0f2f5;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}

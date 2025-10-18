@@ -4,10 +4,20 @@ from pw2.models import (
     Multimedia, MultimediaPublicacion
 )
 
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['nombre', 'nickname', 'foto_perfil']
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id', 'nombre', 'nickname', 'foto_perfil', 'fecha_registro']
+
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol']
+        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol', 'foto_perfil', 'fecha_nacimiento', 'genero']
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,7 +59,7 @@ class MultimediaSerializer(serializers.ModelSerializer):
         fields = ['id', 'path']
 
 class PublicacionSerializer(serializers.ModelSerializer):
-    autor = UsuarioSerializer(read_only=True)
+    autor = AuthorSerializer(read_only=True)
     reacciones_count = serializers.SerializerMethodField()
     categoria = CategoriaSerializer(read_only=True)
     mundial = MundialSerializer(read_only=True)
@@ -57,7 +67,7 @@ class PublicacionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Publicacion
-        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'multimedia']
+        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'multimedia', 'estatus']
     
     def get_reacciones_count(self, obj):
         return obj.reaccion_set.count()
@@ -73,7 +83,7 @@ class PublicacionCreateSerializer(serializers.ModelSerializer):
         fields = ['titulo', 'descripcion', 'categoria', 'mundial']
 
 class ComentarioSerializer(serializers.ModelSerializer):
-    usuario = UsuarioSerializer(read_only=True)
+    usuario = AuthorSerializer(read_only=True)
     class Meta:
         model = Comentario
         fields = ['id', 'comentario', 'fecha_creacion', 'usuario']

@@ -1,8 +1,20 @@
+from django.db.models import Q
 from pw2.models import Publicacion
 
 class PublicacionRepository:
-    def get_all_aprobadas(self):
-        return Publicacion.objects.filter(estatus='aprobada').order_by('-fecha_publicacion')
+    def get_all_aprobadas(self, search_query=None):
+        queryset = Publicacion.objects.filter(estatus='aprobada')
+        if search_query:
+            queryset = queryset.filter(
+                Q(titulo__icontains=search_query) | Q(descripcion__icontains=search_query)
+            )
+        return queryset.order_by('-fecha_publicacion')
+
+    def get_by_author(self, user_id):
+        return Publicacion.objects.filter(autor_id=user_id).order_by('-fecha_publicacion')
+
+    def get_approved_by_author(self, user_id):
+        return Publicacion.objects.filter(autor_id=user_id, estatus='aprobada').order_by('-fecha_publicacion')
 
     def get_by_id(self, publicacion_id):
         try:

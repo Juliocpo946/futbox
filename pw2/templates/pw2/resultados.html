@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Resultados.css' %}">
+</head>
+<body>
+    
+    <nav class="barra">
+        <div class="logo">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+        <form class="barra_busqueda" id="search-form-nav">
+            <div class="buscador">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input-nav" placeholder="Buscar de nuevo...">
+            </div>
+        </form>
+    </nav>
+
+    <main class="pantallaprincipal">
+        <div class="parteizq">
+            <div id="profile-section-authenticated" style="display: none;">
+                </div>
+            <div class="quick-nav-box">
+                <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
+                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-fire"></i> Comunidad</a>
+            </div>
+        </div>
+
+        <div class="parteder">
+            <h1 id="titulo-resultados" class="seccion-titulo1">Cargando resultados...</h1>
+            <div id="resultados-container" class="publicaciones-grid">
+                </div>
+        </div>
+    </main>
+
+    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/busqueda/resultados.js' %}"></script>
+    <script src="{% static 'pw2/js/busqueda/buscar.js' %}"></script>
+</body>
+</html>

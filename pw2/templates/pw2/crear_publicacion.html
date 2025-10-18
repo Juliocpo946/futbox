@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"FutBOX - Crear Publicación" }}</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/FormularioPublicacion.css' %}">
+</head>
+<body>
+    
+    <nav class="barra">
+        <div class="logo">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+    </nav>
+
+    <main class="pantallaprincipal-form">
+        <div class="form-container">
+            <h1>Crear una Nueva Publicación</h1>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <form id="form-crear-publicacion">
+                <div class="input-group">
+                    <label for="titulo">Título</label>
+                    <input type="text" id="titulo" name="titulo" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="6" required></textarea>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" name="categoria" required>
+                            </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="mundial">Mundial (Opcional)</label>
+                        <select id="mundial" name="mundial">
+                            </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="multimedia">Imagen (Opcional)</label>
+                    <input type="file" id="multimedia" name="multimedia" accept="image/*">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" onclick="window.history.back();">Cancelar</button>
+                    <button type="submit" class="btn-publicar">Publicar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/publicaciones/crear_publicacion.js' %}"></script>
+</body>
+</html>

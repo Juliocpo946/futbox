@@ -6,7 +6,8 @@ from pw2.models import Publicacion, Comentario, Pais, Mundial, Categoria
 from pw2.api.serializers import (
     RegisterSerializer, LoginSerializer, UsuarioSerializer, ActualizarUsuarioSerializer,
     PublicacionSerializer, PublicacionCreateSerializer, ComentarioSerializer, ComentarioCreateSerializer,
-    PaisSerializer, MundialSerializer, MundialDetalleSerializer, CategoriaSerializer, MultimediaSerializer
+    PaisSerializer, MundialSerializer, MundialDetalleSerializer, CategoriaSerializer, MultimediaSerializer,
+    PublicProfileSerializer
 )
 from pw2.services.auth_service import AuthService
 from pw2.services.publicacion_service import PublicacionService
@@ -85,13 +86,47 @@ class EliminarCuentaView(APIView):
             log_critical_error("Error inesperado al eliminar cuenta.", e)
             return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class ActualizarFotoPerfilView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    def post(self, request):
+        if 'file' not in request.data:
+            return Response({'error': 'No se encontró el archivo en la petición.'}, status=status.HTTP_400_BAD_REQUEST)
+        file = request.data['file']
+        service = AuthService()
+        try:
+            usuario_actualizado = service.update_profile_picture(request.user, file)
+            return Response(usuario_actualizado, status=status.HTTP_200_OK)
+        except Exception as e:
+            log_critical_error("Error al subir la foto de perfil.", e)
+            return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PerfilPublicoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, nickname):
+        service = AuthService()
+        try:
+            perfil_publico = service.get_public_profile(nickname)
+            return Response(perfil_publico)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+class PublicacionesUsuarioPublicoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, user_id):
+        service = PublicacionService()
+        publicaciones = service.repo.get_approved_by_author(user_id)
+        serializer = PublicacionSerializer(publicaciones, many=True)
+        return Response(serializer.data)
+
 # --- VISTAS DE PUBLICACIONES, MULTIMEDIA, COMENTARIOS Y REACCIONES ---
 
 class PublicacionesView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         service = PublicacionService()
-        publicaciones = service.listar_publicaciones()
+        search_query = request.query_params.get('search', None)
+        publicaciones = service.listar_publicaciones(search_query)
         serializer = PublicacionSerializer(publicaciones, many=True)
         return Response(serializer.data)
 
@@ -103,6 +138,14 @@ class PublicacionesView(APIView):
             response_serializer = PublicacionSerializer(nueva_publicacion)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MisPublicacionesView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        service = PublicacionService()
+        publicaciones = service.listar_publicaciones_por_autor(request.user.id)
+        serializer = PublicacionSerializer(publicaciones, many=True)
+        return Response(serializer.data)
 
 class PublicacionDetalleView(APIView):
     permission_classes = [IsAuthenticated]

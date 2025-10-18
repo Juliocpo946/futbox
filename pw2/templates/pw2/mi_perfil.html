@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+</head>
+<body>
+    <nav class="barra">
+        <div class="logo">
+            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+    </nav>
+
+    <main class="perfil-container">
+        <div class="perfil-header">
+            <img id="perfil-foto" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de Perfil" class="perfil-foto-grande">
+            <div class="perfil-info">
+                <h1 id="perfil-nombre"></h1>
+                <p id="perfil-nickname" class="nickname-perfil"></p>
+                <p id="perfil-correo" class="correo-perfil"></p>
+                <div class="perfil-acciones">
+                    <a href="{% url 'pw2:editar_perfil' %}" class="btn-editar-perfil" style="text-decoration: none;">Editar Perfil</a>
+                    <button id="logout-button" class="btn-cerrar-sesion">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="perfil-contenido">
+            <h2>Mis Publicaciones</h2>
+            <div id="mis-publicaciones-container" class="publicaciones-grid">
+                </div>
+        </div>
+    </main>
+    
+    <script src="{% static 'pw2/js/utils/api.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/perfil/mi_perfil.js' %}"></script>
+</body>
+</html>

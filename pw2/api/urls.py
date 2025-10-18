@@ -1,10 +1,13 @@
 from django.urls import path
-from pw2.api.views import (RegistroView, LoginView, PerfilView, ActualizarPerfilView, 
-                           EliminarCuentaView, PublicacionesView, PublicacionDetalleView,
-                           ComentariosView, ComentarioDetalleView, ReaccionView,
-                           AdminPaisesView, AdminPaisDetalleView, AdminMundialesView,
-                           AdminMundialDetalleView, AdminCategoriasView, AdminCategoriaDetalleView,
-                           SubirMultimediaView, ReportesView)
+from pw2.api.views import (
+    RegistroView, LoginView, PerfilView, ActualizarPerfilView, 
+    EliminarCuentaView, PublicacionesView, PublicacionDetalleView,
+    ComentariosView, ComentarioDetalleView, ReaccionView,
+    AdminPaisesView, AdminPaisDetalleView, AdminMundialesView,
+    AdminMundialDetalleView, AdminCategoriasView, AdminCategoriaDetalleView,
+    SubirMultimediaView, ReportesView, MisPublicacionesView, ActualizarFotoPerfilView,
+    PerfilPublicoView, PublicacionesUsuarioPublicoView
+)
 
 app_name = 'pw2_api'
 
@@ -14,7 +17,11 @@ urlpatterns = [
     path('usuarios/login/', LoginView.as_view(), name='login'),
     path('usuarios/perfil/', PerfilView.as_view(), name='perfil'),
     path('usuarios/perfil/actualizar/', ActualizarPerfilView.as_view(), name='actualizar_perfil'),
+    path('usuarios/perfil/actualizar-foto/', ActualizarFotoPerfilView.as_view(), name='actualizar_foto_perfil'),
     path('usuarios/perfil/eliminar/', EliminarCuentaView.as_view(), name='eliminar_perfil'),
+    path('usuarios/mis-publicaciones/', MisPublicacionesView.as_view(), name='mis_publicaciones'),
+    path('perfil/<str:nickname>/', PerfilPublicoView.as_view(), name='perfil_publico'),
+    path('perfil/publicaciones/<int:user_id>/', PublicacionesUsuarioPublicoView.as_view(), name='publicaciones_usuario_publico'),
 
     # Publicaciones y Multimedia
     path('publicaciones/', PublicacionesView.as_view(), name='publicaciones_lista'),

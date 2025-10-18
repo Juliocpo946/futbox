@@ -1,7 +1,8 @@
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from pw2.repositories.usuario_repository import UsuarioRepository
-from pw2.api.serializers import UsuarioSerializer
+from pw2.api.serializers import UsuarioSerializer, PublicProfileSerializer
+from pw2.utils.cloudinary_helper import upload_image
 
 class AuthService:
     def __init__(self):
@@ -40,6 +41,18 @@ class AuthService:
         
         usuario_actualizado = self.usuario_repo.update(usuario, data)
         return UsuarioSerializer(usuario_actualizado).data
+
+    def update_profile_picture(self, usuario, file):
+        multimedia_obj = upload_image(file)
+        usuario.foto_perfil = multimedia_obj.path
+        usuario.save()
+        return UsuarioSerializer(usuario).data
+    
+    def get_public_profile(self, nickname):
+        usuario = self.usuario_repo.get_by_nickname(nickname)
+        if not usuario:
+            raise ValueError("El usuario no existe.")
+        return PublicProfileSerializer(usuario).data
 
     def delete_account(self, usuario):
         self.usuario_repo.delete(usuario)
