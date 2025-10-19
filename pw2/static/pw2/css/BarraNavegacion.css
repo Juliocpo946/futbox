@@ -1,0 +1,117 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.barra_busqueda {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 15px;
+}
+
+.barra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(to right, #000000, #004B09);
+    padding: 25px 50px;
+    color: black;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.buscador {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 25px;
+    padding: 5px 25px;
+    width: 400px;
+}
+
+.buscador input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex-grow: 1;
+    font-size: 1em;
+    color: #000000;
+}
+
+.buscador i.fas {
+  margin-right: 10px;
+  color: #000000;
+  font-size: 1.1em;
+}
+
+.filtros {
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 25px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.filtros select {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.opciones{
+    color: #000000;
+}
+
+.login button, .registro button {
+    border: none;
+    background: #0d6a40;
+    color: #fff;
+    font-size: 1em;
+    border-radius: 7.5px;
+    padding: 5px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login button:hover, .registro button:hover {
+    background-color: rgb(108, 163, 53);
+}
+
+.nav-user-section {
+    display: flex;
+    gap: 15px;
+}

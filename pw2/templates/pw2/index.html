@@ -24,6 +24,9 @@
             <div class="login">
                 <a href="{% url 'pw2:login' %}"><button>Iniciar sesión</button></a>
             </div>
+            <div class="registro">
+                <a href="{% url 'pw2:login' %}"><button>Registrar</button></a>
+            </div>
         </div>
     </nav>
     <main class="pantallaprincipal">
@@ -39,7 +42,7 @@
                         <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                     </div>
                     <div class="dropdown-menu" id="profile-dropdown-menu">
-                        <a href="{% url 'pw2:mi_perfil' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> Perfil</a>
+                        <a href="{% url 'pw2:mi_perfil' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
                         <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                     </div>
                 </div>
@@ -48,16 +51,24 @@
                 <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
                 <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-fire"></i> Comunidad</a>
             </div>
+            <div class="hashtags-box">
+                <h3 class="hashtags-titulo"><i class="fas fa-bolt"></i> Popular</h3>
+                <div class="hashtag-list">
+                    <a href="#" class="hashtag-item">#Mundial2026</a>
+                    <a href="#" class="hashtag-item">#Futbol</a>
+                    <a href="#" class="hashtag-item">#Leyendas</a>
+                </div>
+            </div>
             <div class="post-button-box">
                 <a href="{% url 'pw2:crear_publicacion' %}" style="text-decoration: none;">
-                    <button class="btn-publicar"><i class="fas fa-edit"></i> Publicar</button>
+                    <button class="btn-publicar"><i class="fas fa-edit"></i> Crear Publicación</button>
                 </a>
             </div>
         </div>
         <div class="parteder">
-            <h2 class="seccion-titulo1">Publicaciones recientes</h2>
+            <h1 class="seccion-titulo1">Publicaciones Recientes</h1>
             <div class="carrusel-contenedor"></div>
-            <h2 class="seccion-titulo">Mundiales</h2>
+            <h1 class="seccion-titulo1" style="margin-top: 30px;">Mundiales</h1>
             <div class="tarjetascontenedor"></div>
         </div>
     </main>
