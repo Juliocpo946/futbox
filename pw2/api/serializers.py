@@ -36,9 +36,14 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 class ActualizarUsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero']
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero', 'password']
+        extra_kwargs = {
+            'password': {'required': False, 'allow_blank': True}
+        }
 
 class PaisSerializer(serializers.ModelSerializer):
     class Meta:

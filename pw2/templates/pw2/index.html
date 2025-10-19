@@ -1,81 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
-{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title|default:"FutBOX" }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/pw2/css/BarraNavegacion.css">
+    <link rel="stylesheet" href="/static/pw2/css/PaginaPrincipal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="barra">
+    <div class="barra">
         <div class="logo">
-            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+            <a href="/"><img src="/static/pw2/images/LogoFutBOX.png" alt="Logo FutBOX"></a>
         </div>
-        <form class="barra_busqueda" id="search-form-nav">
-            <div class="buscador">
+        <div class="barra_busqueda">
+            <form id="search-form-nav" class="buscador">
                 <i class="fas fa-search"></i>
                 <input type="text" id="search-input-nav" placeholder="Buscar publicaciones...">
-            </div>
-        </form>
-        <div id="nav-unauthenticated" class="nav-user-section" style="display: none;">
-            <div class="login">
-                <a href="{% url 'pw2:login' %}"><button>Iniciar sesión</button></a>
-            </div>
-            <div class="registro">
-                <a href="{% url 'pw2:login' %}"><button>Registrar</button></a>
-            </div>
+            </form>
         </div>
-    </nav>
-    <main class="pantallaprincipal">
+        <div class="nav-user-section">
+            <div id="nav-unauthenticated" style="display: none;">
+                <div class="login"><button onclick="window.location.href='/login/'">Iniciar Sesion</button></div>
+                <div class="registro"><button onclick="window.location.href='/login/'">Registrarse</button></div>
+            </div>
+            <div id="profile-section-authenticated" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div class="pantallaprincipal">
         <div class="parteizq">
-            <h1 class="seccion-titulo1">Publicaciones Recientes</h1>
+            <h1 class="seccion-titulo1">Publicaciones Destacadas</h1>
             <div class="carrusel-contenedor"></div>
-            <h1 class="seccion-titulo1" style="margin-top: 30px;">Mundiales</h1>
             <div class="tarjetascontenedor"></div>
         </div>
+
         <div class="parteder">
-            <div id="profile-section-authenticated" style="display: none;">
-                <div class="profile-box">
-                    <div class="perfilseccion" id="profile-dropdown-btn">
-                        <img id="profile-pic" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
-                        <div class="usuarioinfo">
-                            <span id="profile-name" class="nombreusuario"></span>
-                            <p id="profile-nickname" class="username-handle"></p>
-                        </div>
-                        <i class="fas fa-chevron-down profile-dropdown-icon"></i>
+            <div class="profile-box">
+                <a href="/mi-perfil/" id="profile-dropdown-btn" class="perfilseccion">
+                    <img id="profile-pic" src="/static/pw2/images/Haerin.jpg" alt="Foto de perfil">
+                    <div class="usuarioinfo">
+                        <span class="nombreusuario" id="profile-name">Usuario</span>
+                        <p class="username-handle" id="profile-nickname">@usuario</p>
                     </div>
-                    <div class="dropdown-menu" id="profile-dropdown-menu">
-                        <a href="{% url 'pw2:mi_perfil' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-                        <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-                    </div>
+                    <i class="fas fa-chevron-down profile-dropdown-icon"></i>
+                </a>
+                <div id="profile-dropdown-menu" class="dropdown-menu">
+                    <a href="/mi-perfil/" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        <span>Mi Perfil</span>
+                    </a>
+                    <a href="/editar-perfil/" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuracion</span>
+                    </a>
+                    <a href="#" id="logout-button" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesion</span>
+                    </a>
                 </div>
             </div>
+
             <div class="quick-nav-box">
-                <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
-                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-fire"></i> Comunidad</a>
-            </div>
-            <div class="hashtags-box">
-                <h3 class="hashtags-titulo"><i class="fas fa-bolt"></i> Popular</h3>
-                <div class="hashtag-list">
-                    <a href="#" class="hashtag-item">#Mundial2026</a>
-                    <a href="#" class="hashtag-item">#Futbol</a>
-                    <a href="#" class="hashtag-item">#Leyendas</a>
-                </div>
-            </div>
-            <div class="post-button-box">
-                <a href="{% url 'pw2:crear_publicacion' %}" style="text-decoration: none;">
-                    <button class="btn-publicar"><i class="fas fa-edit"></i> Crear Publicación</button>
+                <a href="/publicaciones/" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Comunidad</span>
                 </a>
             </div>
+
+            <div class="hashtags-box">
+                <h3 class="hashtags-titulo">
+                    <i class="fas fa-hashtag"></i>
+                    Temas Populares
+                </h3>
+                <div class="hashtag-list">
+                    <a href="#" class="hashtag-item">Mundial2026</a>
+                    <a href="#" class="hashtag-item">FutbolMundial</a>
+                    <a href="#" class="hashtag-item">SeleccionMexicana</a>
+                    <a href="#" class="hashtag-item">CopaDelMundo</a>
+                </div>
+            </div>
+
+            <div class="post-button-box">
+                <button class="btn-publicar" onclick="window.location.href='/crear-publicacion/'">
+                    <i class="fas fa-plus"></i>
+                    Nueva Publicacion
+                </button>
+            </div>
         </div>
-    </main>
-    <script src="{% static 'pw2/js/api/api.js' %}"></script>
-    <script src="{% static 'pw2/js/api/auth.js' %}"></script>
-    <script src="{% static 'pw2/js/pages/index.js' %}"></script>
-    <script src="{% static 'pw2/js/components/Carrusel.js' %}"></script>
-    <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
+    </div>
+
+    <script src="/static/pw2/js/api/auth.js"></script>
+    <script src="/static/pw2/js/api/api.js"></script>
+    <script src="/static/pw2/js/components/MenuPerfil.js"></script>
+    <script src="/static/pw2/js/components/Carrusel.js"></script>
+    <script src="/static/pw2/js/pages/index.js"></script>
 </body>
 </html>

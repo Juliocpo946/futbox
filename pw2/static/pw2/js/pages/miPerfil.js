@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <p id="perfil-nickname" class="nickname-perfil">@${userData.nickname}</p>
                         <p id="perfil-correo" class="correo-perfil">${userData.correo}</p>
                         <div class="perfil-acciones">
-                            <a href="{% url 'pw2:editar_perfil' %}" class="btn-editar-perfil" style="text-decoration: none;">Editar Perfil</a>
-                            <button id="logout-button" class="btn-cerrar-sesion">Cerrar Sesión</button>
+                            <a href="/editar-perfil/" class="btn-editar-perfil" style="text-decoration: none;">Editar Perfil</a>
+                            <button id="logout-button" class="btn-cerrar-sesion">Cerrar Sesion</button>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const publicaciones = await window.api.fetchAPI('/usuarios/mis-publicaciones/');
             if (publicaciones.length === 0) {
-                container.innerHTML = "<p>Aún no has creado ninguna publicación.</p>";
+                container.innerHTML = "<p>Aun no has creado ninguna publicacion.</p>";
                 return;
             }
 

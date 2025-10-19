@@ -10,10 +10,10 @@ class AuthService:
 
     def register_user(self, data):
         if self.usuario_repo.exists_by_email(data['correo']):
-            raise ValueError("El correo electrónico ya está en uso.")
+            raise ValueError("El correo electronico ya esta en uso.")
         
         if self.usuario_repo.exists_by_nickname(data['nickname']):
-            raise ValueError("El nickname ya está en uso.")
+            raise ValueError("El nickname ya esta en uso.")
 
         usuario = self.usuario_repo.create(data)
         return UsuarioSerializer(usuario).data
@@ -22,7 +22,7 @@ class AuthService:
         usuario = self.usuario_repo.get_by_email(data['correo'])
         
         if usuario is None or not check_password(data['password'], usuario.password):
-            raise ValueError("Credenciales inválidas.")
+            raise ValueError("Credenciales invalidas.")
             
         refresh = RefreshToken.for_user(usuario)
         
@@ -35,7 +35,11 @@ class AuthService:
     def update_profile(self, usuario, data):
         if 'nickname' in data and data['nickname'] != usuario.nickname:
             if self.usuario_repo.exists_by_nickname(data['nickname']):
-                raise ValueError("El nickname ya está en uso.")
+                raise ValueError("El nickname ya esta en uso.")
+        
+        if 'password' in data and data['password']:
+            usuario.set_password(data['password'])
+            data.pop('password')
         
         usuario_actualizado = self.usuario_repo.update(usuario, data)
         return UsuarioSerializer(usuario_actualizado).data

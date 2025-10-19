@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // ACCIÓN #1: PROTEGER LA RUTA.
-    // Si el usuario no está logueado, el script se detiene aquí y lo redirige.
-    window.auth.protegerRuta();
+    window.auth.protectRoute();
 
-    // El resto del código solo se ejecutará si el usuario SÍ está logueado.
     const searchForm = document.getElementById('search-form-nav');
     const searchInput = document.getElementById('search-input-nav');
     if (searchForm) {
@@ -19,30 +16,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await renderizarComponentesDeUsuario();
     await cargarPublicacionesRecientes();
-    await cargarMundiales();
 });
 
 async function renderizarComponentesDeUsuario() {
-    const user = window.auth.getUserData();
-    if (!user) return;
+    try {
+        const user = await window.api.fetchAPI('/usuarios/perfil/');
+        if (!user) return;
 
-    const profileSection = document.getElementById('profile-section-authenticated');
-    const unauthenticatedNav = document.getElementById('nav-unauthenticated');
-    if (profileSection) profileSection.style.display = 'block';
-    if (unauthenticatedNav) unauthenticatedNav.style.display = 'none';
+        const profileSection = document.getElementById('profile-section-authenticated');
+        const unauthenticatedNav = document.getElementById('nav-unauthenticated');
+        if (profileSection) profileSection.style.display = 'block';
+        if (unauthenticatedNav) unauthenticatedNav.style.display = 'none';
 
-    document.getElementById('profile-name').textContent = user.nombre;
-    document.getElementById('profile-nickname').textContent = `@${user.nickname}`;
-    if (user.foto_perfil) {
-        document.getElementById('profile-pic').src = user.foto_perfil;
-    }
+        document.getElementById('profile-name').textContent = user.nombre;
+        document.getElementById('profile-nickname').textContent = `@${user.nickname}`;
+        
+        const profilePic = document.getElementById('profile-pic');
+        if (user.foto_perfil) {
+            profilePic.src = user.foto_perfil;
+        } else {
+            profilePic.src = '/static/pw2/images/Haerin.jpg';
+        }
 
-    const logoutBtn = document.getElementById('logout-button');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.auth.logout();
-        });
+        const logoutBtn = document.getElementById('logout-button');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.auth.logout();
+            });
+        }
+    } catch (error) {
+        console.error('Error al cargar datos del usuario:', error);
     }
 }
 
@@ -53,12 +57,17 @@ async function cargarPublicacionesRecientes() {
         renderizarCarrusel(topPublicaciones);
     } catch (error) {
         console.error('Error al cargar publicaciones:', error);
-        document.querySelector('.carrusel-contenedor').innerHTML = '<p>No se pudieron cargar las publicaciones.</p>';
+        const carruselContainer = document.querySelector('.carrusel-contenedor');
+        if (carruselContainer) {
+            carruselContainer.innerHTML = '<p>No se pudieron cargar las publicaciones.</p>';
+        }
     }
 }
 
 function renderizarCarrusel(publicaciones) {
     const carruselContainer = document.querySelector('.carrusel-contenedor');
+    if (!carruselContainer) return;
+    
     if (!publicaciones || publicaciones.length === 0) {
         carruselContainer.innerHTML = '<p>No hay publicaciones disponibles.</p>';
         return;
@@ -76,7 +85,7 @@ function renderizarCarrusel(publicaciones) {
                         <h3>${pub.titulo}</h3>
                         <p>${pub.descripcion.substring(0, 100)}...</p>
                     </div>
-                    <a href="/publicaciones/${pub.id}/" class="botonleer">Leer más</a>
+                    <a href="/publicaciones/${pub.id}/" class="botonleer">Leer mas</a>
                 </div>
             </div>
         `;
@@ -88,36 +97,4 @@ function renderizarCarrusel(publicaciones) {
     if (typeof showSlides === "function") {
         showSlides(1);
     }
-}
-
-async function cargarMundiales() {
-    try {
-        const mundiales = await window.api.fetchAPI('/admin/mundiales/');
-        renderizarMundiales(mundiales);
-    } catch (error) {
-        console.error('Error al cargar mundiales:', error);
-        document.querySelector('.tarjetascontenedor').innerHTML = '<p>No se pudieron cargar los mundiales.</p>';
-    }
-}
-
-function renderizarMundiales(mundiales) {
-    const container = document.querySelector('.tarjetascontenedor');
-    if (!mundiales || mundiales.length === 0) {
-        container.innerHTML = '<p>No hay mundiales registrados.</p>';
-        return;
-    }
-
-    container.innerHTML = '';
-    mundiales.forEach(mundial => {
-        const tarjeta = document.createElement('div');
-        tarjeta.className = 'tarjeta';
-        tarjeta.innerHTML = `
-            <img src="/static/pw2/images/Mundial2026.png" alt="Mundial ${mundial.año}">
-            <div class="tarjetainfo">
-                <h3 class="tarjetatitulo">Mundial ${mundial.año}</h3>
-                <p class="tarjetadescripcion">${mundial.descripcion}</p>
-            </div>
-        `;
-        container.appendChild(tarjeta);
-    });
 }

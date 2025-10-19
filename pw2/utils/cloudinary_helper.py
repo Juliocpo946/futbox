@@ -3,11 +3,11 @@ from ..models import Multimedia
 
 def upload_image(file):
     if not file:
-        raise ValueError("No se proporcionó ningún archivo.")
+        raise ValueError("No se proporciono ningun archivo.")
 
     upload_result = cloudinary.uploader.upload(
         file,
-        folder="prueba",
+        folder="futbox_multimedia",
         resource_type="auto"
     )
 

@@ -22,7 +22,7 @@ function logout() {
     window.location.href = '/login/';
 }
 
-function protegerRuta() {
+function protectRoute() {
     if (!isLoggedIn()) {
         window.location.href = '/login/';
     }
@@ -34,5 +34,5 @@ window.auth = {
     getUserData,
     isLoggedIn,
     logout,
-    protegerRuta,
+    protectRoute,
 };

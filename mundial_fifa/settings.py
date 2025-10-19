@@ -13,7 +13,6 @@ INSTALLED_APPS = [
     'pw2', 'rest_framework', 'rest_framework_simplejwt', 'corsheaders', 'cloudinary',
 ]
 
-# --- LÍNEA AGREGADA ---
 AUTH_USER_MODEL = 'pw2.Usuario'
 
 MIDDLEWARE = [
@@ -67,7 +66,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]
 
 cloudinary.config(
-  cloud_name = "Root",
+  cloud_name = "doeofn1nd",
   api_key = "357696619194841",
   api_secret = "5YtB5DwBMMnESfwzNZMba4Ef_Y0"
 )

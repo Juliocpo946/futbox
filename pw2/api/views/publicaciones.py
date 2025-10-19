@@ -5,12 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from pw2.models import Publicacion, Comentario
 from pw2.api.serializers import (
     PublicacionSerializer, PublicacionCreateSerializer, ComentarioSerializer, 
-    ComentarioCreateSerializer, MultimediaSerializer
+    ComentarioCreateSerializer, MultimediaSerializer, CategoriaSerializer, MundialDetalleSerializer
 )
 from pw2.services.publicacion_service import PublicacionService
 from pw2.services.comentario_service import ComentarioService
 from pw2.services.reaccion_service import ReaccionService
 from pw2.services.multimedia_service import MultimediaService
+from pw2.services.categoria_service import CategoriaService
+from pw2.services.mundial_service import MundialService
 from pw2.utils.logger import log_critical_error
 
 class PublicacionesView(APIView):
@@ -64,7 +66,7 @@ class PublicacionDetalleView(APIView):
             except PermissionError as e:
                 return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
             except Publicacion.DoesNotExist:
-                return Response({"error": "Publicación no encontrada."}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "Publicacion no encontrada."}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -75,7 +77,7 @@ class PublicacionDetalleView(APIView):
         except PermissionError as e:
             return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
         except Publicacion.DoesNotExist:
-            return Response({"error": "Publicación no encontrada."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Publicacion no encontrada."}, status=status.HTTP_404_NOT_FOUND)
 
 class SubirMultimediaView(APIView):
     permission_classes = [IsAuthenticated]
@@ -83,7 +85,7 @@ class SubirMultimediaView(APIView):
 
     def post(self, request, publicacion_pk):
         if 'file' not in request.data:
-            return Response({'error': 'No se encontró el archivo en la petición.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'No se encontro el archivo en la peticion.'}, status=status.HTTP_400_BAD_REQUEST)
         
         file = request.data['file']
         pub_service = PublicacionService()
@@ -92,7 +94,7 @@ class SubirMultimediaView(APIView):
         try:
             publicacion = pub_service.repo.get_by_id(publicacion_pk)
             if not publicacion or publicacion.autor != request.user:
-                return Response({'error': 'Publicación no encontrada o sin permisos.'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'Publicacion no encontrada o sin permisos.'}, status=status.HTTP_404_NOT_FOUND)
 
             multimedia_obj = multi_service.subir_y_asociar_imagen(file, publicacion)
             serializer = MultimediaSerializer(multimedia_obj)
@@ -101,7 +103,7 @@ class SubirMultimediaView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             log_critical_error("Error al subir archivo multimedia.", e)
-            return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'Ocurrio un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ComentariosView(APIView):
     permission_classes = [IsAuthenticated]
@@ -162,11 +164,29 @@ class ReaccionView(APIView):
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
-# Vista que faltaba
 class PublicacionesUsuarioPublicoView(APIView):
     permission_classes = [IsAuthenticated]
+    
     def get(self, request, user_id):
         service = PublicacionService()
         publicaciones = service.repo.get_approved_by_author(user_id)
         serializer = PublicacionSerializer(publicaciones, many=True)
+        return Response(serializer.data)
+
+class CategoriasPublicasView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        service = CategoriaService()
+        categorias = service.get_all()
+        serializer = CategoriaSerializer(categorias, many=True)
+        return Response(serializer.data)
+
+class MundialesPublicosView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        service = MundialService()
+        mundiales = service.get_all()
+        serializer = MundialDetalleSerializer(mundiales, many=True)
         return Response(serializer.data)

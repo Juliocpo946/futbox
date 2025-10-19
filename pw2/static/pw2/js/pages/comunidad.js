@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Proteger la ruta, el usuario debe estar logueado
     window.auth.protectRoute();
 
     const container = document.getElementById('publicaciones-container');
@@ -7,7 +6,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchInput = document.getElementById('search-input-nav');
     const tituloSeccion = document.getElementById('titulo-seccion');
 
-    // Función principal para cargar publicaciones, ahora acepta una búsqueda
     async function cargarPublicaciones(query = '') {
         try {
             let endpoint = '/publicaciones/';
@@ -20,14 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const publicaciones = await window.api.fetchAPI(endpoint);
             renderPublicaciones(publicaciones);
         } catch (error) {
-            container.innerHTML = '<p>Error al cargar las publicaciones. Inténtalo de nuevo más tarde.</p>';
+            container.innerHTML = '<p>Error al cargar las publicaciones. Intentalo de nuevo mas tarde.</p>';
             console.error(error);
         }
     }
 
     function renderPublicaciones(publicaciones) {
         if (publicaciones.length === 0) {
-            container.innerHTML = '<p>No se encontraron publicaciones que coincidan. ¡Sé el primero en publicar!</p>';
+            container.innerHTML = '<p>No se encontraron publicaciones que coincidan. Se el primero en publicar!</p>';
             return;
         }
 
@@ -66,21 +64,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Manejar el envío del formulario de búsqueda
     searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const query = searchInput.value.trim();
         cargarPublicaciones(query);
     });
 
-    // Comprobar si hay una búsqueda pendiente desde otra página (como index)
     const pendingQuery = sessionStorage.getItem('searchQuery');
     if (pendingQuery) {
         searchInput.value = pendingQuery;
         cargarPublicaciones(pendingQuery);
-        sessionStorage.removeItem('searchQuery'); // Limpiar para no repetir la búsqueda
+        sessionStorage.removeItem('searchQuery');
     } else {
-        // Carga inicial sin búsqueda
         cargarPublicaciones();
     }
 });

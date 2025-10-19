@@ -1,67 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
-{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Formulario.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
+    <link rel="stylesheet" href="/static/pw2/css/BarraNavegacion.css">
+    <link rel="stylesheet" href="/static/pw2/css/Formulario.css">
+    <link rel="stylesheet" href="/static/pw2/css/Perfil.css">
+    <link rel="stylesheet" href="/static/pw2/css/Modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="barra">
+    <div class="barra">
         <div class="logo">
-            <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+            <a href="/"><img src="/static/pw2/images/LogoFutBOX.png" alt="Logo FutBOX"></a>
         </div>
-    </nav>
-    <main class="pantallaprincipal-form">
+    </div>
+
+    <div class="pantallaprincipal-form">
         <div class="form-container">
             <h1>Editar Perfil</h1>
+            
             <div id="error-message" class="error-message" style="display: none;"></div>
+
             <div class="perfil-foto-editor">
-                <img id="perfil-foto-preview" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de Perfil">
+                <img id="perfil-foto-preview" src="/static/pw2/images/Haerin.jpg" alt="Foto de perfil">
+                <button type="button" id="btn-cambiar-foto" class="btn-cambiar-foto">Cambiar Foto</button>
                 <input type="file" id="input-foto" accept="image/*" style="display: none;">
-                <button id="btn-cambiar-foto" class="btn-cambiar-foto">Cambiar Foto</button>
             </div>
+
             <form id="form-editar-perfil">
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="nombre">Nombre(s)</label>
-                        <input type="text" id="nombre" name="nombre">
-                    </div>
-                    <div class="input-group">
-                        <label for="apellido_paterno">Apellido(s)</label>
-                        <input type="text" id="apellido_paterno" name="apellido_paterno">
-                    </div>
+                <div class="input-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
                 </div>
+
+                <div class="input-group">
+                    <label for="apellido_paterno">Apellido Paterno</label>
+                    <input type="text" id="apellido_paterno" name="apellido_paterno">
+                </div>
+
                 <div class="input-group">
                     <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname" name="nickname">
+                    <input type="text" id="nickname" name="nickname" required>
                 </div>
+
+                <div class="input-group">
+                    <label for="password">Nueva Contraseña (dejar vacio si no deseas cambiarla)</label>
+                    <input type="password" id="password" name="password">
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm_password">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="confirm_password" name="confirm_password">
+                </div>
+
                 <div class="form-actions">
-                    <button type="button" class="btn-cancelar" onclick="window.location.href='{% url 'pw2:mi_perfil' %}'">Cancelar</button>
+                    <button type="button" class="btn-cancelar" onclick="window.location.href='/mi-perfil/'">Cancelar</button>
                     <button type="submit" class="btn-publicar">Guardar Cambios</button>
                 </div>
             </form>
+
             <div class="danger-zone">
-                <button id="btn-mostrar-eliminar" class="btn-eliminar">Eliminar Cuenta</button>
-            </div>
-        </div>
-    </main>
-    <div id="confirmar-eliminacion-modal" class="modal-oculto">
-        <div class="modal-contenido">
-            <h2>¿Estás seguro?</h2>
-            <p>Esta acción es irreversible. Se eliminará toda tu información y no podrás recuperarla.</p>
-            <div class="modal-acciones">
-                <button id="btn-cancelar-eliminar" class="btn-cancelar">Cancelar</button>
-                <button id="btn-confirmar-eliminar" class="btn-eliminar">Sí, eliminar mi cuenta</button>
+                <h2>Zona de Peligro</h2>
+                <p>Una vez que elimines tu cuenta, no hay vuelta atras.</p>
+                <button type="button" id="btn-mostrar-eliminar" class="btn-eliminar">Eliminar Cuenta</button>
             </div>
         </div>
     </div>
-    <script src="{% static 'pw2/js/api/api.js' %}"></script>
-    <script src="{% static 'pw2/js/api/auth.js' %}"></script>
-    <script src="{% static 'pw2/js/pages/editarPerfil.js' %}"></script>
+
+    <div id="confirmar-eliminacion-modal" class="modal-oculto">
+        <div class="modal-contenido">
+            <h2>Confirmar Eliminacion</h2>
+            <p>Estas seguro de que deseas eliminar tu cuenta? Esta accion no se puede deshacer.</p>
+            <div class="modal-acciones">
+                <button id="btn-cancelar-eliminar" class="btn-cancelar">Cancelar</button>
+                <button id="btn-confirmar-eliminar" class="btn-eliminar">Si, Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/pw2/js/api/auth.js"></script>
+    <script src="/static/pw2/js/api/api.js"></script>
+    <script src="/static/pw2/js/pages/editarPerfil.js"></script>
 </body>
 </html>

@@ -8,10 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function cargarSelects() {
         try {
-            const [categorias, mundiales] = await Promise.all([
-                window.api.fetchAPI('/admin/categorias/'),
-                window.api.fetchAPI('/admin/mundiales/')
-            ]);
+            const categorias = await window.api.fetchAPI('/publicaciones/categorias/');
+            const mundiales = await window.api.fetchAPI('/publicaciones/mundiales/');
 
             categorias.forEach(cat => {
                 const option = new Option(cat.nombre, cat.id);
@@ -25,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
         } catch (error) {
-            mostrarError('No se pudieron cargar las categorías o mundiales.');
+            mostrarError('No se pudieron cargar las categorias o mundiales.');
             console.error(error);
         }
     }
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = `/publicaciones/${nuevaPublicacion.id}/`;
 
         } catch (error) {
-            mostrarError('Hubo un error al crear la publicación. Verifica los datos.');
+            mostrarError('Hubo un error al crear la publicacion. Verifica los datos.');
             console.error(error);
         } finally {
             submitButton.disabled = false;

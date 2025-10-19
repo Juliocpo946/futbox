@@ -43,6 +43,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const submitButton = form.querySelector('button[type="submit"]');
         submitButton.disabled = true;
 
+        const password = form.password.value.trim();
+        const confirmPassword = form.confirm_password.value.trim();
+
+        if (password && password !== confirmPassword) {
+            mostrarError('Las contraseñas no coinciden.');
+            submitButton.disabled = false;
+            return;
+        }
+
         try {
             if (archivoFoto) {
                 const formData = new FormData();
@@ -52,15 +61,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     body: formData,
                 });
             }
+
             const datosFormulario = {
                 nombre: form.nombre.value,
                 apellido_paterno: form.apellido_paterno.value,
                 nickname: form.nickname.value,
             };
+
+            if (password) {
+                datosFormulario.password = password;
+            }
+
             await window.api.fetchAPI('/usuarios/perfil/actualizar/', {
                 method: 'PUT',
                 body: JSON.stringify(datosFormulario),
             });
+
             window.location.href = '/mi-perfil/';
         } catch (error) {
             mostrarError(error.message || 'Error al guardar los cambios.');
@@ -92,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             window.auth.logout();
         } catch (error) {
-            mostrarError('No se pudo eliminar la cuenta. Inténtalo de nuevo.');
+            mostrarError('No se pudo eliminar la cuenta. Intentalo de nuevo.');
             console.error(error);
             btnConfirmarEliminar.disabled = false;
         }
