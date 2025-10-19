@@ -22,10 +22,17 @@ function logout() {
     window.location.href = '/login/';
 }
 
+function protegerRuta() {
+    if (!isLoggedIn()) {
+        window.location.href = '/login/';
+    }
+}
+
 window.auth = {
     saveAuthData,
     getAuthToken,
     getUserData,
     isLoggedIn,
     logout,
+    protegerRuta,
 };

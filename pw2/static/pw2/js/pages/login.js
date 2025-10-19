@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Si el usuario ya está logueado (tiene un token) y llega aquí,
+    // lo redirigimos inmediatamente a la página principal.
+    if (window.auth.isLoggedIn()) {
+        window.location.href = '/';
+        return; // Detenemos la ejecución del resto del script.
+    }
+
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const registerLink = document.getElementById('register-link');
@@ -7,14 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayError(message) {
         errorMessageDiv.textContent = message;
+        errorMessageDiv.style.display = 'block';
+    }
+    
+    function clearError() {
+        errorMessageDiv.textContent = '';
+        errorMessageDiv.style.display = 'none';
     }
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        displayError('');
+        clearError();
 
-        const formData = new FormData(loginForm);
-        const data = Object.fromEntries(formData.entries());
+        const data = {
+            correo: loginForm.email.value,
+            password: loginForm.password.value,
+        };
 
         try {
             const result = await window.api.fetchAPI('/usuarios/login/', {
@@ -26,26 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/';
 
         } catch (error) {
-            displayError(error.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+            displayError('Error al iniciar sesión: ' + error.message);
         }
     });
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        displayError('');
+        clearError();
 
         const formData = new FormData(registerForm);
         const data = Object.fromEntries(formData.entries());
-
-        delete data.csrfmiddlewaretoken;
-
+        
         Object.keys(data).forEach(key => {
-            if (data[key] === '') {
+            if (data[key] === '' || data[key] === null) {
                 delete data[key];
             }
         });
-
-        console.log('Datos a enviar:', JSON.stringify(data, null, 2));
+        
+        delete data.csrfmiddlewaretoken;
 
         try {
             await window.api.fetchAPI('/usuarios/registro/', {
@@ -67,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/';
 
         } catch (error) {
-            displayError(error.message || 'Error en el registro. Verifica los datos ingresados.');
+            displayError('Error en el registro: ' + error.message);
         }
     });
 
@@ -76,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
         registerLink.style.display = 'none';
-        displayError('');
+        clearError();
     });
 
     loginLink.addEventListener('click', (e) => {
@@ -84,6 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
         registerLink.style.display = 'block';
-        displayError('');
+        clearError();
     });
 });

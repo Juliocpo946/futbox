@@ -8,9 +8,14 @@ async function fetchAPI(endpoint, options = {}) {
         ...options.headers,
     };
 
-    const token = sessionStorage.getItem('accessToken');
+    const token = window.auth.getAuthToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Para subir archivos, no queremos Content-Type en JSON
+    if (options.body instanceof FormData) {
+        delete headers['Content-Type'];
     }
 
     const config = {
@@ -21,25 +26,25 @@ async function fetchAPI(endpoint, options = {}) {
     try {
         const response = await fetch(url, config);
 
+        if (response.status === 401 || response.status === 403) {
+            // Token inválido o expirado, cerramos sesión
+            window.auth.logout();
+            return;
+        }
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error('Error del servidor:', errorData);
-            
-            let errorMessage = '';
-            if (errorData.error) {
-                errorMessage = errorData.error;
-            } else if (errorData.correo) {
-                errorMessage = 'El correo electrónico ya está en uso.';
-            } else if (errorData.nickname) {
-                errorMessage = 'El nickname ya está en uso.';
+            let errorMessage = 'Ocurrió un error inesperado.';
+            if (Object.keys(errorData).length > 0) {
+                // Intenta obtener un mensaje de error más específico de la API
+                errorMessage = errorData.error || errorData.detail || JSON.stringify(errorData);
             } else {
-                errorMessage = JSON.stringify(errorData) || `Error HTTP: ${response.status}`;
+                errorMessage = `Error HTTP: ${response.status}`;
             }
-            
             throw new Error(errorMessage);
         }
 
-        if (response.status === 204) {
+        if (response.status === 204) { // No Content
             return null;
         }
 

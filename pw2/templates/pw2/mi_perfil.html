@@ -16,21 +16,14 @@
         </div>
     </nav>
     <main class="perfil-container">
-        <div class="perfil-header">
-            <img id="perfil-foto" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de Perfil" class="perfil-foto-grande">
-            <div class="perfil-info">
-                <h1 id="perfil-nombre"></h1>
-                <p id="perfil-nickname" class="nickname-perfil"></p>
-                <p id="perfil-correo" class="correo-perfil"></p>
-                <div class="perfil-acciones">
-                    <a href="{% url 'pw2:editar_perfil' %}" class="btn-editar-perfil" style="text-decoration: none;">Editar Perfil</a>
-                    <button id="logout-button" class="btn-cerrar-sesion">Cerrar Sesión</button>
-                </div>
-            </div>
+        <div id="perfil-header-container">
+            <p>Cargando perfil...</p>
         </div>
         <div class="perfil-contenido">
             <h2>Mis Publicaciones</h2>
-            <div id="mis-publicaciones-container" class="publicaciones-grid"></div>
+            <div id="mis-publicaciones-container" class="publicaciones-grid">
+                <p>Cargando publicaciones...</p>
+            </div>
         </div>
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>

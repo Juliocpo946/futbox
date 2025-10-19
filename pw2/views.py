@@ -1,10 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 def index(request):
+    # Eliminamos la comprobación de autenticación de aquí.
+    # Esta vista ahora siempre servirá la página de inicio.
     context = { 'title': 'FutBOX - Inicio' }
     return render(request, 'pw2/index.html', context)
 
 def login(request):
+    # Añadimos una comprobación aquí: si un usuario ya autenticado con la sesión de Django
+    # intenta ir al login, lo mandamos al inicio. Esto evita confusiones.
+    if request.user.is_authenticated:
+        return redirect('pw2:index')
+    
     context = { 'title': 'FutBOX - Iniciar Sesión' }
     return render(request, 'pw2/Login.html', context)
 
@@ -19,10 +26,6 @@ def detalle_publicacion(request, pk):
 def crear_publicacion(request):
     context = { 'title': 'FutBOX - Crear Publicación' }
     return render(request, 'pw2/crear_publicacion.html', context)
-
-def buscar(request):
-    context = { 'title': 'FutBOX - Resultados de Búsqueda' }
-    return render(request, 'pw2/resultados.html', context)
 
 def mi_perfil(request):
     context = { 'title': 'FutBOX - Mi Perfil' }

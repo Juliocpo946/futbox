@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!window.auth.isLoggedIn()) {
-        window.location.href = '/login/';
-        return;
-    }
+    window.auth.protectRoute();
 
     const form = document.getElementById('form-editar-perfil');
     const errorMessageDiv = document.getElementById('error-message');
@@ -17,10 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             form.nombre.value = user.nombre || '';
             form.apellido_paterno.value = user.apellido_paterno || '';
             form.nickname.value = user.nickname || '';
-            if (user.fecha_nacimiento) {
-                form.fecha_nacimiento.value = user.fecha_nacimiento;
-            }
-            form.genero.value = user.genero || 'masculino';
             if (user.foto_perfil) {
                 fotoPreview.src = user.foto_perfil;
             }
@@ -47,6 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         errorMessageDiv.style.display = 'none';
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
         try {
             if (archivoFoto) {
                 const formData = new FormData();
@@ -54,15 +50,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await window.api.fetchAPI('/usuarios/perfil/actualizar-foto/', {
                     method: 'POST',
                     body: formData,
-                    headers: {}
                 });
             }
             const datosFormulario = {
                 nombre: form.nombre.value,
                 apellido_paterno: form.apellido_paterno.value,
                 nickname: form.nickname.value,
-                fecha_nacimiento: form.fecha_nacimiento.value || null,
-                genero: form.genero.value,
             };
             await window.api.fetchAPI('/usuarios/perfil/actualizar/', {
                 method: 'PUT',
@@ -71,6 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/mi-perfil/';
         } catch (error) {
             mostrarError(error.message || 'Error al guardar los cambios.');
+        } finally {
+            submitButton.disabled = false;
         }
     });
 
@@ -91,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     btnConfirmarEliminar.addEventListener('click', async () => {
         try {
+            btnConfirmarEliminar.disabled = true;
             await window.api.fetchAPI('/usuarios/perfil/eliminar/', {
                 method: 'DELETE',
             });
@@ -98,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             mostrarError('No se pudo eliminar la cuenta. Inténtalo de nuevo.');
             console.error(error);
+            btnConfirmarEliminar.disabled = false;
         }
     });
 

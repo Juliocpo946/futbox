@@ -15,7 +15,9 @@
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
     </nav>
-    <main class="perfil-container" id="perfil-publico-container"></main>
+    <main class="perfil-container" id="perfil-publico-container">
+        <p>Cargando perfil...</p>
+    </main>
     <script> const NICKNAME_PERFIL = "{{ nickname }}"; </script>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>

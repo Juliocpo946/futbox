@@ -1,26 +1,33 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!window.auth.isLoggedIn()) {
-        window.location.href = '/login/';
-        return;
-    }
+    // Proteger la ruta
+    window.auth.protectRoute();
 
     const container = document.getElementById('detalle-container');
-    
-    async function cargarDetalle() {
+    const publicacionId = PUBLICACION_ID; // Variable inyectada desde el template
+
+    async function cargarDetalleCompleto() {
         try {
-            const publicacion = await window.api.fetchAPI(`/publicaciones/${PUBLICACION_ID}/`);
-            const comentarios = await window.api.fetchAPI(`/publicaciones/${PUBLICACION_ID}/comentarios/`);
-            renderDetalle(publicacion, comentarios);
-            setupComentarioForm();
-            setupReaccionButton();
+            // Hacemos las peticiones en paralelo para mayor eficiencia
+            const [publicacion, comentarios] = await Promise.all([
+                window.api.fetchAPI(`/publicaciones/${publicacionId}/`),
+                window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`)
+            ]);
+            
+            renderizarDetalle(publicacion);
+            renderizarComentarios(comentarios);
+            
+            // Una vez renderizado todo, asignamos los eventos a los nuevos elementos
+            configurarFormularioComentario();
+            configurarBotonReaccion();
+
         } catch (error) {
             container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
             console.error(error);
         }
     }
 
-    function renderDetalle(pub, comentarios) {
-        const fechaPub = new Date(pub.fecha_publicacion).toLocaleString('es-ES');
+    function renderizarDetalle(pub) {
+        const fechaPub = new Date(pub.fecha_publicacion).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
         let multimediaHTML = '';
         if (pub.multimedia && pub.multimedia.length > 0) {
             multimediaHTML = `<div class="detalle-multimedia"><img src="${pub.multimedia[0].path}" alt="${pub.titulo}"></div>`;
@@ -37,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="detalle-body">
                     <h1>${pub.titulo}</h1>
-                    <p class="descripcion">${pub.descripcion}</p>
+                    <p class="descripcion">${pub.descripcion.replace(/\n/g, '<br>')}</p>
                     ${multimediaHTML}
                 </div>
                 <div class="detalle-footer">
@@ -45,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <i class="fas fa-heart"></i>
                         <span id="reaccion-count">${pub.reacciones_count}</span>
                     </button>
-                </div>
+                    </div>
             </div>
             <div class="comentarios-section">
                 <h2>Comentarios</h2>
@@ -53,27 +60,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <textarea id="comentario-texto" placeholder="Escribe tu comentario..." required></textarea>
                     <button type="submit">Comentar</button>
                 </form>
-                <div id="comentarios-lista"></div>
+                <div id="comentarios-lista">
+                    </div>
             </div>
         `;
-        renderComentarios(comentarios);
     }
 
-    function renderComentarios(comentarios) {
+    function renderizarComentarios(comentarios) {
         const listaComentarios = document.getElementById('comentarios-lista');
+        if (!listaComentarios) return;
+
         listaComentarios.innerHTML = '';
         if (comentarios.length === 0) {
             listaComentarios.innerHTML = '<p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>';
             return;
         }
+
         comentarios.forEach(com => {
-            const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES');
+            const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
             const comentarioCard = document.createElement('div');
             comentarioCard.className = 'comentario-card';
             comentarioCard.innerHTML = `
                 <div class="comentario-header">
-                    <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
-                    <span>- ${fechaCom}</span>
+                    <img src="${com.usuario.foto_perfil || '/static/pw2/images/Haerin.jpg'}" alt="Foto de perfil">
+                    <div class="comentario-autor-info">
+                        <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
+                        <span>- ${fechaCom}</span>
+                    </div>
                 </div>
                 <div class="comentario-body">
                     <p>${com.comentario}</p>
@@ -83,32 +96,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    function setupComentarioForm() {
+    function configurarFormularioComentario() {
         const form = document.getElementById('comentario-form');
+        const textarea = document.getElementById('comentario-texto');
+        if (!form) return;
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const texto = document.getElementById('comentario-texto').value;
-            if (!texto.trim()) return;
+            const texto = textarea.value.trim();
+            if (!texto) return;
+
             try {
-                await window.api.fetchAPI(`/publicaciones/${PUBLICACION_ID}/comentarios/`, {
+                // Deshabilitar el botón para evitar doble envío
+                form.querySelector('button').disabled = true;
+
+                await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                     method: 'POST',
                     body: JSON.stringify({ comentario: texto }),
                 });
-                cargarDetalle();
+                
+                // Limpiar el textarea y recargar solo la sección de comentarios
+                textarea.value = '';
+                const nuevosComentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
+                renderizarComentarios(nuevosComentarios);
+
             } catch (error) {
                 alert('Error al enviar el comentario.');
+            } finally {
+                // Volver a habilitar el botón
+                form.querySelector('button').disabled = false;
             }
         });
     }
 
-    function setupReaccionButton() {
+    function configurarBotonReaccion() {
         const btn = document.getElementById('reaccion-btn');
         const countSpan = document.getElementById('reaccion-count');
+        if (!btn) return;
+        
         btn.addEventListener('click', async () => {
             try {
-                const resultado = await window.api.fetchAPI(`/publicaciones/${PUBLICACION_ID}/reaccionar/`, {
+                btn.disabled = true; // Prevenir múltiples clics
+                const resultado = await window.api.fetchAPI(`/publicaciones/${publicacionId}/reaccionar/`, {
                     method: 'POST'
                 });
+
                 let currentCount = parseInt(countSpan.textContent, 10);
                 if (resultado.status === 'reaccion_creada') {
                     countSpan.textContent = currentCount + 1;
@@ -119,9 +151,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } catch (error) {
                 alert('Error al procesar la reacción.');
+            } finally {
+                btn.disabled = false;
             }
         });
     }
 
-    cargarDetalle();
+    // Iniciar la carga de la página
+    cargarDetalleCompleto();
 });

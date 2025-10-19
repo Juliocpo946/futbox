@@ -5,25 +5,25 @@
 }
 
 .parteizq {
+    flex-grow: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.parteder {
     flex: 0 0 280px;
     background-color: #f0f2f5;
     padding: 20px 15px;
-    border-right: 1px solid #e0e0e0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    border-left: 1px solid #e0e0e0;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
     position: sticky;
-    top: 90px; /* Ajustado a la altura de la barra de navegación */
+    top: 90px;
     align-self: flex-start;
     height: calc(100vh - 90px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-}
-
-.parteder {
-    flex-grow: 1;
-    background-color: #f9f9f9;
-    padding: 20px;
-    overflow-y: auto;
 }
 
 .seccion-titulo1 {
@@ -34,7 +34,6 @@
     margin-bottom: 20px;
 }
 
-/* Profile Box */
 .profile-box {
     background-color: #ffffff;
     border-radius: 12px;
@@ -108,7 +107,6 @@
     text-align: center;
 }
 
-/* Quick Navigation */
 .quick-nav-box {
     background-color: #ffffff;
     border-radius: 12px;
@@ -134,7 +132,6 @@
     color: #0d6a40;
 }
 
-/* Hashtags Box */
 .hashtags-box {
     background-color: #ffffff;
     border-radius: 12px;
@@ -175,9 +172,8 @@
 }
 
 
-/* Post Button */
 .post-button-box {
-    margin-top: auto; /* Pushes the button to the bottom */
+    margin-top: auto;
 }
 
 .btn-publicar {
@@ -201,8 +197,6 @@
     background-color: #0c5a36;
 }
 
-
-/* Carrusel */
 .carrusel-contenedor {
     position: relative;
     width: 100%;
@@ -215,7 +209,7 @@
 .carrusel-inner {
     position: relative;
     width: 100%;
-    padding-top: 40%; /* 2.5:1 aspect ratio */
+    padding-top: 40%;
     height: 0;
 }
 
@@ -297,7 +291,6 @@
 .next { right: 10px; border-radius: 50%; }
 .prev:hover, .next:hover { background-color: rgba(0,0,0,0.6); }
 
-/* Tarjetas Mundiales */
 .tarjetascontenedor {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

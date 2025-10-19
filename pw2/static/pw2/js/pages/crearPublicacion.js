@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!window.auth.isLoggedIn()) {
-        window.location.href = '/login/';
-        return;
-    }
+    window.auth.protectRoute();
 
     const form = document.getElementById('form-crear-publicacion');
     const categoriaSelect = document.getElementById('categoria');
@@ -11,16 +8,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function cargarSelects() {
         try {
-            const categorias = await window.api.fetchAPI('/admin/categorias/');
+            const [categorias, mundiales] = await Promise.all([
+                window.api.fetchAPI('/admin/categorias/'),
+                window.api.fetchAPI('/admin/mundiales/')
+            ]);
+
             categorias.forEach(cat => {
                 const option = new Option(cat.nombre, cat.id);
                 categoriaSelect.add(option);
             });
 
-            const mundiales = await window.api.fetchAPI('/admin/mundiales/');
             mundialSelect.add(new Option('Ninguno', ''));
             mundiales.forEach(mun => {
-                const option = new Option(mun.año, mun.id);
+                const option = new Option(`Mundial ${mun.año}`, mun.id);
                 mundialSelect.add(option);
             });
 
@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         errorMessageDiv.style.display = 'none';
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
 
         const datosPublicacion = {
             titulo: form.titulo.value,
@@ -60,7 +62,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await window.api.fetchAPI(`/publicaciones/${nuevaPublicacion.id}/multimedia/`, {
                     method: 'POST',
                     body: formData,
-                    headers: {} 
                 });
             }
 
@@ -69,6 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             mostrarError('Hubo un error al crear la publicación. Verifica los datos.');
             console.error(error);
+        } finally {
+            submitButton.disabled = false;
         }
     });
 

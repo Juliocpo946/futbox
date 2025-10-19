@@ -9,7 +9,6 @@ urlpatterns = [
     path('publicaciones/', views.publicaciones, name='publicaciones'),
     path('publicaciones/<int:pk>/', views.detalle_publicacion, name='detalle_publicacion'),
     path('crear-publicacion/', views.crear_publicacion, name='crear_publicacion'),
-    path('buscar/', views.buscar, name='buscar'),
     path('mi-perfil/', views.mi_perfil, name='mi_perfil'),
     path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
     path('perfil/<str:nickname>/', views.perfil_publico, name='perfil_publico'),
