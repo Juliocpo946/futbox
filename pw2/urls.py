@@ -12,4 +12,10 @@ urlpatterns = [
     path('mi-perfil/', views.mi_perfil, name='mi_perfil'),
     path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
     path('perfil/<str:nickname>/', views.perfil_publico, name='perfil_publico'),
+
+    # --- URLs del Panel de Administrador ---
+    path('admin/', views.admin_panel, name='admin_panel'),
+    path('admin/publicaciones/', views.admin_publicaciones, name='admin_publicaciones'),
+    path('admin/usuarios/', views.admin_usuarios, name='admin_usuarios'),
+    path('admin/reportes/', views.admin_reportes, name='admin_reportes'),
 ]

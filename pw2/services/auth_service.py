@@ -58,3 +58,31 @@ class AuthService:
 
     def delete_account(self, usuario):
         self.usuario_repo.delete(usuario)
+
+    def get_all_users(self):
+        return self.usuario_repo.get_all()
+
+    def change_user_role(self, user_id, new_role):
+        user = self.usuario_repo.get_by_id(user_id)
+        if not user:
+            raise ValueError("Usuario no encontrado.")
+        user.rol = new_role
+        user.is_staff = new_role == 'admin'
+        user.save()
+        return user
+
+    def ban_user(self, user_id):
+        user = self.usuario_repo.get_by_id(user_id)
+        if not user:
+            raise ValueError("Usuario no encontrado.")
+        user.is_active = False
+        user.save()
+        return user
+
+    def unban_user(self, user_id):
+        user = self.usuario_repo.get_by_id(user_id)
+        if not user:
+            raise ValueError("Usuario no encontrado.")
+        user.is_active = True
+        user.save()
+        return user

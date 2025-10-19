@@ -1,12 +1,16 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from pw2.models import Usuario
 from pw2.api.serializers import (
-    PaisSerializer, MundialSerializer, MundialDetalleSerializer, CategoriaSerializer
+    PaisSerializer, MundialSerializer, MundialDetalleSerializer, CategoriaSerializer,
+    PublicacionSerializer, UsuarioSerializer
 )
 from pw2.services.pais_service import PaisService
 from pw2.services.mundial_service import MundialService
 from pw2.services.categoria_service import CategoriaService
+from pw2.services.publicacion_service import PublicacionService
+from pw2.services.auth_service import AuthService
 from pw2.utils.permissions import IsAdminUser
 
 class AdminPaisesView(APIView):
@@ -133,3 +137,70 @@ class AdminCategoriaDetalleView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminPublicacionesPendientesView(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request):
+        service = PublicacionService()
+        publicaciones = service.listar_publicaciones_pendientes()
+        serializer = PublicacionSerializer(publicaciones, many=True)
+        return Response(serializer.data)
+
+class AdminAprobarPublicacionView(APIView):
+    permission_classes = [IsAdminUser]
+    def put(self, request, pk):
+        service = PublicacionService()
+        try:
+            publicacion = service.aprobar_publicacion(pk)
+            return Response(PublicacionSerializer(publicacion).data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminRechazarPublicacionView(APIView):
+    permission_classes = [IsAdminUser]
+    def put(self, request, pk):
+        service = PublicacionService()
+        try:
+            publicacion = service.rechazar_publicacion(pk)
+            return Response(PublicacionSerializer(publicacion).data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminUsuariosView(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request):
+        service = AuthService()
+        usuarios = service.get_all_users()
+        serializer = UsuarioSerializer(usuarios, many=True)
+        return Response(serializer.data)
+
+class AdminUsuarioDetalleView(APIView):
+    permission_classes = [IsAdminUser]
+    def put(self, request, pk):
+        if request.user.id == pk:
+            return Response({'error': 'Un administrador no puede modificarse a sí mismo.'}, status=status.HTTP_403_FORBIDDEN)
+        
+        service = AuthService()
+        try:
+            if 'rol' in request.data:
+                last_admin = Usuario.objects.filter(rol='admin').count() == 1 and service.usuario_repo.get_by_id(pk).rol == 'admin'
+                if last_admin:
+                    return Response({'error': 'No se puede cambiar el rol del último administrador.'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                usuario = service.change_user_role(pk, request.data['rol'])
+                return Response(UsuarioSerializer(usuario).data)
+
+            elif 'ban' in request.data:
+                usuario = service.ban_user(pk) if request.data['ban'] else service.unban_user(pk)
+                return Response(UsuarioSerializer(usuario).data)
+
+            return Response({'error': 'Acción no especificada.'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminStatsView(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request):
+        pub_service = PublicacionService()
+        pending_pubs_count = pub_service.listar_publicaciones_pendientes().count()
+        return Response({'publicaciones_pendientes': pending_pubs_count})

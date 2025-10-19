@@ -1,17 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 def index(request):
-    # Eliminamos la comprobación de autenticación de aquí.
-    # Esta vista ahora siempre servirá la página de inicio.
     context = { 'title': 'FutBOX - Inicio' }
     return render(request, 'pw2/index.html', context)
 
 def login(request):
-    # Añadimos una comprobación aquí: si un usuario ya autenticado con la sesión de Django
-    # intenta ir al login, lo mandamos al inicio. Esto evita confusiones.
     if request.user.is_authenticated:
         return redirect('pw2:index')
-    
     context = { 'title': 'FutBOX - Iniciar Sesión' }
     return render(request, 'pw2/Login.html', context)
 
@@ -41,3 +37,32 @@ def perfil_publico(request, nickname):
         'nickname': nickname
     }
     return render(request, 'pw2/perfil_publico.html', context)
+
+# --- Vistas del Panel de Administrador ---
+@login_required
+def admin_panel(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Panel de Administración'}
+    return render(request, 'pw2/admin/panel.html', context)
+
+@login_required
+def admin_publicaciones(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Moderar Publicaciones'}
+    return render(request, 'pw2/admin/admin_publicaciones.html', context)
+
+@login_required
+def admin_usuarios(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Gestionar Usuarios'}
+    return render(request, 'pw2/admin/admin_usuarios.html', context)
+
+@login_required
+def admin_reportes(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Reportes'}
+    return render(request, 'pw2/admin/admin_reportes.html', context)

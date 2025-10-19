@@ -10,7 +10,6 @@ class PublicacionService:
     def listar_publicaciones(self, search_query=None):
         return self.repo.get_all_aprobadas(search_query)
 
-    # Nuevo método en el servicio
     def listar_publicaciones_por_autor(self, user_id):
         return self.repo.get_by_author(user_id)
     
@@ -31,3 +30,22 @@ class PublicacionService:
         if not publicacion or publicacion.autor != usuario:
             raise PermissionError("No tienes permiso para eliminar esta publicación.")
         self.repo.delete(publicacion)
+
+    def listar_publicaciones_pendientes(self):
+        return self.repo.get_all_pendientes()
+
+    def aprobar_publicacion(self, publicacion_id):
+        publicacion = self.repo.get_by_id(publicacion_id)
+        if not publicacion:
+            raise ValueError("Publicación no encontrada.")
+        publicacion.estatus = 'aprobada'
+        publicacion.save()
+        return publicacion
+
+    def rechazar_publicacion(self, publicacion_id):
+        publicacion = self.repo.get_by_id(publicacion_id)
+        if not publicacion:
+            raise ValueError("Publicación no encontrada.")
+        publicacion.estatus = 'rechazada'
+        publicacion.save()
+        return publicacion

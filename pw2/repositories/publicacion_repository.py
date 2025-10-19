@@ -33,3 +33,6 @@ class PublicacionRepository:
 
     def delete(self, publicacion_instance):
         publicacion_instance.delete()
+        
+    def get_all_pendientes(self):
+        return Publicacion.objects.filter(estatus='pendiente').order_by('fecha_publicacion')

@@ -30,5 +30,12 @@ urlpatterns = [
     path('admin/categorias/', admin.AdminCategoriasView.as_view(), name='admin_categorias'),
     path('admin/categorias/<int:pk>/', admin.AdminCategoriaDetalleView.as_view(), name='admin_categoria_detalle'),
     
+    path('admin/publicaciones/pendientes/', admin.AdminPublicacionesPendientesView.as_view(), name='admin_publicaciones_pendientes'),
+    path('admin/publicaciones/<int:pk>/aprobar/', admin.AdminAprobarPublicacionView.as_view(), name='admin_aprobar_publicacion'),
+    path('admin/publicaciones/<int:pk>/rechazar/', admin.AdminRechazarPublicacionView.as_view(), name='admin_rechazar_publicacion'),
+    path('admin/usuarios/', admin.AdminUsuariosView.as_view(), name='admin_usuarios'),
+    path('admin/usuarios/<int:pk>/', admin.AdminUsuarioDetalleView.as_view(), name='admin_usuario_detalle'),
+    path('admin/stats/', admin.AdminStatsView.as_view(), name='admin_stats'),
+    
     path('reportes/', reportes.ReportesView.as_view(), name='reportes'),
 ]

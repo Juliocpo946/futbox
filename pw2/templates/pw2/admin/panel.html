@@ -7,6 +7,7 @@
     <title>FutBOX - Panel de Administración</title>
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="barra">
@@ -14,23 +15,27 @@
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
         <div style="color: white; font-weight: bold;">PANEL DE ADMINISTRACIÓN</div>
+         <a href="{% url 'pw2:index' %}" style="color: white; text-decoration: none; font-weight: bold;">Volver al Inicio</a>
     </nav>
     <main class="pantallaprincipal">
         <div class="parteizq">
             <div class="quick-nav-box">
-                <a href="#" class="nav-link"><i class="fas fa-tasks"></i> Moderación</a>
+                <a href="{% url 'pw2:admin_publicaciones' %}" class="nav-link"><i class="fas fa-tasks"></i> Moderación</a>
+                <a href="{% url 'pw2:admin_usuarios' %}" class="nav-link"><i class="fas fa-users-cog"></i> Usuarios</a>
                 <a href="#" class="nav-link"><i class="fas fa-globe-americas"></i> Países</a>
                 <a href="#" class="nav-link"><i class="fas fa-trophy"></i> Mundiales</a>
                 <a href="#" class="nav-link"><i class="fas fa-tags"></i> Categorías</a>
-                <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a>
+                <a href="{% url 'pw2:admin_reportes' %}" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a>
             </div>
         </div>
-        <div class="parteder">
+        <div class="parteder" id="admin-dashboard">
             <h1 class="seccion-titulo1">Bienvenido, Admin</h1>
             <p>Selecciona una opción del menú para comenzar a gestionar el contenido de FutBOX.</p>
+            <div id="dashboard-stats"></div>
         </div>
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/pages/admin/adminPanel.js' %}"></script>
 </body>
 </html>

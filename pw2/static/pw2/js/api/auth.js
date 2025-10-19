@@ -12,6 +12,11 @@ function getUserData() {
     return userData ? JSON.parse(userData) : null;
 }
 
+function isAdmin() {
+    const userData = getUserData();
+    return userData && userData.rol === 'admin';
+}
+
 function isLoggedIn() {
     return !!getAuthToken();
 }
@@ -32,6 +37,7 @@ window.auth = {
     saveAuthData,
     getAuthToken,
     getUserData,
+    isAdmin,
     isLoggedIn,
     logout,
     protectRoute,

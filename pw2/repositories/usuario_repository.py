@@ -38,3 +38,6 @@ class UsuarioRepository:
 
     def exists_by_nickname(self, nickname):
         return Usuario.objects.filter(nickname=nickname).exists()
+    
+    def get_all(self):
+        return Usuario.objects.all().order_by('nombre')
