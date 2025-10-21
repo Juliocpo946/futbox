@@ -1,14 +1,14 @@
 function saveAuthData(token, userData) {
-    sessionStorage.setItem('accessToken', token);
-    sessionStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('accessToken', token);
+    localStorage.setItem('userData', JSON.stringify(userData));
 }
 
 function getAuthToken() {
-    return sessionStorage.getItem('accessToken');
+    return localStorage.getItem('accessToken');
 }
 
 function getUserData() {
-    const userData = sessionStorage.getItem('userData');
+    const userData = localStorage.getItem('userData');
     return userData ? JSON.parse(userData) : null;
 }
 
@@ -21,9 +21,25 @@ function isLoggedIn() {
     return !!getAuthToken();
 }
 
-function logout() {
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('userData');
+async function logout() {
+    const token = getAuthToken();
+    
+    if (token) {
+        try {
+            await fetch('/api/usuarios/logout/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch (error) {
+            console.error("Error al cerrar sesión en el servidor:", error);
+        }
+    }
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
     window.location.href = '/login/';
 }
 

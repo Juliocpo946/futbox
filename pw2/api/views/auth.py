@@ -2,6 +2,7 @@ from rest_framework import status, parsers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import login, logout
 from pw2.api.serializers import RegisterSerializer, LoginSerializer, UsuarioSerializer, ActualizarUsuarioSerializer, PublicProfileSerializer
 from pw2.services.auth_service import AuthService
 from pw2.utils.logger import log_critical_error
@@ -36,7 +37,7 @@ class LoginView(APIView):
         if serializer.is_valid():
             try:
                 service = AuthService()
-                tokens = service.login_user(serializer.validated_data)
+                tokens = service.login_user(request, serializer.validated_data)
                 return Response(tokens, status=status.HTTP_200_OK)
             except ValueError as e:
                 return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
@@ -44,6 +45,17 @@ class LoginView(APIView):
                 log_critical_error("Error inesperado en el inicio de sesión.", e)
                 return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            logout(request)
+            return Response({'mensaje': 'Cierre de sesión exitoso.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            log_critical_error("Error inesperado al cerrar sesión.", e)
+            return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PerfilView(APIView):
     permission_classes = [IsAuthenticated]

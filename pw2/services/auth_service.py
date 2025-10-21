@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from pw2.repositories.usuario_repository import UsuarioRepository
@@ -18,11 +19,16 @@ class AuthService:
         usuario = self.usuario_repo.create(data)
         return UsuarioSerializer(usuario).data
 
-    def login_user(self, data):
-        usuario = self.usuario_repo.get_by_email(data['correo'])
+    def login_user(self, request, data):
+        usuario = authenticate(
+            username=data['correo'], 
+            password=data['password']
+        )
         
-        if usuario is None or not check_password(data['password'], usuario.password):
+        if usuario is None:
             raise ValueError("Credenciales invalidas.")
+            
+        login(request, usuario)
             
         refresh = RefreshToken.for_user(usuario)
         

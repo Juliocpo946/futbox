@@ -18,4 +18,7 @@ urlpatterns = [
     path('admin/publicaciones/', views.admin_publicaciones, name='admin_publicaciones'),
     path('admin/usuarios/', views.admin_usuarios, name='admin_usuarios'),
     path('admin/reportes/', views.admin_reportes, name='admin_reportes'),
+    path('admin/paises/', views.admin_paises, name='admin_paises'),
+    path('admin/mundiales/', views.admin_mundiales, name='admin_mundiales'),
+    path('admin/categorias/', views.admin_categorias, name='admin_categorias'),
 ]

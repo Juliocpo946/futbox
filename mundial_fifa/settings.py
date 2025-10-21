@@ -15,6 +15,10 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'pw2.Usuario'
 
+LOGIN_URL = 'pw2:login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware', 'django.middleware.common.CommonMiddleware',
@@ -52,12 +56,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 LANGUAGE_CODE = 'es-mx'
 TIME_ZONE = 'America/Mexico_City'
-USE_I18N = True
+USE_I1N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),

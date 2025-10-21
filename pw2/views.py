@@ -66,3 +66,25 @@ def admin_reportes(request):
         return redirect('pw2:index')
     context = {'title': 'FutBOX - Reportes'}
     return render(request, 'pw2/admin/admin_reportes.html', context)
+
+@login_required
+def admin_paises(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Gestionar Países'}
+    return render(request, 'pw2/admin/gestionar_paises.html', context)
+
+
+@login_required
+def admin_mundiales(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Gestionar Mundiales'}
+    return render(request, 'pw2/admin/gestionar_mundiales.html', context)
+
+@login_required
+def admin_categorias(request):
+    if not request.user.rol == 'admin':
+        return redirect('pw2:index')
+    context = {'title': 'FutBOX - Gestionar Categorías'}
+    return render(request, 'pw2/admin/gestionar_categorias.html', context)

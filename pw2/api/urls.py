@@ -6,6 +6,7 @@ app_name = 'pw2_api'
 urlpatterns = [
     path('usuarios/registro/', auth.RegistroView.as_view(), name='registro'),
     path('usuarios/login/', auth.LoginView.as_view(), name='login'),
+    path('usuarios/logout/', auth.LogoutView.as_view(), name='logout'),
     path('usuarios/perfil/', auth.PerfilView.as_view(), name='perfil'),
     path('usuarios/perfil/actualizar/', auth.ActualizarPerfilView.as_view(), name='actualizar_perfil'),
     path('usuarios/perfil/actualizar-foto/', auth.ActualizarFotoPerfilView.as_view(), name='actualizar_foto_perfil'),
