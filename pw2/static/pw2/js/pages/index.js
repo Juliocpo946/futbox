@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await renderizarComponentesDeUsuario();
     await cargarPublicacionesRecientes();
+    await cargarMundiales();
+    await cargarCategorias();
 });
 
 async function renderizarComponentesDeUsuario() {
@@ -50,7 +52,6 @@ async function renderizarComponentesDeUsuario() {
             });
         }
     } catch (error) {
-        console.error('Error al cargar datos del usuario:', error);
         window.auth.clearAuthData();
         window.location.replace('/login/');
     }
@@ -62,7 +63,6 @@ async function cargarPublicacionesRecientes() {
         const topPublicaciones = publicaciones.slice(0, 5);
         renderizarCarrusel(topPublicaciones);
     } catch (error) {
-        console.error('Error al cargar publicaciones:', error);
         const carruselContainer = document.querySelector('.carrusel-contenedor');
         if (carruselContainer) {
             carruselContainer.innerHTML = '<p>No se pudieron cargar las publicaciones.</p>';
@@ -103,4 +103,68 @@ function renderizarCarrusel(publicaciones) {
     if (typeof showSlides === "function") {
         showSlides(1);
     }
+}
+
+async function cargarMundiales() {
+    try {
+        const mundiales = await window.api.fetchAPI('/publicaciones/mundiales/');
+        renderizarMundiales(mundiales);
+    } catch (error) {
+        const mundialesContainer = document.getElementById('mundiales-container');
+        if (mundialesContainer) {
+            mundialesContainer.innerHTML = '<p>No se pudieron cargar los mundiales.</p>';
+        }
+    }
+}
+
+function renderizarMundiales(mundiales) {
+    const mundialesContainer = document.getElementById('mundiales-container');
+    if (!mundialesContainer) return;
+
+    if (!mundiales || mundiales.length === 0) {
+        mundialesContainer.innerHTML = '<p>No hay mundiales disponibles.</p>';
+        return;
+    }
+
+    let mundialesHTML = '';
+    mundiales.forEach(mundial => {
+        mundialesHTML += `
+            <div class="tarjeta">
+                <img src="/static/pw2/images/Mundial2026.png" alt="Mundial ${mundial.año}">
+                <div class="tarjetainfo">
+                    <h3 class="tarjetatitulo">Mundial ${mundial.año}</h3>
+                    <p class="tarjetadescripcion">${mundial.descripcion.substring(0, 100)}...</p>
+                </div>
+            </div>
+        `;
+    });
+    mundialesContainer.innerHTML = mundialesHTML;
+}
+
+async function cargarCategorias() {
+    try {
+        const categorias = await window.api.fetchAPI('/publicaciones/categorias/');
+        renderizarCategorias(categorias);
+    } catch (error) {
+        const categoriasList = document.getElementById('categorias-list');
+        if (categoriasList) {
+            categoriasList.innerHTML = '<p>No se pudieron cargar las categorías.</p>';
+        }
+    }
+}
+
+function renderizarCategorias(categorias) {
+    const categoriasList = document.getElementById('categorias-list');
+    if (!categoriasList) return;
+
+    if (!categorias || categorias.length === 0) {
+        categoriasList.innerHTML = '<p>No hay categorías disponibles.</p>';
+        return;
+    }
+
+    let categoriasHTML = '';
+    categorias.forEach(categoria => {
+        categoriasHTML += `<a href="#" class="categoria-item">${categoria.nombre}</a>`;
+    });
+    categoriasList.innerHTML = categoriasHTML;
 }

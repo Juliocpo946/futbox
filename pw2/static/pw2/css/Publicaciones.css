@@ -1,6 +1,6 @@
 .publicaciones-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
@@ -44,9 +44,12 @@
 
 .publicacion-footer {
     margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 25px;
     font-size: 0.9em;
     color: #555;
 }
@@ -54,5 +57,11 @@
 .reacciones-info, .comentarios-info {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.reacciones-info:hover, .comentarios-info:hover {
+    color: #0d6a40;
 }

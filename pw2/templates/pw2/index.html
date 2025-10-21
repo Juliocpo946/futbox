@@ -25,18 +25,18 @@
                 <div class="registro"><button onclick="window.location.href='/login/'">Registrarse</button></div>
             </div>
             <div id="admin-nav-link-container"></div>
-            <div id="profile-section-authenticated" style="display: none;"></div>
         </div>
     </div>
 
-    <div class="pantallaprincipal">
-        <div class="parteizq">
-            <h1 class="seccion-titulo1">Publicaciones Destacadas</h1>
+    <main class="pantallaprincipal">
+        <div class="contenido-principal">
+            <h1 class="seccion-titulo1">Publicaciones Recientes</h1>
             <div class="carrusel-contenedor"></div>
-            <div class="tarjetascontenedor"></div>
+            <h1 class="seccion-titulo1">Mundiales</h1>
+            <div id="mundiales-container" class="tarjetascontenedor"></div>
         </div>
 
-        <div class="parteder">
+        <aside class="barra-lateral">
             <div class="profile-box">
                 <a href="/mi-perfil/" id="profile-dropdown-btn" class="perfilseccion">
                     <img id="profile-pic" src="/static/pw2/images/Haerin.jpg" alt="Foto de perfil">
@@ -47,49 +47,29 @@
                     <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                 </a>
                 <div id="profile-dropdown-menu" class="dropdown-menu">
-                    <a href="/mi-perfil/" class="dropdown-item">
-                        <i class="fas fa-user"></i>
-                        <span>Mi Perfil</span>
-                    </a>
-                    <a href="/editar-perfil/" class="dropdown-item">
-                        <i class="fas fa-cog"></i>
-                        <span>Configuracion</span>
-                    </a>
-                    <a href="#" id="logout-button" class="dropdown-item">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Cerrar Sesion</span>
-                    </a>
+                    <a href="/mi-perfil/" class="dropdown-item"><i class="fas fa-user"></i><span>Mi Perfil</span></a>
+                    <a href="/editar-perfil/" class="dropdown-item"><i class="fas fa-cog"></i><span>Configuracion</span></a>
+                    <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesion</span></a>
                 </div>
             </div>
-
+            
             <div class="quick-nav-box">
-                <a href="/publicaciones/" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    <span>Comunidad</span>
-                </a>
+                <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
+                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-users"></i> Comunidad</a>
             </div>
 
-            <div class="hashtags-box">
-                <h3 class="hashtags-titulo">
-                    <i class="fas fa-hashtag"></i>
-                    Temas Populares
-                </h3>
-                <div class="hashtag-list">
-                    <a href="#" class="hashtag-item">Mundial2026</a>
-                    <a href="#" class="hashtag-item">FutbolMundial</a>
-                    <a href="#" class="hashtag-item">SeleccionMexicana</a>
-                    <a href="#" class="hashtag-item">CopaDelMundo</a>
-                </div>
+            <div class="categorias-box">
+                <h3 class="categorias-titulo"><i class="fas fa-tags"></i>Categorías</h3>
+                <div id="categorias-list" class="categoria-list"></div>
             </div>
 
             <div class="post-button-box">
                 <button class="btn-publicar" onclick="window.location.href='/crear-publicacion/'">
-                    <i class="fas fa-plus"></i>
-                    Nueva Publicacion
+                    <i class="fas fa-plus"></i>Nueva Publicacion
                 </button>
             </div>
-        </div>
-    </div>
+        </aside>
+    </main>
 
     <script src="/static/pw2/js/api/auth.js"></script>
     <script src="/static/pw2/js/api/api.js"></script>
