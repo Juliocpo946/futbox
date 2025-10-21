@@ -1,19 +1,19 @@
 from rest_framework import status, parsers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from pw2.api.serializers import RegisterSerializer, LoginSerializer, UsuarioSerializer, ActualizarUsuarioSerializer, PublicProfileSerializer
 from pw2.services.auth_service import AuthService
 from pw2.utils.logger import log_critical_error
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegistroView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
-        print("=" * 50)
-        print("DATOS RECIBIDOS EN REGISTRO:")
-        print(request.data)
-        print("=" * 50)
-        
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             try:
@@ -25,13 +25,12 @@ class RegistroView(APIView):
             except Exception as e:
                 log_critical_error("Error inesperado en el registro de usuario.", e)
                 return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        print("ERRORES DE VALIDACIÓN:")
-        print(serializer.errors)
-        print("=" * 50)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -46,8 +45,9 @@ class LoginView(APIView):
                 return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         try:

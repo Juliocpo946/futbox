@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    window.auth.protectRoute();
+    if (!window.auth.isLoggedIn()) {
+        window.auth.clearAuthData();
+        window.location.replace('/login/');
+        return;
+    }
 
     const searchForm = document.getElementById('search-form-nav');
     const searchInput = document.getElementById('search-input-nav');
@@ -47,6 +51,8 @@ async function renderizarComponentesDeUsuario() {
         }
     } catch (error) {
         console.error('Error al cargar datos del usuario:', error);
+        window.auth.clearAuthData();
+        window.location.replace('/login/');
     }
 }
 

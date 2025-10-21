@@ -18,34 +18,37 @@ function isAdmin() {
 }
 
 function isLoggedIn() {
-    return !!getAuthToken();
+    const token = getAuthToken();
+    const userData = getUserData();
+    return !!(token && userData);
+}
+
+function clearAuthData() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
 }
 
 async function logout() {
-    const token = getAuthToken();
+    clearAuthData();
     
-    if (token) {
-        try {
-            await fetch('/api/usuarios/logout/', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-        } catch (error) {
-            console.error("Error al cerrar sesión en el servidor:", error);
-        }
+    try {
+        await fetch('/api/usuarios/logout/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    } catch (error) {
+        console.error("Error al cerrar sesión en el servidor:", error);
     }
-
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
-    window.location.href = '/login/';
+    
+    window.location.replace('/login/');
 }
 
 function protectRoute() {
     if (!isLoggedIn()) {
-        window.location.href = '/login/';
+        clearAuthData();
+        window.location.replace('/login/');
     }
 }
 
@@ -56,5 +59,6 @@ window.auth = {
     isAdmin,
     isLoggedIn,
     logout,
+    clearAuthData,
     protectRoute,
 };

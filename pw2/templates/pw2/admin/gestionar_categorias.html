@@ -4,24 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FutBOX - Gestionar Categorías</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Admin.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Formulario.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="barra">
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
+        <div style="color: white; font-weight: bold;">GESTIÓN DE CATEGORÍAS</div>
+        <a href="{% url 'pw2:admin_panel' %}" style="color: white; text-decoration: none; font-weight: bold;">Volver al Panel</a>
     </nav>
-    <main class="pantallaprincipal-form">
-        <div class="form-container">
-            <h1>Gestionar Categorías</h1>
-            <div id="categorias-list"></div>
+    <main class="admin-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1>Categorías Registradas</h1>
+            <button id="btn-nueva-categoria" class="btn-approve">Nueva Categoría</button>
+        </div>
+        <div id="form-container" style="margin-bottom: 30px;"></div>
+        <div id="categorias-container">
+            <p>Cargando categorías...</p>
         </div>
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
-    </body>
+    <script src="{% static 'pw2/js/admin/adminCategorias.js' %}"></script>
+</body>
 </html>

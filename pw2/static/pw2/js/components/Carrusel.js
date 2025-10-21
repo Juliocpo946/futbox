@@ -1,5 +1,4 @@
 let slideIndex = 1;
-showSlides(slideIndex);
 
 function plusSlides(n) {
     showSlides(slideIndex += n);
@@ -10,25 +9,33 @@ function currentSlide(n) {
 }
 
 function showSlides(n) {
-    let i;
     let slides = document.getElementsByClassName("carrusel-item");
     let dots = document.getElementsByClassName("dot");
 
+    if (slides.length === 0) return;
+
     if (n > slides.length) {
-        slideIndex = 1
+        slideIndex = 1;
     }
     if (n < 1) {
-        slideIndex = slides.length
+        slideIndex = slides.length;
     }
 
-    for (i = 0; i < slides.length; i++) {
+    for (let i = 0; i < slides.length; i++) {
         slides[i].classList.remove("active");
     }
 
-    for (i = 0; i < dots.length; i++) {
-        dots[i].classList.remove("active-dot");
+    if (dots.length > 0) {
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].classList.remove("active-dot");
+        }
     }
 
-    slides[slideIndex - 1].classList.add("active");
-    dots[slideIndex - 1].classList.add("active-dot");
+    if (slides[slideIndex - 1]) {
+        slides[slideIndex - 1].classList.add("active");
+    }
+
+    if (dots.length > 0 && dots[slideIndex - 1]) {
+        dots[slideIndex - 1].classList.add("active-dot");
+    }
 }

@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Si el usuario ya está logueado (tiene un token) y llega aquí,
-    // lo redirigimos inmediatamente a la página principal.
-    if (window.auth.isLoggedIn()) {
-        window.location.href = '/';
-        return; // Detenemos la ejecución del resto del script.
-    }
-
+    window.auth.clearAuthData();
+    
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const registerLink = document.getElementById('register-link');
@@ -38,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             window.auth.saveAuthData(result.access, result.usuario);
-            window.location.href = '/';
+            window.location.replace('/');
 
         } catch (error) {
             displayError('Error al iniciar sesión: ' + error.message);
@@ -77,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             window.auth.saveAuthData(result.access, result.usuario);
-            window.location.href = '/';
+            window.location.replace('/');
 
         } catch (error) {
             displayError('Error en el registro: ' + error.message);

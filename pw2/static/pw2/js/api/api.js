@@ -13,7 +13,6 @@ async function fetchAPI(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // Para subir archivos, no queremos Content-Type en JSON
     if (options.body instanceof FormData) {
         delete headers['Content-Type'];
     }
@@ -27,16 +26,17 @@ async function fetchAPI(endpoint, options = {}) {
         const response = await fetch(url, config);
 
         if (response.status === 401 || response.status === 403) {
-            // Token inválido o expirado, cerramos sesión
-            window.auth.logout();
-            return;
+            window.auth.clearAuthData();
+            if (window.location.pathname !== '/login/') {
+                window.location.replace('/login/');
+            }
+            throw new Error('Sesión expirada');
         }
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             let errorMessage = 'Ocurrió un error inesperado.';
             if (Object.keys(errorData).length > 0) {
-                // Intenta obtener un mensaje de error más específico de la API
                 errorMessage = errorData.error || errorData.detail || JSON.stringify(errorData);
             } else {
                 errorMessage = `Error HTTP: ${response.status}`;
@@ -44,7 +44,7 @@ async function fetchAPI(endpoint, options = {}) {
             throw new Error(errorMessage);
         }
 
-        if (response.status === 204) { // No Content
+        if (response.status === 204) {
             return null;
         }
 
