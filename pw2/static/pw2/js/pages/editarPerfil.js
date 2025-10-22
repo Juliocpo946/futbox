@@ -13,7 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = await window.api.fetchAPI('/usuarios/perfil/');
             form.nombre.value = user.nombre || '';
             form.apellido_paterno.value = user.apellido_paterno || '';
+            form.apellido_materno.value = user.apellido_materno || '';
             form.nickname.value = user.nickname || '';
+            form.fecha_nacimiento.value = user.fecha_nacimiento || '';
+            form.genero.value = user.genero || '';
+
             if (user.foto_perfil) {
                 fotoPreview.src = user.foto_perfil;
             }
@@ -65,8 +69,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const datosFormulario = {
                 nombre: form.nombre.value,
                 apellido_paterno: form.apellido_paterno.value,
-                nickname: form.nickname.value,
+                apellido_materno: form.apellido_materno.value,
+                nickname: form.nickname.value
             };
+
+            if (form.fecha_nacimiento.value) {
+                datosFormulario.fecha_nacimiento = form.fecha_nacimiento.value;
+            }
+
+            if (form.genero.value) {
+                datosFormulario.genero = form.genero.value;
+            }
 
             if (password) {
                 datosFormulario.password = password;
@@ -78,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             window.location.href = '/mi-perfil/';
+
         } catch (error) {
             mostrarError(error.message || 'Error al guardar los cambios.');
         } finally {
@@ -108,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             window.auth.logout();
         } catch (error) {
-            mostrarError('No se pudo eliminar la cuenta. Intentalo de nuevo.');
+            mostrarError('No se pudo eliminar la cuenta. Inténtalo de nuevo.');
             console.error(error);
             btnConfirmarEliminar.disabled = false;
         }
