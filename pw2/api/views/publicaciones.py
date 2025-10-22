@@ -49,7 +49,7 @@ class PublicacionDetalleView(APIView):
     def get(self, request, pk):
         service = PublicacionService()
         try:
-            publicacion = service.obtener_detalle(pk)
+            publicacion = service.obtener_detalle(pk, request.user)
             serializer = PublicacionSerializer(publicacion)
             return Response(serializer.data)
         except ValueError as e:

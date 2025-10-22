@@ -48,11 +48,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'publicacion-card';
             card.style.cursor = 'pointer';
-            card.onclick = () => { window.location.href = `/publicaciones/${pub.id}/`; };
+            card.setAttribute('onclick', `window.location.href='/publicaciones/${pub.id}/'`);
+
+            const imagenUrl = pub.multimedia.length > 0 ? pub.multimedia[0].path : '/static/pw2/images/bluelock.jpg';
+
             card.innerHTML = `
-                <div class="publicacion-body">
-                    <h3>${pub.titulo}</h3>
-                    <p>${pub.descripcion.substring(0, 100)}...</p>
+                <div class="publicacion-media">
+                    <img src="${imagenUrl}" alt="${pub.titulo}">
+                </div>
+                <div class="publicacion-info">
+                    <div class="publicacion-body">
+                        <h3>${pub.titulo}</h3>
+                        <p>${pub.descripcion.substring(0, 200)}...</p>
+                    </div>
                 </div>`;
             pubContainer.appendChild(card);
         });

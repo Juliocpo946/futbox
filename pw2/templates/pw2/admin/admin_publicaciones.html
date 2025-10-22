@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Admin.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -17,14 +18,21 @@
         <div style="color: white; font-weight: bold;">MODERACIÓN DE PUBLICACIONES</div>
         <a href="{% url 'pw2:admin_panel' %}" style="color: white; text-decoration: none; font-weight: bold;">Volver al Panel</a>
     </nav>
-    <main class="admin-container">
-        <h1>Publicaciones Pendientes de Revisión</h1>
-        <div id="publicaciones-pendientes-container">
-            <p>Cargando publicaciones...</p>
+    <main class="pantallaprincipal">
+        <div class="main-content">
+            <div class="admin-container">
+                <h1>Publicaciones Pendientes de Revisión</h1>
+                <div id="publicaciones-pendientes-container">
+                    <p>Cargando publicaciones...</p>
+                </div>
+            </div>
         </div>
+        {% include 'pw2/includes/sidebar.html' %}
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/admin/adminPublicaciones.js' %}"></script>
+    <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
+    <script src="{% static 'pw2/js/components/sidebar.js' %}"></script>
 </body>
 </html>

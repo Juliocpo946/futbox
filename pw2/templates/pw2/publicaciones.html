@@ -9,8 +9,14 @@
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
 </head>
 <body>
+    <div id="image-lightbox" class="lightbox-modal" style="display: none;">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
     <nav class="barra">
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
@@ -26,51 +32,20 @@
         </div>
     </nav>
     <main class="pantallaprincipal">
-        <div class="contenido-principal">
+        <div class="main-content">
             <h1 id="titulo-seccion" class="seccion-titulo1">Comunidad</h1>
             <div id="publicaciones-container" class="publicaciones-grid">
                 <p>Cargando publicaciones...</p>
             </div>
         </div>
         
-        <aside class="barra-lateral">
-           <div class="profile-box">
-                <a href="/mi-perfil/" id="profile-dropdown-btn" class="perfilseccion">
-                    <img id="profile-pic" src="/static/pw2/images/Haerin.jpg" alt="Foto de perfil">
-                    <div class="usuarioinfo">
-                        <span class="nombreusuario" id="profile-name">Usuario</span>
-                        <p class="username-handle" id="profile-nickname">@usuario</p>
-                    </div>
-                    <i class="fas fa-chevron-down profile-dropdown-icon"></i>
-                </a>
-                <div id="profile-dropdown-menu" class="dropdown-menu">
-                    <a href="/mi-perfil/" class="dropdown-item"><i class="fas fa-user"></i><span>Mi Perfil</span></a>
-                    <a href="/editar-perfil/" class="dropdown-item"><i class="fas fa-cog"></i><span>Configuracion</span></a>
-                    <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesion</span></a>
-                </div>
-            </div>
-            
-            <div class="quick-nav-box">
-                <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
-                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-users"></i> Comunidad</a>
-            </div>
-
-            <div class="categorias-box">
-                <h3 class="categorias-titulo"><i class="fas fa-tags"></i>Categorías</h3>
-                <div id="categorias-list" class="categoria-list"></div>
-            </div>
-
-            <div class="post-button-box">
-                <button class="btn-publicar" onclick="window.location.href='/crear-publicacion/'">
-                    <i class="fas fa-plus"></i>Nueva Publicacion
-                </button>
-            </div>
-        </aside>
+        {% include 'pw2/includes/sidebar.html' %}
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/pages/comunidad.js' %}"></script>
     <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
     <script src="{% static 'pw2/js/components/AdminNav.js' %}"></script>
+    <script src="{% static 'pw2/js/components/sidebar.js' %}"></script>
 </body>
 </html>

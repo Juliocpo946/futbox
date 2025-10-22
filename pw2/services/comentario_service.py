@@ -13,6 +13,8 @@ class ComentarioService:
         publicacion = self.publicacion_repo.get_by_id(publicacion_id)
         if not publicacion or publicacion.estatus != 'aprobada':
             raise ValueError("La publicación no existe o no está disponible.")
+        
+        data['estatus'] = 'aprobado'
         return self.comentario_repo.create(usuario, publicacion, data)
 
     def actualizar_comentario(self, usuario, comentario_id, data):

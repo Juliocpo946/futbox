@@ -1,13 +1,11 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Proteger la ruta
     window.auth.protectRoute();
 
     const container = document.getElementById('detalle-container');
-    const publicacionId = PUBLICACION_ID; // Variable inyectada desde el template
+    const publicacionId = PUBLICACION_ID;
 
     async function cargarDetalleCompleto() {
         try {
-            // Hacemos las peticiones en paralelo para mayor eficiencia
             const [publicacion, comentarios] = await Promise.all([
                 window.api.fetchAPI(`/publicaciones/${publicacionId}/`),
                 window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`)
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderizarDetalle(publicacion);
             renderizarComentarios(comentarios);
             
-            // Una vez renderizado todo, asignamos los eventos a los nuevos elementos
             configurarFormularioComentario();
             configurarBotonReaccion();
 
@@ -61,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <button type="submit">Comentar</button>
                 </form>
                 <div id="comentarios-lista">
-                    </div>
+                </div>
             </div>
         `;
     }
@@ -77,23 +74,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         comentarios.forEach(com => {
-            const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
-            const comentarioCard = document.createElement('div');
-            comentarioCard.className = 'comentario-card';
-            comentarioCard.innerHTML = `
-                <div class="comentario-header">
-                    <img src="${com.usuario.foto_perfil || '/static/pw2/images/Haerin.jpg'}" alt="Foto de perfil">
-                    <div class="comentario-autor-info">
-                        <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
-                        <span>- ${fechaCom}</span>
-                    </div>
-                </div>
-                <div class="comentario-body">
-                    <p>${com.comentario}</p>
-                </div>
-            `;
-            listaComentarios.appendChild(comentarioCard);
+            anadirComentarioALista(com);
         });
+    }
+
+    function anadirComentarioALista(com) {
+        const listaComentarios = document.getElementById('comentarios-lista');
+        if (!listaComentarios) return;
+
+        if (listaComentarios.querySelector('p')) {
+            listaComentarios.innerHTML = '';
+        }
+
+        const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
+        const comentarioCard = document.createElement('div');
+        comentarioCard.className = 'comentario-card';
+        comentarioCard.innerHTML = `
+            <div class="comentario-header">
+                <img src="${com.usuario.foto_perfil || '/static/pw2/images/Haerin.jpg'}" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                <div class="comentario-autor-info">
+                    <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
+                    <span>- ${fechaCom}</span>
+                </div>
+            </div>
+            <div class="comentario-body">
+                <p>${com.comentario}</p>
+            </div>
+        `;
+        listaComentarios.appendChild(comentarioCard);
     }
     
     function configurarFormularioComentario() {
@@ -106,25 +114,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const texto = textarea.value.trim();
             if (!texto) return;
 
+            const boton = form.querySelector('button');
             try {
-                // Deshabilitar el botón para evitar doble envío
-                form.querySelector('button').disabled = true;
+                boton.disabled = true;
+                boton.textContent = 'Enviando...';
 
-                await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
+                const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                     method: 'POST',
                     body: JSON.stringify({ comentario: texto }),
                 });
                 
-                // Limpiar el textarea y recargar solo la sección de comentarios
                 textarea.value = '';
-                const nuevosComentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
-                renderizarComentarios(nuevosComentarios);
+                anadirComentarioALista(nuevoComentario);
 
             } catch (error) {
                 alert('Error al enviar el comentario.');
             } finally {
-                // Volver a habilitar el botón
-                form.querySelector('button').disabled = false;
+                boton.disabled = false;
+                boton.textContent = 'Comentar';
             }
         });
     }
@@ -136,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         btn.addEventListener('click', async () => {
             try {
-                btn.disabled = true; // Prevenir múltiples clics
+                btn.disabled = true; 
                 const resultado = await window.api.fetchAPI(`/publicaciones/${publicacionId}/reaccionar/`, {
                     method: 'POST'
                 });
@@ -157,6 +164,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Iniciar la carga de la página
     cargarDetalleCompleto();
 });

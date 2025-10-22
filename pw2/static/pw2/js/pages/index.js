@@ -142,11 +142,11 @@ function renderizarMundiales(mundiales) {
 }
 
 async function cargarCategorias() {
+    const categoriasList = document.getElementById('categorias-list');
     try {
         const categorias = await window.api.fetchAPI('/publicaciones/categorias/');
         renderizarCategorias(categorias);
     } catch (error) {
-        const categoriasList = document.getElementById('categorias-list');
         if (categoriasList) {
             categoriasList.innerHTML = '<p>No se pudieron cargar las categorías.</p>';
         }

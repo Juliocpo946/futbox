@@ -13,11 +13,15 @@ class PublicacionService:
     def listar_publicaciones_por_autor(self, user_id):
         return self.repo.get_by_author(user_id)
     
-    def obtener_detalle(self, publicacion_id):
+    def obtener_detalle(self, publicacion_id, usuario):
         publicacion = self.repo.get_by_id(publicacion_id)
-        if not publicacion or publicacion.estatus != 'aprobada':
-            raise ValueError("Publicación no encontrada o no disponible.")
-        return publicacion
+        if not publicacion:
+            raise ValueError("Publicación no encontrada.")
+        
+        if publicacion.estatus == 'aprobada' or publicacion.autor == usuario:
+            return publicacion
+        
+        raise ValueError("Publicación no encontrada o no disponible.")
 
     def actualizar_publicacion(self, usuario, publicacion_id, data):
         publicacion = self.repo.get_by_id(publicacion_id)

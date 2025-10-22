@@ -1,18 +1,18 @@
 .pantallaprincipal {
     display: flex;
-    width: 100%; /* Ocupa todo el ancho disponible */
+    width: 100%;
     padding: 20px;
     gap: 30px;
     box-sizing: border-box;
 }
 
-.contenido-principal {
-    width: 70%; /* Asigna el 70% del ancho */
-    flex-shrink: 0;
+.main-content {
+    flex: 1;
+    min-width: 0;
 }
 
-.barra-lateral {
-    width: 30%; /* Asigna el 30% del ancho */
+.sidebar {
+    width: 340px;
     flex-shrink: 0;
     position: sticky;
     top: 105px;
@@ -241,7 +241,8 @@
     color: white;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .captiontext h3 {

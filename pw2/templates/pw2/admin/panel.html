@@ -18,14 +18,11 @@
          <a href="{% url 'pw2:index' %}" style="color: white; text-decoration: none; font-weight: bold;">Volver al Inicio</a>
     </nav>
     <main class="pantallaprincipal">
-        <div class="contenido-principal" id="admin-dashboard">
+        <div class="main-content" id="admin-dashboard">
             <h1 class="seccion-titulo1">Bienvenido, Admin</h1>
             <p>Selecciona una opción del menú de la derecha para comenzar a gestionar el contenido de FutBOX.</p>
             <div id="dashboard-stats"></div>
-        </div>
-        
-        <aside class="barra-lateral">
-            <div class="quick-nav-box">
+             <div class="quick-nav-box">
                 <a href="{% url 'pw2:admin_publicaciones' %}" class="nav-link"><i class="fas fa-tasks"></i> Moderación</a>
                 <a href="{% url 'pw2:admin_usuarios' %}" class="nav-link"><i class="fas fa-users-cog"></i> Usuarios</a>
                 <a href="{% url 'pw2:admin_paises' %}" class="nav-link"><i class="fas fa-globe-americas"></i> Países</a>
@@ -33,10 +30,14 @@
                 <a href="{% url 'pw2:admin_categorias' %}" class="nav-link"><i class="fas fa-tags"></i> Categorías</a>
                 <a href="{% url 'pw2:admin_reportes' %}" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a>
             </div>
-        </aside>
+        </div>
+        
+       {% include 'pw2/includes/sidebar.html' %}
+
     </main>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/admin/adminPanel.js' %}"></script>
+    <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+{% load static %}
+<aside class="sidebar">
+    <div class="profile-box">
+        <a href="/mi-perfil/" id="profile-dropdown-btn" class="perfilseccion">
+            <img id="profile-pic" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
+            <div class="usuarioinfo">
+                <span class="nombreusuario" id="profile-name">Usuario</span>
+                <p class="username-handle" id="profile-nickname">@usuario</p>
+            </div>
+            <i class="fas fa-chevron-down profile-dropdown-icon"></i>
+        </a>
+        <div id="profile-dropdown-menu" class="dropdown-menu">
+            <a href="{% url 'pw2:mi_perfil' %}" class="dropdown-item"><i class="fas fa-user"></i><span>Mi Perfil</span></a>
+            <a href="{% url 'pw2:editar_perfil' %}" class="dropdown-item"><i class="fas fa-cog"></i><span>Configuración</span></a>
+            <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></a>
+        </div>
+    </div>
+    
+    <div class="quick-nav-box">
+        <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
+        <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-users"></i> Comunidad</a>
+    </div>
+
+    <div class="categorias-box">
+        <h3 class="categorias-titulo"><i class="fas fa-tags"></i>Categorías</h3>
+        <div id="categorias-list" class="categoria-list">
+            <p>Cargando categorías...</p>
+        </div>
+    </div>
+
+    <div class="post-button-box">
+        <button class="btn-publicar" onclick="window.location.href='{% url 'pw2:crear_publicacion' %}'">
+            <i class="fas fa-plus"></i>Nueva Publicación
+        </button>
+    </div>
+</aside>

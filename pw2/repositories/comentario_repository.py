@@ -2,7 +2,7 @@ from pw2.models import Comentario
 
 class ComentarioRepository:
     def get_by_publicacion_aprobados(self, publicacion_id):
-        return Comentario.objects.filter(publicacion_id=publicacion_id, estatus='aprobado').order_by('fecha_creacion')
+        return Comentario.objects.filter(publicacion_id=publicacion_id).order_by('fecha_creacion')
 
     def get_by_id(self, comentario_id):
         try:

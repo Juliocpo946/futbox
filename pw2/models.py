@@ -37,7 +37,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    rol = models.CharField(max_length=50, default='usuario') # Mantenemos tu campo rol
+    rol = models.CharField(max_length=50, default='usuario')
 
     objects = UsuarioManager()
 
@@ -46,8 +46,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.nickname
-
-# --- El resto de tus modelos permanecen exactamente igual ---
 
 class Pais(models.Model):
     pais = models.CharField(max_length=255)
@@ -102,7 +100,7 @@ class Comentario(models.Model):
         ("eliminado", "Eliminado"),
     ]
     comentario = models.TextField()
-    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="pendiente")
+    estatus = models.CharField(max_length=10, choices=ESTATUS_CHOICES, default="aprobado")
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_edicion = models.DateTimeField(auto_now=True)
     usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING)

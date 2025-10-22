@@ -7,6 +7,7 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/DetallePublicacion.css' %}">
 </head>
 <body>
@@ -22,18 +23,14 @@
         </form>
     </nav>
     <main class="pantallaprincipal">
-        <div class="parteizq">
-            <div id="profile-section-authenticated" style="display: none;"></div>
-            <div class="quick-nav-box">
-                <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
-                <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-fire"></i> Comunidad</a>
-            </div>
-        </div>
-        <div class="parteder">
+        <div class="main-content">
             <div id="detalle-container">
                 <p>Cargando publicación...</p>
             </div>
         </div>
+        
+        {% include 'pw2/includes/sidebar.html' %}
+
     </main>
     <script>const PUBLICACION_ID = {{ publicacion_id }};</script>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>

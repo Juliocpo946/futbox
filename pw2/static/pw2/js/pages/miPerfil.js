@@ -39,19 +39,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             publicaciones.forEach(pub => {
                 const card = document.createElement('div');
                 card.className = 'publicacion-card';
-                if (pub.estatus === 'aprobada') {
-                    card.style.cursor = 'pointer';
-                    card.onclick = () => { window.location.href = `/publicaciones/${pub.id}/`; };
-                }
                 
                 const estatusClass = `estatus-${pub.estatus}`;
                 const estatusTexto = pub.estatus.charAt(0).toUpperCase() + pub.estatus.slice(1);
+                const imagenUrl = pub.multimedia.length > 0 ? pub.multimedia[0].path : '/static/pw2/images/bluelock.jpg';
+
+                let cardClickHandler = '';
+                if (pub.estatus === 'aprobada') {
+                    card.style.cursor = 'pointer';
+                    cardClickHandler = `onclick="window.location.href='/publicaciones/${pub.id}/'"`;
+                }
 
                 card.innerHTML = `
-                    <div class="publicacion-body">
-                        <h3>${pub.titulo}</h3>
-                        <p>${pub.descripcion.substring(0, 100)}...</p>
-                        <span class="estatus-publicacion ${estatusClass}">${estatusTexto}</span>
+                    <div class="publicacion-media" ${cardClickHandler}>
+                        <img src="${imagenUrl}" alt="${pub.titulo}">
+                    </div>
+                    <div class="publicacion-info">
+                        <div class="publicacion-body">
+                            <h3>${pub.titulo}</h3>
+                            <p>${pub.descripcion.substring(0, 200)}...</p>
+                        </div>
+                        <div class="publicacion-footer">
+                           <span class="estatus-publicacion ${estatusClass}">${estatusTexto}</span>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);

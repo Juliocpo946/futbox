@@ -72,16 +72,20 @@ class MultimediaSerializer(serializers.ModelSerializer):
 class PublicacionSerializer(serializers.ModelSerializer):
     autor = AuthorSerializer(read_only=True)
     reacciones_count = serializers.SerializerMethodField()
+    comentarios_count = serializers.SerializerMethodField()
     categoria = CategoriaSerializer(read_only=True)
     mundial = MundialSerializer(read_only=True)
     multimedia = serializers.SerializerMethodField()
 
     class Meta:
         model = Publicacion
-        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'multimedia', 'estatus']
+        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'comentarios_count', 'multimedia', 'estatus']
     
     def get_reacciones_count(self, obj):
         return obj.reaccion_set.count()
+
+    def get_comentarios_count(self, obj):
+        return obj.comentario_set.filter(estatus='aprobado').count()
 
     def get_multimedia(self, obj):
         multimedia_relations = MultimediaPublicacion.objects.filter(publicacion=obj, estatus='agregada')
