@@ -52,10 +52,12 @@ class Pais(models.Model):
     def __str__(self): return self.pais
 
 class Mundial(models.Model):
+    nombre = models.CharField(max_length=255, null=True, blank=True)
     año = models.PositiveIntegerField()
     descripcion = models.TextField()
     sedes = models.ManyToManyField("Pais", through="Sede")
-    def __str__(self): return f"Mundial {self.año}"
+    imagen = models.ForeignKey("Multimedia", on_delete=models.SET_NULL, null=True, blank=True)
+    def __str__(self): return self.nombre or f"Mundial {self.año}"
 
 class Sede(models.Model):
     mundial = models.ForeignKey("Mundial", on_delete=models.DO_NOTHING)

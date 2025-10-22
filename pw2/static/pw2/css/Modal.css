@@ -1,5 +1,4 @@
-.modal-oculto {
-    display: none;
+.modal {
     position: fixed;
     z-index: 2000;
     left: 0;
@@ -7,12 +6,13 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
     justify-content: center;
     align-items: center;
 }
 
-.modal-visible {
+.modal.is-visible {
     display: flex;
 }
 
@@ -26,62 +26,49 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-.modal-contenido h2 {
-    margin-top: 0;
+.mundial-modal-contenido {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.2s ease-in-out;
+}
+
+.modal.is-visible .mundial-modal-contenido {
+    transform: scale(1);
+}
+
+.mundial-modal-contenido .lightbox-close {
     color: #333;
 }
 
-.modal-contenido p {
-    color: #555;
-    line-height: 1.5;
-}
-
-.modal-acciones {
-    margin-top: 20px;
+.mundial-modal-body {
     display: flex;
-    justify-content: center;
-    gap: 15px;
+    gap: 25px;
+    text-align: left;
 }
 
-.btn-eliminar {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+.mundial-modal-col-30 {
+    flex: 3;
+}
+.mundial-modal-col-70 {
+    flex: 7;
 }
 
-.btn-eliminar:hover {
-    background-color: #c82333;
-}
-
-.danger-zone {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    text-align: center;
-}
-
-/* Estilos para el Lightbox de la Imagen */
-.lightbox-modal {
-    position: fixed;
-    z-index: 3000;
-    left: 0;
-    top: 0;
+#mundial-modal-img {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
-.lightbox-content {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
+#mundial-modal-nombre {
+    margin-top: 0;
+    color: #0d6a40;
 }
 
 .lightbox-close {

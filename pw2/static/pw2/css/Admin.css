@@ -1,4 +1,3 @@
-/* Estilos para el Panel de Administración */
 .admin-container {
     padding: 20px;
 }
@@ -93,4 +92,92 @@
 .reporte-card li {
     padding: 8px 0;
     border-bottom: 1px solid #eee;
+}
+
+.form-layout {
+    display: flex;
+    gap: 30px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-col-30 { flex: 3; }
+.form-col-70 { flex: 7; }
+
+.image-preview-container {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    background-color: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.image-preview-label {
+    color: #777;
+    text-align: center;
+}
+
+#btn-upload-image {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.country-selector-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.country-list-box {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.country-list-box h4 {
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+    font-size: 1em;
+}
+
+.country-item {
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: #f0f2f5;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.country-item:hover {
+    background-color: #e2e6ea;
+}
+
+.selected-countries .country-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e2f0ea;
+}
+
+.remove-country-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0 5px;
 }

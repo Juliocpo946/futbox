@@ -106,14 +106,55 @@ function renderizarCarrusel(publicaciones) {
 }
 
 async function cargarMundiales() {
+    const mundialesContainer = document.getElementById('mundiales-container');
+    const modal = document.getElementById('mundial-modal');
+    const modalClose = document.getElementById('mundial-modal-close');
+
+    if (!mundialesContainer || !modal || !modalClose) {
+        return;
+    }
+
     try {
         const mundiales = await window.api.fetchAPI('/publicaciones/mundiales/');
-        renderizarMundiales(mundiales);
-    } catch (error) {
-        const mundialesContainer = document.getElementById('mundiales-container');
-        if (mundialesContainer) {
-            mundialesContainer.innerHTML = '<p>No se pudieron cargar los mundiales.</p>';
+        
+        if (!mundiales || mundiales.length === 0) {
+            mundialesContainer.innerHTML = '<p>No hay mundiales disponibles.</p>';
+            return;
         }
+
+        renderizarMundiales(mundiales);
+
+        mundialesContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.tarjeta');
+            if (!card) return;
+
+            const mundialId = parseInt(card.dataset.mundialId, 10);
+            const mundialSeleccionado = mundiales.find(m => m.id === mundialId);
+
+            if (mundialSeleccionado) {
+                document.getElementById('mundial-modal-img').src = mundialSeleccionado.imagen?.path || '/static/pw2/images/Mundial2026.png';
+                document.getElementById('mundial-modal-nombre').textContent = mundialSeleccionado.nombre || 'Mundial';
+                document.getElementById('mundial-modal-año').textContent = mundialSeleccionado.año;
+                document.getElementById('mundial-modal-sedes').textContent = mundialSeleccionado.sedes.map(s => s.pais).join(', ');
+                document.getElementById('mundial-modal-descripcion').textContent = mundialSeleccionado.descripcion;
+                
+                modal.classList.add('is-visible');
+            }
+        });
+
+        const cerrarModal = () => {
+            modal.classList.remove('is-visible');
+        };
+
+        modalClose.addEventListener('click', cerrarModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                cerrarModal();
+            }
+        });
+
+    } catch (error) {
+        mundialesContainer.innerHTML = '<p>No se pudieron cargar los mundiales.</p>';
     }
 }
 
@@ -121,18 +162,14 @@ function renderizarMundiales(mundiales) {
     const mundialesContainer = document.getElementById('mundiales-container');
     if (!mundialesContainer) return;
 
-    if (!mundiales || mundiales.length === 0) {
-        mundialesContainer.innerHTML = '<p>No hay mundiales disponibles.</p>';
-        return;
-    }
-
     let mundialesHTML = '';
     mundiales.forEach(mundial => {
+        const imagenUrl = mundial.imagen?.path || '/static/pw2/images/Mundial2026.png';
         mundialesHTML += `
-            <div class="tarjeta">
-                <img src="/static/pw2/images/Mundial2026.png" alt="Mundial ${mundial.año}">
+            <div class="tarjeta" data-mundial-id="${mundial.id}">
+                <img src="${imagenUrl}" alt="${mundial.nombre}">
                 <div class="tarjetainfo">
-                    <h3 class="tarjetatitulo">Mundial ${mundial.año}</h3>
+                    <h3 class="tarjetatitulo">${mundial.nombre || `Mundial ${mundial.año}`}</h3>
                     <p class="tarjetadescripcion">${mundial.descripcion.substring(0, 100)}...</p>
                 </div>
             </div>

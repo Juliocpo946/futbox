@@ -6,6 +6,7 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/static/pw2/css/BarraNavegacion.css">
     <link rel="stylesheet" href="/static/pw2/css/PaginaPrincipal.css">
+    <link rel="stylesheet" href="/static/pw2/css/Modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -70,6 +71,23 @@
             </div>
         </aside>
     </main>
+
+    <div id="mundial-modal" class="modal">
+        <div class="mundial-modal-contenido">
+            <span id="mundial-modal-close" class="lightbox-close">&times;</span>
+            <div class="mundial-modal-body">
+                <div class="mundial-modal-col-30">
+                    <img id="mundial-modal-img" src="" alt="Imagen del Mundial">
+                </div>
+                <div class="mundial-modal-col-70">
+                    <h2 id="mundial-modal-nombre"></h2>
+                    <p><strong>Año:</strong> <span id="mundial-modal-año"></span></p>
+                    <p><strong>Sedes:</strong> <span id="mundial-modal-sedes"></span></p>
+                    <p id="mundial-modal-descripcion"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="/static/pw2/js/api/auth.js"></script>
     <script src="/static/pw2/js/api/api.js"></script>

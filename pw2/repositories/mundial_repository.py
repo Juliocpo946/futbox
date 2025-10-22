@@ -2,7 +2,7 @@ from pw2.models import Mundial, Pais
 
 class MundialRepository:
     def get_all(self):
-        return Mundial.objects.all().order_by('año')
+        return Mundial.objects.all().order_by('-año')
 
     def get_by_id(self, mundial_id):
         try:
@@ -18,9 +18,13 @@ class MundialRepository:
         return mundial
 
     def update(self, mundial_instance, data, sedes_ids):
+        mundial_instance.nombre = data.get('nombre', mundial_instance.nombre)
         mundial_instance.año = data.get('año', mundial_instance.año)
         mundial_instance.descripcion = data.get('descripcion', mundial_instance.descripcion)
+        if 'imagen_id' in data:
+            mundial_instance.imagen_id = data.get('imagen_id')
         mundial_instance.save()
+        
         if sedes_ids is not None:
             sedes = Pais.objects.filter(id__in=sedes_ids)
             mundial_instance.sedes.set(sedes)

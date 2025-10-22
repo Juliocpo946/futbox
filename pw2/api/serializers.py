@@ -50,31 +50,33 @@ class PaisSerializer(serializers.ModelSerializer):
         model = Pais
         fields = ['id', 'pais']
 
+class MultimediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Multimedia
+        fields = ['id', 'path']
+
 class MundialSerializer(serializers.ModelSerializer):
     sedes = serializers.PrimaryKeyRelatedField(queryset=Pais.objects.all(), many=True, required=False)
+    imagen = serializers.PrimaryKeyRelatedField(queryset=Multimedia.objects.all(), required=False, allow_null=True)
     class Meta:
         model = Mundial
-        fields = ['id', 'año', 'descripcion', 'sedes']
+        fields = ['id', 'nombre', 'año', 'descripcion', 'sedes', 'imagen']
 
 class MundialDetalleSerializer(MundialSerializer):
     sedes = PaisSerializer(many=True, read_only=True)
+    imagen = MultimediaSerializer(read_only=True)
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
         fields = ['id', 'nombre']
 
-class MultimediaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Multimedia
-        fields = ['id', 'path']
-
 class PublicacionSerializer(serializers.ModelSerializer):
     autor = AuthorSerializer(read_only=True)
     reacciones_count = serializers.SerializerMethodField()
     comentarios_count = serializers.SerializerMethodField()
     categoria = CategoriaSerializer(read_only=True)
-    mundial = MundialSerializer(read_only=True)
+    mundial = MundialDetalleSerializer(read_only=True)
     multimedia = serializers.SerializerMethodField()
 
     class Meta:

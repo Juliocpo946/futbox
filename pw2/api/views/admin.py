@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, parsers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from pw2.models import Usuario
@@ -54,6 +54,7 @@ class AdminPaisDetalleView(APIView):
 
 class AdminMundialesView(APIView):
     permission_classes = [IsAdminUser]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def get(self, request):
         service = MundialService()
@@ -62,15 +63,13 @@ class AdminMundialesView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = MundialSerializer(data=request.data)
-        if serializer.is_valid():
-            service = MundialService()
-            mundial = service.create(serializer.validated_data)
-            return Response(MundialDetalleSerializer(mundial).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        service = MundialService()
+        mundial = service.create(request.data.dict())
+        return Response(MundialDetalleSerializer(mundial).data, status=status.HTTP_201_CREATED)
 
 class AdminMundialDetalleView(APIView):
     permission_classes = [IsAdminUser]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def get(self, request, pk):
         try:
@@ -80,16 +79,13 @@ class AdminMundialDetalleView(APIView):
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
-    def put(self, request, pk):
-        serializer = MundialSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                service = MundialService()
-                mundial = service.update(pk, serializer.validated_data)
-                return Response(MundialDetalleSerializer(mundial).data)
-            except ValueError as e:
-                return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, pk):
+        try:
+            service = MundialService()
+            mundial = service.update(pk, request.data.dict())
+            return Response(MundialDetalleSerializer(mundial).data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pk):
         try:

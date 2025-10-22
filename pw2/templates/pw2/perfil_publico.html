@@ -9,9 +9,14 @@
     <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Publicaciones.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div id="image-lightbox" class="modal">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
     <nav class="barra">
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>

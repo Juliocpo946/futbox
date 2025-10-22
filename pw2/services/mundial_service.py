@@ -1,4 +1,5 @@
 from pw2.repositories.mundial_repository import MundialRepository
+from pw2.utils.cloudinary_helper import upload_image
 
 class MundialService:
     def __init__(self):
@@ -15,11 +16,23 @@ class MundialService:
 
     def create(self, data):
         sedes_ids = data.pop('sedes', [])
+        imagen_file = data.pop('imagen', None)
+        
+        if imagen_file:
+            multimedia_obj = upload_image(imagen_file)
+            data['imagen_id'] = multimedia_obj.id
+
         return self.repo.create(data, sedes_ids)
 
     def update(self, mundial_id, data):
         mundial = self.get_by_id(mundial_id)
         sedes_ids = data.pop('sedes', None)
+        imagen_file = data.pop('imagen', None)
+        
+        if imagen_file:
+            multimedia_obj = upload_image(imagen_file)
+            data['imagen_id'] = multimedia_obj.id
+
         return self.repo.update(mundial, data, sedes_ids)
 
     def delete(self, mundial_id):
