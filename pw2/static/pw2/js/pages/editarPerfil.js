@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const form = document.getElementById('form-editar-perfil');
     const errorMessageDiv = document.getElementById('error-message');
-    const fotoPreview = document.getElementById('perfil-foto-preview');
+    const fotoContainer = document.getElementById('edit-profile-pic-container');
     const btnCambiarFoto = document.getElementById('btn-cambiar-foto');
     const inputFoto = document.getElementById('input-foto');
     let archivoFoto = null;
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function cargarDatos() {
         try {
             const user = await window.api.fetchAPI('/usuarios/perfil/');
+            
             if(form.nombre) form.nombre.value = user.nombre || '';
             if(form.apellido_paterno) form.apellido_paterno.value = user.apellido_paterno || '';
             if(form.apellido_materno) form.apellido_materno.value = user.apellido_materno || '';
@@ -18,8 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(form.fecha_nacimiento) form.fecha_nacimiento.value = user.fecha_nacimiento || '';
             if(form.genero) form.genero.value = user.genero || '';
 
-            if (user.foto_perfil && fotoPreview) {
-                fotoPreview.src = user.foto_perfil;
+            if (user.foto_perfil && fotoContainer) {
+                fotoContainer.innerHTML = `<img src="${user.foto_perfil}" alt="Foto de perfil">`;
             }
 
             if(form.password) form.password.value = '';
@@ -44,7 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 archivoFoto = e.target.files[0];
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    if(fotoPreview && event.target) fotoPreview.src = event.target.result;
+                    if(fotoContainer && event.target) {
+                         fotoContainer.innerHTML = `<img src="${event.target.result}" alt="Vista previa">`;
+                    }
                  };
                 reader.readAsDataURL(archivoFoto);
             }

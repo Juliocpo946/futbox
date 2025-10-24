@@ -281,3 +281,43 @@
 .detalle-multimedia .media-carousel-indicator.active {
     background-color: white;
 }
+
+/* --- Styles for Placeholders (Added) --- */
+
+/* Perfil Icon Placeholder (in header) */
+.detalle-header .profile-placeholder-icon {
+    font-size: 50px; /* Match autor-pic size */
+    color: #ccc;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    flex-shrink: 0;
+}
+
+/* Media Placeholder (when no media at all) */
+.detalle-multimedia.media-placeholder-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 350px; /* Give it a decent height */
+    font-size: 80px; /* Large icon */
+    color: #b0b0b0;
+}
+
+/* Media Placeholder (for unknown items inside carousel) */
+.detalle-multimedia .media-carousel-item .media-placeholder-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 350px; /* Match placeholder div */
+    font-size: 80px;
+    color: #b0b0b0;
+    background-color: #f0f2f5;
+}
+/* --- End of Added Styles --- */
