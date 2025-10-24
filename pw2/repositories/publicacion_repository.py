@@ -2,12 +2,20 @@ from django.db.models import Q
 from pw2.models import Publicacion
 
 class PublicacionRepository:
-    def get_all_aprobadas(self, search_query=None):
+    def get_all_aprobadas(self, search_query=None, mundial_id=None, categoria_id=None):
         queryset = Publicacion.objects.filter(estatus='aprobada')
+        
         if search_query:
             queryset = queryset.filter(
                 Q(titulo__icontains=search_query) | Q(descripcion__icontains=search_query)
             )
+            
+        if mundial_id:
+            queryset = queryset.filter(mundial_id=mundial_id)
+            
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+            
         return queryset.order_by('-fecha_publicacion')
 
     def get_by_author(self, user_id):
@@ -18,7 +26,7 @@ class PublicacionRepository:
 
     def get_by_id(self, publicacion_id):
         try:
-            return Publicacion.objects.get(id=publicacion_id)
+            return Publicacion.objects.select_related('autor', 'categoria', 'mundial').prefetch_related('multimediapublicacion_set__multimedia').get(id=publicacion_id)
         except Publicacion.DoesNotExist:
             return None
 

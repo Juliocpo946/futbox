@@ -26,7 +26,6 @@
                     <h1>Mundiales Registrados</h1>
                     <button id="btn-nuevo-mundial" class="btn-approve">Nuevo Mundial</button>
                 </div>
-                <div id="form-container" style="margin-bottom: 30px;"></div>
                 <div id="mundiales-container">
                     <p>Cargando mundiales...</p>
                 </div>
@@ -34,6 +33,14 @@
         </div>
         {% include 'pw2/includes/sidebar.html' %}
     </main>
+
+    <div id="admin-form-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <span class="admin-modal-close">&times;</span>
+            <div id="modal-form-content"></div>
+        </div>
+    </div>
+
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/admin/adminMundiales.js' %}"></script>

@@ -2,9 +2,16 @@ const BASE_URL = 'http://127.0.0.1:8000/api';
 
 async function fetchAPI(endpoint, options = {}) {
     const url = `${BASE_URL}${endpoint}`;
-    
+
+    const defaultHeaders = {};
+    // Solo añade Content-Type si no es FormData
+    if (!(options.body instanceof FormData)) {
+        defaultHeaders['Content-Type'] = 'application/json';
+    }
+
+
     const headers = {
-        'Content-Type': 'application/json',
+        ...defaultHeaders,
         ...options.headers,
     };
 
@@ -13,9 +20,11 @@ async function fetchAPI(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    if (options.body instanceof FormData) {
-        delete headers['Content-Type'];
-    }
+    // El navegador establece Content-Type automáticamente para FormData
+    // if (options.body instanceof FormData) {
+    //     delete headers['Content-Type']; // Asegúrate que esta línea NO esté si usas defaultHeaders
+    // }
+
 
     const config = {
         ...options,
@@ -30,14 +39,25 @@ async function fetchAPI(endpoint, options = {}) {
             if (window.location.pathname !== '/login/') {
                 window.location.replace('/login/');
             }
-            throw new Error('Sesión expirada');
+            throw new Error('Sesión expirada o sin permisos');
         }
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            let errorData;
+            try {
+                 errorData = await response.json();
+            } catch (e) {
+                 errorData = { error: `Error HTTP ${response.status}: ${response.statusText}` };
+            }
+
             let errorMessage = 'Ocurrió un error inesperado.';
-            if (Object.keys(errorData).length > 0) {
-                errorMessage = errorData.error || errorData.detail || JSON.stringify(errorData);
+            if (errorData) {
+                 if (typeof errorData === 'string') {
+                     errorMessage = errorData;
+                 } else {
+                     errorMessage = errorData.error || errorData.detail || JSON.stringify(errorData);
+                 }
+
             } else {
                 errorMessage = `Error HTTP: ${response.status}`;
             }
@@ -48,10 +68,18 @@ async function fetchAPI(endpoint, options = {}) {
             return null;
         }
 
-        return await response.json();
+        // Intenta parsear como JSON, si falla devuelve texto plano (útil para debug)
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return await response.json();
+        } else {
+            return await response.text(); // Devuelve texto si no es JSON
+        }
+
+
     } catch (error) {
         console.error('Error en la petición a la API:', error);
-        throw error;
+        throw error; // Re-lanzar para que el .catch() en la llamada original funcione
     }
 }
 

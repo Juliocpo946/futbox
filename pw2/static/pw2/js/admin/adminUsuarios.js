@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,8 +33,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         usuarios.forEach(user => {
             const esAdmin = user.rol === 'admin';
-            const estaActivo = user.is_active;
-
             tableHTML += `
                 <tr id="user-row-${user.id}">
                     <td>@${user.nickname}</td>
@@ -48,13 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <option value="admin" ${esAdmin ? 'selected' : ''}>Admin</option>
                         </select>
                     </td>
-                    <td>${estaActivo ? 'Activo' : 'Baneado'}</td>
-                    <td class="actions-cell">
-                        ${!estaActivo
-                            ? `<button class="btn-unban" data-id="${user.id}" ${userData.id === user.id ? 'disabled' : ''}>Desbanear</button>`
-                            : `<button class="btn-ban" data-id="${user.id}" ${userData.id === user.id ? 'disabled' : ''}>Banear</button>`
-                        }
-                    </td>
                 </tr>
             `;
         });
@@ -63,27 +52,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         container.innerHTML = tableHTML;
     }
 
-    container.addEventListener('click', async (e) => {
-        const userId = e.target.dataset.id;
-        if (!userId) return;
-        
-        const nickname = document.querySelector(`#user-row-${userId} td`).textContent;
-
-        if (e.target.classList.contains('btn-ban')) {
-            if (confirm(`¿Estás seguro de que quieres banear a ${nickname}?`)) {
-                await actualizarEstadoUsuario(userId, true);
-            }
-        } else if (e.target.classList.contains('btn-unban')) {
-            if (confirm(`¿Estás seguro de que quieres desbanear a ${nickname}?`)) {
-                await actualizarEstadoUsuario(userId, false);
-            }
-        }
-    });
-
     container.addEventListener('change', async (e) => {
         const userId = e.target.dataset.id;
         if (!userId || !e.target.classList.contains('rol-select')) return;
-        
+
         const nuevoRol = e.target.value;
         const nickname = document.querySelector(`#user-row-${userId} td`).textContent;
 
@@ -100,22 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 method: 'PUT',
                 body: JSON.stringify({ rol: rol }),
             });
-            cargarUsuarios();
         } catch (error) {
             alert(`Error al cambiar el rol: ${error.message}`);
             cargarUsuarios();
-        }
-    }
-
-    async function actualizarEstadoUsuario(id, banAction) {
-        try {
-            await window.api.fetchAPI(`/admin/usuarios/${id}/`, {
-                method: 'PUT',
-                body: JSON.stringify({ ban: banAction }),
-            });
-            cargarUsuarios();
-        } catch (error) {
-            alert(`Error al actualizar estado: ${error.message}`);
         }
     }
 

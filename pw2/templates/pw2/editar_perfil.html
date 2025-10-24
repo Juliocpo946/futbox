@@ -24,7 +24,9 @@
                 <h1>Editar Perfil</h1>
                 <div id="error-message" class="error-message" style="display: none;"></div>
                 <div class="perfil-foto-editor">
-                    <img id="perfil-foto-preview" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
+                    <div id="edit-profile-pic-container">
+                        <i class="fas fa-user-circle profile-placeholder-icon-medium"></i>
+                    </div>
                     <button type="button" id="btn-cambiar-foto" class="btn-cambiar-foto">Cambiar Foto</button>
                     <input type="file" id="input-foto" accept="image/*" style="display: none;">
                 </div>
@@ -67,11 +69,11 @@
                     <hr style="margin: 20px 0;">
                     <div class="input-group">
                         <label for="password">Nueva Contraseña (dejar vacío si no deseas cambiarla)</label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" id="password" name="password" autocomplete="new-password">
                     </div>
                     <div class="input-group">
                         <label for="confirm_password">Confirmar Nueva Contraseña</label>
-                        <input type="password" id="confirm_password" name="confirm_password">
+                        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password">
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-cancelar" onclick="window.location.href='/mi-perfil/'">Cancelar</button>
@@ -87,7 +89,8 @@
         </div>
         {% include 'pw2/includes/sidebar.html' %}
     </main>
-    <div id="confirmar-eliminacion-modal" class="modal-oculto">
+
+    <div id="confirmar-eliminacion-modal" class="modal modal-oculto">
         <div class="modal-contenido">
             <h2>Confirmar Eliminación</h2>
             <p>¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</p>
@@ -97,6 +100,7 @@
             </div>
         </div>
     </div>
+
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/pages/editarPerfil.js' %}"></script>

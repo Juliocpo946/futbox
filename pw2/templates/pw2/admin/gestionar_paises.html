@@ -26,7 +26,6 @@
                     <h1>Países Registrados</h1>
                     <button id="btn-nuevo-pais" class="btn-approve">Nuevo País</button>
                 </div>
-                <div id="form-container" style="margin-bottom: 30px;"></div>
                 <div id="paises-container">
                     <p>Cargando países...</p>
                 </div>
@@ -34,6 +33,15 @@
         </div>
         {% include 'pw2/includes/sidebar.html' %}
     </main>
+
+    <div id="admin-form-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <span class="admin-modal-close">&times;</span>
+            <div id="modal-form-content">
+                </div>
+        </div>
+    </div>
+
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/admin/adminPaises.js' %}"></script>

@@ -10,30 +10,74 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.api.fetchAPI(`/publicaciones/${publicacionId}/`),
                 window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`)
             ]);
-            
+
             renderizarDetalle(publicacion);
+            initializeDetailCarousel();
             renderizarComentarios(comentarios);
-            
+
             configurarFormularioComentario();
-            configurarBotonReaccion();
+            configurarBotonReaccion(publicacion.reacciones_count);
 
         } catch (error) {
-            container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
+            if(container) container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
             console.error(error);
         }
     }
 
     function renderizarDetalle(pub) {
+         if (!container) return;
         const fechaPub = new Date(pub.fecha_publicacion).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
+
+        const profilePicHTML = pub.autor.foto_perfil
+            ? `<img class="autor-pic" src="${pub.autor.foto_perfil}" alt="Foto de perfil">`
+            : `<i class="fas fa-user-circle profile-placeholder-icon"></i>`;
+
+
         let multimediaHTML = '';
         if (pub.multimedia && pub.multimedia.length > 0) {
-            multimediaHTML = `<div class="detalle-multimedia"><img src="${pub.multimedia[0].path}" alt="${pub.titulo}"></div>`;
+             if (pub.multimedia.length === 1) {
+                    const item = pub.multimedia[0];
+                    if (item.media_type === 'image') {
+                        multimediaHTML = `<div class="detalle-multimedia"><img src="${item.path}" alt="${pub.titulo}"></div>`;
+                    } else if (item.media_type === 'video') {
+                        multimediaHTML = `<div class="detalle-multimedia"><video controls><source src="${item.path}" type="video/mp4">Tu navegador no soporta videos.</video></div>`;
+                    } else {
+                         multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="fas fa-ban"></i></div>`;
+                    }
+                } else {
+                    multimediaHTML = `
+                        <div class="detalle-multimedia">
+                            <div class="media-carousel" id="carousel-detail-${pub.id}">
+                                <div class="media-carousel-inner">
+                                    ${pub.multimedia.map((item, index) => `
+                                        <div class="media-carousel-item ${index === 0 ? 'active' : ''}">
+                                            ${item.media_type === 'image'
+                                                ? `<img src="${item.path}" alt="Slide ${index + 1}">`
+                                                : item.media_type === 'video'
+                                                ? `<video controls><source src="${item.path}" type="video/mp4">Video no soportado.</video>`
+                                                : `<span class="media-placeholder-icon"><i class="fas fa-ban"></i></span>`}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ${pub.multimedia.length > 1 ? `
+                                <button class="media-carousel-control prev" data-carousel-id="carousel-detail-${pub.id}" data-slide="prev">&#10094;</button>
+                                <button class="media-carousel-control next" data-carousel-id="carousel-detail-${pub.id}" data-slide="next">&#10095;</button>
+                                <div class="media-carousel-indicators">
+                                    ${pub.multimedia.map((_, index) => `<button class="media-carousel-indicator ${index === 0 ? 'active' : ''}" data-carousel-id="carousel-detail-${pub.id}" data-slide-to="${index}"></button>`).join('')}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+        } else {
+             multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="far fa-image"></i></div>`;
         }
-        
+
         container.innerHTML = `
             <div class="detalle-publicacion-card">
                 <div class="detalle-header">
-                    <img class="autor-pic" src="${pub.autor.foto_perfil || '/static/pw2/images/Haerin.jpg'}" alt="Foto de perfil">
+                    ${profilePicHTML}
                     <div class="detalle-autor">
                         <span class="nombre">${pub.autor.nombre}</span>
                         <p class="fecha"><a href="/perfil/${pub.autor.nickname}/">@${pub.autor.nickname}</a> - ${fechaPub}</p>
@@ -49,26 +93,72 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <i class="fas fa-heart"></i>
                         <span id="reaccion-count">${pub.reacciones_count}</span>
                     </button>
-                    </div>
+                </div>
             </div>
-            <div class="comentarios-section">
+            <div class="comentarios-section" id="comentarios-section">
                 <h2>Comentarios</h2>
                 <form class="nuevo-comentario-form" id="comentario-form">
                     <textarea id="comentario-texto" placeholder="Escribe tu comentario..." required></textarea>
                     <button type="submit">Comentar</button>
                 </form>
                 <div id="comentarios-lista">
+                    <p>Cargando comentarios...</p>
                 </div>
             </div>
         `;
     }
+
+     function initializeDetailCarousel() {
+        const carouselElement = container.querySelector('.media-carousel');
+        if (!carouselElement) return;
+
+        const inner = carouselElement.querySelector('.media-carousel-inner');
+        const items = carouselElement.querySelectorAll('.media-carousel-item');
+        const indicators = carouselElement.querySelectorAll('.media-carousel-indicator');
+        const totalItems = items.length;
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            items.forEach((item, index) => {
+                 item.classList.toggle('active', index === currentIndex);
+            });
+             indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+             });
+        }
+
+        carouselElement.addEventListener('click', (e) => {
+            const target = e.target;
+            let newIndex = currentIndex;
+            if (target.matches('.media-carousel-control.next') || target.closest('.media-carousel-control.next')) {
+                newIndex = (currentIndex + 1) % totalItems;
+            } else if (target.matches('.media-carousel-control.prev') || target.closest('.media-carousel-control.prev')) {
+                newIndex = (currentIndex - 1 + totalItems) % totalItems;
+            } else if (target.matches('.media-carousel-indicator') || target.closest('.media-carousel-indicator')) {
+                const slideTo = parseInt(target.dataset.slideTo || target.closest('.media-carousel-indicator').dataset.slideTo, 10);
+                 if (!isNaN(slideTo)) {
+                    newIndex = slideTo;
+                 }
+            }
+
+             if (newIndex !== currentIndex) {
+                 // Pausar video actual si existe
+                 const currentVideo = items[currentIndex].querySelector('video');
+                 if (currentVideo) currentVideo.pause();
+                 currentIndex = newIndex;
+                 updateCarousel();
+             }
+
+        });
+    }
+
 
     function renderizarComentarios(comentarios) {
         const listaComentarios = document.getElementById('comentarios-lista');
         if (!listaComentarios) return;
 
         listaComentarios.innerHTML = '';
-        if (comentarios.length === 0) {
+        if (!comentarios || comentarios.length === 0) {
             listaComentarios.innerHTML = '<p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>';
             return;
         }
@@ -82,32 +172,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         const listaComentarios = document.getElementById('comentarios-lista');
         if (!listaComentarios) return;
 
-        if (listaComentarios.querySelector('p')) {
+        const placeholder = listaComentarios.querySelector('p');
+        if (placeholder && (placeholder.textContent.includes('No hay comentarios') || placeholder.textContent.includes('Cargando comentarios'))) {
             listaComentarios.innerHTML = '';
         }
+
+        const profilePicComentarioHTML = com.usuario.foto_perfil
+            ? `<img src="${com.usuario.foto_perfil}" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">`
+            : `<i class="fas fa-user-circle profile-placeholder-icon" style="font-size: 30px;"></i>`; // Icono pequeño
+
 
         const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
         const comentarioCard = document.createElement('div');
         comentarioCard.className = 'comentario-card';
         comentarioCard.innerHTML = `
             <div class="comentario-header">
-                <img src="${com.usuario.foto_perfil || '/static/pw2/images/Haerin.jpg'}" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                ${profilePicComentarioHTML}
                 <div class="comentario-autor-info">
                     <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
                     <span>- ${fechaCom}</span>
                 </div>
             </div>
             <div class="comentario-body">
-                <p>${com.comentario}</p>
+                <p>${com.comentario.replace(/\n/g, '<br>')}</p>
             </div>
         `;
         listaComentarios.appendChild(comentarioCard);
     }
-    
+
     function configurarFormularioComentario() {
         const form = document.getElementById('comentario-form');
         const textarea = document.getElementById('comentario-texto');
-        if (!form) return;
+        if (!form || !textarea) return;
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -116,46 +212,49 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const boton = form.querySelector('button');
             try {
-                boton.disabled = true;
-                boton.textContent = 'Enviando...';
+                if(boton) boton.disabled = true;
+                if(boton) boton.textContent = 'Enviando...';
 
                 const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                     method: 'POST',
                     body: JSON.stringify({ comentario: texto }),
                 });
-                
+
                 textarea.value = '';
                 anadirComentarioALista(nuevoComentario);
 
             } catch (error) {
                 alert('Error al enviar el comentario.');
             } finally {
-                boton.disabled = false;
-                boton.textContent = 'Comentar';
+                if(boton) boton.disabled = false;
+                if(boton) boton.textContent = 'Comentar';
             }
         });
     }
 
-    function configurarBotonReaccion() {
+    function configurarBotonReaccion(initialCount) {
         const btn = document.getElementById('reaccion-btn');
         const countSpan = document.getElementById('reaccion-count');
-        if (!btn) return;
-        
+        if (!btn || !countSpan) return;
+
+        let currentCount = initialCount;
+
         btn.addEventListener('click', async () => {
             try {
-                btn.disabled = true; 
+                btn.disabled = true;
                 const resultado = await window.api.fetchAPI(`/publicaciones/${publicacionId}/reaccionar/`, {
                     method: 'POST'
                 });
 
-                let currentCount = parseInt(countSpan.textContent, 10);
                 if (resultado.status === 'reaccion_creada') {
-                    countSpan.textContent = currentCount + 1;
+                    currentCount++;
                     btn.classList.add('reaccionado');
                 } else if (resultado.status === 'reaccion_eliminada') {
-                    countSpan.textContent = currentCount - 1;
+                    currentCount = Math.max(0, currentCount - 1);
                     btn.classList.remove('reaccionado');
                 }
+                 countSpan.textContent = currentCount;
+
             } catch (error) {
                 alert('Error al procesar la reacción.');
             } finally {

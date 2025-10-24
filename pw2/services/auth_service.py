@@ -76,19 +76,3 @@ class AuthService:
         user.is_staff = new_role == 'admin'
         user.save()
         return user
-
-    def ban_user(self, user_id):
-        user = self.usuario_repo.get_by_id(user_id)
-        if not user:
-            raise ValueError("Usuario no encontrado.")
-        user.is_active = False
-        user.save()
-        return user
-
-    def unban_user(self, user_id):
-        user = self.usuario_repo.get_by_id(user_id)
-        if not user:
-            raise ValueError("Usuario no encontrado.")
-        user.is_active = True
-        user.save()
-        return user

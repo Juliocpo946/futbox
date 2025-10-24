@@ -14,17 +14,20 @@ class UsuarioManager(BaseUserManager):
     def create_superuser(self, correo, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('rol', 'admin')
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get('rol') != 'admin':
+            raise ValueError('Superuser must have rol=admin.')
 
         return self.create_user(correo, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     GENERO_CHOICES = [('masculino', 'Masculino'), ('femenino', 'Femenino'), ('otro', 'Otro')]
-    
+
     nombre = models.CharField(max_length=255)
     apellido_paterno = models.CharField(max_length=255, null=True, blank=True)
     apellido_materno = models.CharField(max_length=255, null=True, blank=True)
@@ -34,7 +37,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=255, unique=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
-    
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     rol = models.CharField(max_length=50, default='usuario')
@@ -81,8 +84,11 @@ class Publicacion(models.Model):
     def __str__(self): return self.titulo
 
 class Multimedia(models.Model):
+    MEDIA_TYPES = [('image', 'Image'), ('video', 'Video'), ('unknown', 'Unknown')]
     path = models.CharField(max_length=255)
-    def __str__(self): return self.path
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, default='unknown')
+    def __str__(self): return f"{self.media_type}: {self.path}"
+
 
 class MultimediaPublicacion(models.Model):
     ESTATUS_CHOICES = [("agregada", "Agregada"), ("eliminada", "Eliminada")]

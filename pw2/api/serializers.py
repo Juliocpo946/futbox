@@ -17,7 +17,7 @@ class PublicProfileSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol', 'foto_perfil', 'fecha_nacimiento', 'genero']
+        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol', 'foto_perfil', 'fecha_nacimiento', 'genero', 'is_active'] # Añadido is_active
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +37,7 @@ class LoginSerializer(serializers.Serializer):
 
 class ActualizarUsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False, allow_blank=True)
-    
+
     class Meta:
         model = Usuario
         fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero', 'password']
@@ -53,7 +53,8 @@ class PaisSerializer(serializers.ModelSerializer):
 class MultimediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Multimedia
-        fields = ['id', 'path']
+        fields = ['id', 'path', 'media_type']
+
 
 class MundialSerializer(serializers.ModelSerializer):
     sedes = serializers.PrimaryKeyRelatedField(queryset=Pais.objects.all(), many=True, required=False)
@@ -82,7 +83,7 @@ class PublicacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publicacion
         fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'comentarios_count', 'multimedia', 'estatus']
-    
+
     def get_reacciones_count(self, obj):
         return obj.reaccion_set.count()
 

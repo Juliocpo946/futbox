@@ -1,8 +1,10 @@
 {% load static %}
 <aside class="sidebar">
     <div class="profile-box">
-        <a href="/mi-perfil/" id="profile-dropdown-btn" class="perfilseccion">
-            <img id="profile-pic" src="{% static 'pw2/images/Haerin.jpg' %}" alt="Foto de perfil">
+        <a href="{% url 'pw2:mi_perfil' %}" id="profile-dropdown-btn" class="perfilseccion">
+            <div id="sidebar-profile-pic-container">
+                 <i class="fas fa-user-circle profile-placeholder-icon"></i>
+            </div>
             <div class="usuarioinfo">
                 <span class="nombreusuario" id="profile-name">Usuario</span>
                 <p class="username-handle" id="profile-nickname">@usuario</p>
@@ -15,7 +17,7 @@
             <a href="#" id="logout-button" class="dropdown-item"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></a>
         </div>
     </div>
-    
+
     <div class="quick-nav-box">
         <a href="{% url 'pw2:index' %}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
         <a href="{% url 'pw2:publicaciones' %}" class="nav-link"><i class="fas fa-users"></i> Comunidad</a>

@@ -10,11 +10,18 @@
     display: none;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.modal.is-visible {
-    display: flex;
+.modal-visible {
+    display: flex !important;
 }
+
+.modal-oculto {
+    display: none !important;
+}
+
 
 .modal-contenido {
     background-color: #fff;
@@ -24,6 +31,7 @@
     max-width: 500px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
 }
 
 .mundial-modal-contenido {
@@ -74,14 +82,162 @@
 .lightbox-close {
     position: absolute;
     top: 15px;
-    right: 35px;
+    right: 25px;
     color: #fff;
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    z-index: 2002;
 }
 
 .lightbox-close:hover {
     color: #bbb;
+}
+
+#confirmar-eliminacion-modal .modal-contenido h2 {
+    color: #dc3545;
+    margin-top: 0;
+}
+
+#confirmar-eliminacion-modal .modal-contenido p {
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.modal-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-acciones button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-acciones .btn-cancelar {
+    background-color: #e0e0e0;
+    color: #333;
+}
+.modal-acciones .btn-cancelar:hover {
+    background-color: #ccc;
+}
+
+.modal-acciones .btn-eliminar {
+    background-color: #dc3545;
+    color: white;
+}
+.modal-acciones .btn-eliminar:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+.media-lightbox-modal {
+    position: fixed;
+    z-index: 2001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* Reducido para más espacio */
+    box-sizing: border-box;
+}
+
+.media-lightbox-modal.visible {
+    display: flex;
+}
+
+.media-lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-lightbox-carousel {
+    position: relative;
+    /* Quitamos max-width/height del contenedor, lo aplicamos al item */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-lightbox-carousel-inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s ease;
+    align-items: center; /* Centrar items verticalmente */
+    justify-content: flex-start; /* Alinear items al inicio */
+}
+
+.media-lightbox-carousel-item {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, visibility 0.4s;
+    visibility: hidden; /* Ocultar completamente */
+    position: absolute; /* Superponer items */
+    top: 0;
+    left: 0;
+}
+.media-lightbox-carousel-item.active {
+    opacity: 1;
+    position: relative; /* El activo ocupa espacio */
+    visibility: visible; /* Hacer visible */
+}
+
+.media-lightbox-carousel-item img,
+.media-lightbox-carousel-item video {
+    display: block;
+    /* Tamaño máximo relativo al viewport menos padding/controles */
+    max-width: calc(100vw - 80px); /* 100% ancho viewport menos espacio para controles/padding */
+    max-height: calc(100vh - 80px); /* 100% alto viewport menos espacio para controles/padding */
+    width: auto; /* Mantiene proporción */
+    height: auto; /* Mantiene proporción */
+    object-fit: contain; /* Encaja sin cortar */
+    border-radius: 4px;
+}
+
+.media-lightbox-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(40, 40, 40, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2003;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+.media-lightbox-control.prev { left: 15px; }
+.media-lightbox-control.next { right: 15px; }
+.media-lightbox-control:hover { background-color: rgba(0, 0, 0, 0.8); }
+.media-lightbox-control:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }

@@ -12,21 +12,22 @@
     <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
 </head>
 <body>
-    <div id="image-lightbox" class="lightbox-modal" style="display: none;">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
-    </div>
 
     <nav class="barra">
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
-        <form class="barra_busqueda" id="search-form-nav">
-            <div class="buscador">
+        <div class="barra_busqueda">
+             <form class="buscador" id="search-form-nav">
                 <i class="fas fa-search"></i>
                 <input type="text" id="search-input-nav" placeholder="Buscar en la comunidad...">
-            </div>
-        </form>
+             </form>
+             <div class="filtro-mundial-container">
+                 <select id="mundial-filter-nav" class="filtro-mundial-select">
+                    <option value="">Todos los Mundiales</option>
+                 </select>
+             </div>
+        </div>
          <div class="nav-user-section">
             <div id="admin-nav-link-container"></div>
         </div>
@@ -38,9 +39,22 @@
                 <p>Cargando publicaciones...</p>
             </div>
         </div>
-        
+
         {% include 'pw2/includes/sidebar.html' %}
     </main>
+
+    <div id="media-lightbox" class="media-lightbox-modal">
+        <span class="lightbox-close">&times;</span>
+        <div class="media-lightbox-content">
+             <button class="media-lightbox-control prev" style="display: none;">&#10094;</button>
+             <div class="media-lightbox-carousel">
+                 <div class="media-lightbox-carousel-inner"></div>
+             </div>
+             <button class="media-lightbox-control next" style="display: none;">&#10095;</button>
+        </div>
+        </div>
+
+
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
     <script src="{% static 'pw2/js/pages/comunidad.js' %}"></script>

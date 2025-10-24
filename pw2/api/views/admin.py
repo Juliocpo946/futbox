@@ -186,10 +186,6 @@ class AdminUsuarioDetalleView(APIView):
                 usuario = service.change_user_role(pk, request.data['rol'])
                 return Response(UsuarioSerializer(usuario).data)
 
-            elif 'ban' in request.data:
-                usuario = service.ban_user(pk) if request.data['ban'] else service.unban_user(pk)
-                return Response(UsuarioSerializer(usuario).data)
-
             return Response({'error': 'Acción no especificada.'}, status=status.HTTP_400_BAD_REQUEST)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)

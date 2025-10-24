@@ -1,10 +1,10 @@
 from rest_framework import status, parsers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from pw2.models import Publicacion, Comentario
 from pw2.api.serializers import (
-    PublicacionSerializer, PublicacionCreateSerializer, ComentarioSerializer, 
+    PublicacionSerializer, PublicacionCreateSerializer, ComentarioSerializer,
     ComentarioCreateSerializer, MultimediaSerializer, CategoriaSerializer, MundialDetalleSerializer
 )
 from pw2.services.publicacion_service import PublicacionService
@@ -21,7 +21,14 @@ class PublicacionesView(APIView):
     def get(self, request):
         service = PublicacionService()
         search_query = request.query_params.get('search', None)
-        publicaciones = service.listar_publicaciones(search_query)
+        mundial_id = request.query_params.get('mundial', None)
+        categoria_id = request.query_params.get('categoria', None)
+
+        publicaciones = service.repo.get_all_aprobadas(
+            search_query=search_query,
+            mundial_id=mundial_id,
+            categoria_id=categoria_id
+        )
         serializer = PublicacionSerializer(publicaciones, many=True)
         return Response(serializer.data)
 
@@ -65,8 +72,8 @@ class PublicacionDetalleView(APIView):
                 return Response(response_serializer.data)
             except PermissionError as e:
                 return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
-            except Publicacion.DoesNotExist:
-                return Response({"error": "Publicacion no encontrada."}, status=status.HTTP_404_NOT_FOUND)
+            except ValueError as e:
+                 return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -76,34 +83,54 @@ class PublicacionDetalleView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except PermissionError as e:
             return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
-        except Publicacion.DoesNotExist:
-            return Response({"error": "Publicacion no encontrada."}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 class SubirMultimediaView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def post(self, request, publicacion_pk):
-        if 'file' not in request.data:
-            return Response({'error': 'No se encontro el archivo en la peticion.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        file = request.data['file']
+        files = request.FILES.getlist('files') # Cambiado a 'files' y getlist
+        if not files:
+            return Response({'error': 'No se encontraron archivos en la peticion.'}, status=status.HTTP_400_BAD_REQUEST)
+
         pub_service = PublicacionService()
         multi_service = MultimediaService()
+        multimedia_results = []
+        errors = []
 
         try:
             publicacion = pub_service.repo.get_by_id(publicacion_pk)
-            if not publicacion or publicacion.autor != request.user:
-                return Response({'error': 'Publicacion no encontrada o sin permisos.'}, status=status.HTTP_404_NOT_FOUND)
+            if not publicacion:
+                 raise ValueError("Publicación no encontrada.")
+            if publicacion.autor != request.user:
+                raise PermissionError("No tienes permiso para añadir multimedia a esta publicación.")
 
-            multimedia_obj = multi_service.subir_y_asociar_imagen(file, publicacion)
-            serializer = MultimediaSerializer(multimedia_obj)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            for file in files:
+                 try:
+                    multimedia_obj = multi_service.subir_y_asociar_imagen(file, publicacion)
+                    multimedia_results.append(MultimediaSerializer(multimedia_obj).data)
+                 except Exception as upload_error:
+                    errors.append({'file': file.name, 'error': str(upload_error)})
+
+            if errors:
+                 # Decide cómo manejar errores parciales (puedes devolver 207 Multi-Status)
+                 return Response({
+                     'uploaded': multimedia_results,
+                     'errors': errors
+                 }, status=status.HTTP_207_MULTI_STATUS if multimedia_results else status.HTTP_400_BAD_REQUEST)
+
+            return Response(multimedia_results, status=status.HTTP_201_CREATED)
+
         except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionError as e:
+            return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            log_critical_error("Error al subir archivo multimedia.", e)
+            log_critical_error("Error al subir archivos multimedia.", e)
             return Response({'error': 'Ocurrio un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ComentariosView(APIView):
     permission_classes = [IsAuthenticated]
@@ -139,8 +166,8 @@ class ComentarioDetalleView(APIView):
                 return Response(response_serializer.data)
             except PermissionError as e:
                 return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
-            except Comentario.DoesNotExist:
-                return Response({"error": "Comentario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            except ValueError as e:
+                return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, publicacion_pk, comentario_pk):
@@ -150,8 +177,8 @@ class ComentarioDetalleView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except PermissionError as e:
             return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
-        except Comentario.DoesNotExist:
-            return Response({"error": "Comentario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 class ReaccionView(APIView):
     permission_classes = [IsAuthenticated]
@@ -166,7 +193,7 @@ class ReaccionView(APIView):
 
 class PublicacionesUsuarioPublicoView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, user_id):
         service = PublicacionService()
         publicaciones = service.repo.get_approved_by_author(user_id)
@@ -174,8 +201,8 @@ class PublicacionesUsuarioPublicoView(APIView):
         return Response(serializer.data)
 
 class CategoriasPublicasView(APIView):
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [AllowAny]
+
     def get(self, request):
         service = CategoriaService()
         categorias = service.get_all()
@@ -183,8 +210,8 @@ class CategoriasPublicasView(APIView):
         return Response(serializer.data)
 
 class MundialesPublicosView(APIView):
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [AllowAny]
+
     def get(self, request):
         service = MundialService()
         mundiales = service.get_all()
