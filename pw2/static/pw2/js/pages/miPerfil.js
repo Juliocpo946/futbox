@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <p>${pub.descripcion.substring(0, 150)}${pub.descripcion.length > 150 ? '...' : ''}</p>
                         </div>
                         <div class="publicacion-footer">
+                             ${ pub.estatus === 'aprobada' ? `
+                             <div class="card-comentarios-preview" data-pub-id="${pub.id}">
+                                <p class="loading-comments">Cargando comentarios...</p>
+                             </div>` : ''}
                            <div class="publicacion-stats">
                                 <div class="reacciones-info">
                                     <i class="fas fa-heart"></i>
@@ -119,10 +123,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 </div>
                                 <span class="estatus-publicacion ${estatusClass}" style="margin-left: auto;">${estatusTexto}</span>
                             </div>
+                            ${ pub.estatus === 'aprobada' ? `
+                            <form class="comentario-form">
+                                <textarea placeholder="Añade un comentario..." rows="1"></textarea>
+                                <button type="submit">Publicar</button>
+                            </form>
+                            ` : ''}
                         </div>
                     </div>
                 `;
                 container.appendChild(card);
+                if (pub.estatus === 'aprobada') {
+                    cargarYRenderizarComentariosPreview(pub.id);
+                }
             });
 
              if(!document.head.querySelector('style[data-indicator-style]')) {
@@ -141,6 +154,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             container.innerHTML = "<p>Error al cargar tus publicaciones.</p>";
             console.error(error);
+        }
+    }
+
+    async function cargarYRenderizarComentariosPreview(publicacionId) {
+        const previewContainer = document.querySelector(`.card-comentarios-preview[data-pub-id="${publicacionId}"]`);
+        if (!previewContainer) return;
+
+        try {
+            const comentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
+            const ultimosComentarios = comentarios.slice(-2);
+
+            if (ultimosComentarios.length === 0) {
+                previewContainer.innerHTML = '<p class="no-comments">Sin comentarios aún.</p>';
+                return;
+            }
+
+            let comentariosHTML = '';
+            ultimosComentarios.forEach(com => {
+                const profilePicComentarioHTML = com.usuario.foto_perfil
+                    ? `<img src="${com.usuario.foto_perfil}" alt="Avatar">`
+                    : `<i class="fas fa-user-circle profile-placeholder-icon-small"></i>`;
+                comentariosHTML += `
+                    <div class="card-comentario-item">
+                        <div class="card-comentario-autor">
+                             ${profilePicComentarioHTML}
+                            <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a>:</strong>
+                        </div>
+                        <p>${com.comentario.substring(0, 50)}${com.comentario.length > 50 ? '...' : ''}</p>
+                    </div>
+                `;
+            });
+            previewContainer.innerHTML = comentariosHTML;
+
+        } catch (error) {
+            previewContainer.innerHTML = '<p class="error-comments">Error al cargar comentarios.</p>';
+            console.error(`Error cargando comentarios para pub ${publicacionId}:`, error);
         }
     }
 
@@ -247,6 +296,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 } catch (error) {
                     alert('Error al procesar la reacción.');
+                }
+            }
+        });
+
+        pubContainer.addEventListener('submit', async (e) => {
+             if (e.target.classList.contains('comentario-form')) {
+                e.preventDefault();
+                const card = e.target.closest('.publicacion-card');
+                if (!card) return;
+                const publicacionId = card.dataset.id;
+                const publicationIndex = parseInt(card.dataset.index, 10);
+                const textarea = e.target.querySelector('textarea');
+                const texto = textarea.value.trim();
+
+                if (!texto) return;
+                const button = e.target.querySelector('button');
+                try {
+                    if(button) button.disabled = true;
+                    const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
+                        method: 'POST',
+                        body: JSON.stringify({ comentario: texto }),
+                    });
+                    textarea.value = '';
+
+                    const commentInfo = card.querySelector('.comentarios-info span');
+                    if(commentInfo) {
+                        let currentCount = parseInt(commentInfo.textContent, 10);
+                        commentInfo.textContent = currentCount + 1;
+                        if(cachedMiPerfilPublications[publicationIndex]){
+                           cachedMiPerfilPublications[publicationIndex].comentarios_count = currentCount + 1;
+                        }
+                    }
+                    cargarYRenderizarComentariosPreview(publicacionId);
+
+                } catch (error) {
+                    alert('Error al publicar el comentario.');
+                } finally {
+                     if(button) button.disabled = false;
                 }
             }
         });

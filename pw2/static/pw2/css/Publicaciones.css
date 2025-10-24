@@ -10,7 +10,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     overflow: hidden;
-    height: 480px;
+    height: 480px; /* Altura fija para la tarjeta */
 }
 
 .publicacion-media {
@@ -39,10 +39,9 @@
     background-color: #f0f2f5;
 }
 
-/* Estilo para el icono placeholder */
 .media-placeholder-icon {
-    font-size: 80px; /* Tamaño grande para el icono */
-    color: #b0b0b0; /* Color gris */
+    font-size: 80px;
+    color: #b0b0b0;
 }
 
 
@@ -52,7 +51,8 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow: hidden; /* Cambiado para controlar el scroll interno */
+    height: 100%; /* Asegura que tome toda la altura */
 }
 
 .publicacion-header {
@@ -70,17 +70,17 @@
     object-fit: cover;
 }
 
-/* Estilo icono perfil placeholder */
 .profile-placeholder-icon {
-    font-size: 40px; /* Tamaño similar a la imagen */
-    color: #ccc; /* Gris claro */
-    width: 40px; /* Mismo ancho que la imagen */
-    height: 40px; /* Mismo alto que la imagen */
+    font-size: 40px;
+    color: #ccc;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%; /* Redondo */
-    background-color: #f0f2f5; /* Fondo suave */
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    line-height: 0; /* Para mejor centrado vertical */
 }
 
 
@@ -102,9 +102,10 @@
 }
 
 .publicacion-body {
-    flex-grow: 1;
-    margin-bottom: 15px;
-    overflow: hidden;
+    flex-grow: 1; /* Permite que crezca */
+    margin-bottom: 10px; /* Reducido */
+    overflow: hidden; /* Oculta el texto largo si es necesario */
+    min-height: 50px; /* Asegura un espacio mínimo */
 }
 
 .publicacion-body h3 {
@@ -118,14 +119,23 @@
     color: #555;
     line-height: 1.5;
     word-wrap: break-word;
+    /* Evitar que el párrafo empuje todo hacia abajo */
+    max-height: 6em; /* Limita altura (ajustar aprox 4 líneas) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Número de líneas a mostrar */
+    -webkit-box-orient: vertical;
 }
 
 .publicacion-footer {
-    margin-top: auto;
+    margin-top: auto; /* Empuja al final */
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px; /* Reducido */
     flex-shrink: 0;
+    padding-top: 10px; /* Separación */
+    border-top: 1px solid #eee; /* Separador visual */
 }
 
 .publicacion-stats {
@@ -273,4 +283,74 @@
     border-radius: 10px;
     font-size: 0.8em;
     z-index: 5;
+}
+
+/* --- ESTILOS PARA PREVIEW DE COMENTARIOS EN TARJETA --- */
+.card-comentarios-preview {
+    max-height: 80px; /* Altura máxima para 2-3 comentarios */
+    overflow-y: auto; /* Habilita el scroll vertical si se supera */
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee; /* Separador */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espacio entre comentarios */
+}
+
+/* Estilo para mensajes (cargando, sin comentarios, error) */
+.card-comentarios-preview p.loading-comments,
+.card-comentarios-preview p.no-comments,
+.card-comentarios-preview p.error-comments {
+    font-size: 0.8em;
+    color: #888;
+    text-align: center;
+    margin: 5px 0;
+}
+
+.card-comentario-item {
+    font-size: 0.85em; /* Tamaño de fuente pequeño */
+    line-height: 1.4;
+    color: #555;
+    background-color: #f8f9fa; /* Fondo ligero */
+    padding: 5px 8px; /* Padding reducido */
+    border-radius: 4px;
+}
+
+.card-comentario-autor {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px; /* Espacio antes del texto */
+}
+
+.card-comentario-autor img {
+    width: 18px; /* Avatar pequeño */
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.card-comentario-autor .profile-placeholder-icon-small {
+    font-size: 18px; /* Icono pequeño */
+    width: 18px;
+    height: 18px;
+    line-height: 18px; /* Centrar icono */
+    text-align: center;
+    color: #ccc;
+    background-color: #e9ecef;
+    border-radius: 50%;
+}
+
+
+.card-comentario-autor strong a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+.card-comentario-autor strong a:hover {
+    text-decoration: underline;
+}
+
+.card-comentario-item p {
+    margin: 0; /* Sin margen extra para el párrafo */
+    word-wrap: break-word; /* Romper palabras largas */
 }

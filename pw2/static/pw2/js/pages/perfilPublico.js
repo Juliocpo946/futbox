@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentLightboxItems = [];
     let currentLightboxIndex = 0;
     let cachedPerfilPublicoPublications = [];
-    let perfilData = null; // Guardar datos del perfil
+    let perfilData = null;
 
     async function cargarPerfilPublico() {
         if(!container) return;
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'publicacion-card';
             card.dataset.id = pub.id;
-            card.dataset.index = pubIndex; // Índice para lightbox
+            card.dataset.index = pubIndex;
 
             const fecha = new Date(pub.fecha_publicacion).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -113,6 +113,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <p>${pub.descripcion.substring(0, 150)}${pub.descripcion.length > 150 ? '...' : ''}</p>
                     </div>
                     <div class="publicacion-footer">
+                       <div class="card-comentarios-preview" data-pub-id="${pub.id}">
+                             <p class="loading-comments">Cargando comentarios...</p>
+                        </div>
                        <div class="publicacion-stats">
                             <div class="reacciones-info">
                                 <i class="fas fa-heart"></i>
@@ -130,9 +133,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 </div>`;
             pubContainer.appendChild(card);
+            cargarYRenderizarComentariosPreview(pub.id);
         });
 
-         // Estilos del indicador (asegurar que se añadan)
          if(!document.head.querySelector('style[data-indicator-style]')) {
              const style = document.createElement('style');
              style.setAttribute('data-indicator-style', 'true');
@@ -146,6 +149,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.head.appendChild(style);
         }
     }
+
+    async function cargarYRenderizarComentariosPreview(publicacionId) {
+        const previewContainer = document.querySelector(`.card-comentarios-preview[data-pub-id="${publicacionId}"]`);
+        if (!previewContainer) return;
+
+        try {
+            const comentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
+            const ultimosComentarios = comentarios.slice(-2);
+
+            if (ultimosComentarios.length === 0) {
+                previewContainer.innerHTML = '<p class="no-comments">Sin comentarios aún.</p>';
+                return;
+            }
+
+            let comentariosHTML = '';
+            ultimosComentarios.forEach(com => {
+                 const profilePicComentarioHTML = com.usuario.foto_perfil
+                    ? `<img src="${com.usuario.foto_perfil}" alt="Avatar">`
+                    : `<i class="fas fa-user-circle profile-placeholder-icon-small"></i>`;
+                comentariosHTML += `
+                    <div class="card-comentario-item">
+                        <div class="card-comentario-autor">
+                             ${profilePicComentarioHTML}
+                            <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a>:</strong>
+                        </div>
+                        <p>${com.comentario.substring(0, 50)}${com.comentario.length > 50 ? '...' : ''}</p>
+                    </div>
+                `;
+            });
+            previewContainer.innerHTML = comentariosHTML;
+
+        } catch (error) {
+            previewContainer.innerHTML = '<p class="error-comments">Error al cargar comentarios.</p>';
+            console.error(`Error cargando comentarios para pub ${publicacionId}:`, error);
+        }
+    }
+
 
     function openLightbox(publicationIndex, mediaIndex) {
         const publication = cachedPerfilPublicoPublications[publicationIndex];
@@ -266,12 +306,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                      if(button) button.disabled = true;
-                    await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
+                    const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                         method: 'POST',
                         body: JSON.stringify({ comentario: texto }),
                     });
                     textarea.value = '';
-                    alert('Comentario publicado. Se mostrará en la página de detalles de la publicación.');
 
                     const commentCountSpan = card.querySelector('.comentarios-info span');
                      if (commentCountSpan) {
@@ -281,6 +320,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                              cachedPerfilPublicoPublications[publicationIndex].comentarios_count = currentCount + 1;
                          }
                      }
+                     cargarYRenderizarComentariosPreview(publicacionId);
 
 
                 } catch (error) {

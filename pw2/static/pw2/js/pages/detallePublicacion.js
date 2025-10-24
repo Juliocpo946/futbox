@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderizarDetalle(publicacion);
             initializeDetailCarousel();
             renderizarComentarios(comentarios);
-
             configurarFormularioComentario();
             configurarBotonReaccion(publicacion.reacciones_count);
 
@@ -142,7 +141,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
              if (newIndex !== currentIndex) {
-                 // Pausar video actual si existe
                  const currentVideo = items[currentIndex].querySelector('video');
                  if (currentVideo) currentVideo.pause();
                  currentIndex = newIndex;
@@ -179,7 +177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const profilePicComentarioHTML = com.usuario.foto_perfil
             ? `<img src="${com.usuario.foto_perfil}" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">`
-            : `<i class="fas fa-user-circle profile-placeholder-icon" style="font-size: 30px;"></i>`; // Icono pequeño
+            : `<i class="fas fa-user-circle profile-placeholder-icon" style="font-size: 30px; width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px;"></i>`;
 
 
         const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });

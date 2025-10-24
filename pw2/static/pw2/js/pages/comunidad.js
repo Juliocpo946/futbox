@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <p>${pub.descripcion.substring(0, 150)}${pub.descripcion.length > 150 ? '...' : ''}</p>
                     </div>
                     <div class="publicacion-footer">
+                        <div class="card-comentarios-preview" data-pub-id="${pub.id}">
+                            <p class="loading-comments">Cargando comentarios...</p>
+                        </div>
                         <div class="publicacion-stats">
                             <div class="reacciones-info">
                                 <i class="fas fa-heart"></i>
@@ -165,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
             container.appendChild(card);
+            cargarYRenderizarComentariosPreview(pub.id);
         });
 
         if(!document.head.querySelector('style[data-indicator-style]')) {
@@ -178,6 +182,42 @@ document.addEventListener('DOMContentLoaded', async () => {
                     padding: 3px 8px; border-radius: 10px; font-size: 0.8em; z-index: 5; }
             `;
             document.head.appendChild(style);
+        }
+    }
+
+    async function cargarYRenderizarComentariosPreview(publicacionId) {
+        const previewContainer = document.querySelector(`.card-comentarios-preview[data-pub-id="${publicacionId}"]`);
+        if (!previewContainer) return;
+
+        try {
+            const comentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
+            const ultimosComentarios = comentarios.slice(-2); // Tomar los últimos 2
+
+            if (ultimosComentarios.length === 0) {
+                previewContainer.innerHTML = '<p class="no-comments">Sin comentarios aún.</p>';
+                return;
+            }
+
+            let comentariosHTML = '';
+            ultimosComentarios.forEach(com => {
+                const profilePicComentarioHTML = com.usuario.foto_perfil
+                    ? `<img src="${com.usuario.foto_perfil}" alt="Avatar">`
+                    : `<i class="fas fa-user-circle profile-placeholder-icon-small"></i>`;
+                comentariosHTML += `
+                    <div class="card-comentario-item">
+                        <div class="card-comentario-autor">
+                            ${profilePicComentarioHTML}
+                            <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a>:</strong>
+                        </div>
+                        <p>${com.comentario.substring(0, 50)}${com.comentario.length > 50 ? '...' : ''}</p>
+                    </div>
+                `;
+            });
+            previewContainer.innerHTML = comentariosHTML;
+
+        } catch (error) {
+            previewContainer.innerHTML = '<p class="error-comments">Error al cargar comentarios.</p>';
+            console.error(`Error cargando comentarios para pub ${publicacionId}:`, error);
         }
     }
 
@@ -306,12 +346,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const button = e.target.querySelector('button');
                 try {
                     if(button) button.disabled = true;
-                    await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
+                    const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                         method: 'POST',
                         body: JSON.stringify({ comentario: texto }),
                     });
                     textarea.value = '';
-                     alert('Comentario publicado. Se verá en la página de detalles.');
+
                      const commentInfo = card.querySelector('.comentarios-info span');
                      if(commentInfo) {
                          let currentCount = parseInt(commentInfo.textContent, 10);
@@ -320,6 +360,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             cachedPublications[publicationIndex].comentarios_count = currentCount + 1;
                          }
                      }
+                     cargarYRenderizarComentariosPreview(publicacionId);
 
                 } catch (error) {
                     alert('Error al publicar el comentario.');
