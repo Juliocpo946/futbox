@@ -30,19 +30,15 @@
     color: #ccc;
     width: 150px;
     height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 50%;
     background-color: #f0f2f5;
     border: 4px solid #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
     flex-shrink: 0;
-    box-sizing: border-box; /* Asegura que el borde esté incluido en el tamaño */
-}
-/* Ajuste fino si flexbox no centra perfectamente el icono de fuente */
-.profile-placeholder-icon-large::before {
-    line-height: 1; /* Puede ayudar con la alineación vertical del glifo */
+    box-sizing: border-box; 
+    text-align: center;
+    padding-top: 30px; /* Empuja el contenido hacia abajo */
+    line-height: 140px;
 }
 
 
@@ -147,15 +143,14 @@
     color: #ccc;
     width: 120px;
     height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 50%;
     background-color: #f0f2f5;
     box-sizing: border-box;
-}
-.profile-placeholder-icon-medium::before {
-     line-height: 1;
+
+    /* Corrección: Mover 8px hacia abajo */
+    text-align: center;
+    padding-top: 8px; /* Empuja el contenido hacia abajo */
+    line-height: 112px; /* Ajustado: height (120) - padding-top (8) */
 }
 
 

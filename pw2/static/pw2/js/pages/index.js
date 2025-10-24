@@ -126,7 +126,10 @@ function renderizarCarrusel(publicaciones) {
     let carruselHTML = '<div class="carrusel-inner">';
     publicaciones.forEach((pub, index) => {
         const activeClass = index === 0 ? 'active' : '';
-        const imagenUrl = pub.multimedia.length > 0 ? pub.multimedia[0].path : null; // Obtener URL o null
+        
+        const firstImage = pub.multimedia.find(m => m.media_type === 'image');
+        const imagenUrl = firstImage ? firstImage.path : null;
+
         const mediaElement = imagenUrl
             ? `<img src="${imagenUrl}" alt="${pub.titulo}">`
             : `<span class="media-placeholder-icon"><i class="far fa-image"></i></span>`; // Icono si no hay imagen
@@ -249,7 +252,6 @@ function renderizarMundiales(mundiales) {
     });
     mundialesContainer.innerHTML = mundialesHTML;
 
-     // Estilos para el placeholder de la tarjeta de mundial
      if(!document.head.querySelector('style[data-mundial-placeholder]')) {
          const style = document.createElement('style');
          style.setAttribute('data-mundial-placeholder', 'true');
@@ -257,7 +259,7 @@ function renderizarMundiales(mundiales) {
             .tarjeta-img-placeholder {
                 width: 100%; height: 160px; background-color: #e0e0e0;
                 display: flex; justify-content: center; align-items: center; }
-            .tarjeta-img-placeholder i { font-size: 50px; color: #b0b0b0; }
+            .tarjeta-img-placeholder i { font-size: 70px; color: #b0b0b0; }
          `;
          document.head.appendChild(style);
     }

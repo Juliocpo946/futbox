@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if(!container) return;
         try {
             const publicaciones = await window.api.fetchAPI('/usuarios/mis-publicaciones/');
-            cachedMiPerfilPublications = publicaciones; // Guardar en caché
+            cachedMiPerfilPublications = publicaciones;
             if (publicaciones.length === 0) {
                 container.innerHTML = "<p>Aun no has creado ninguna publicacion.</p>";
                 return;
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const card = document.createElement('div');
                 card.className = 'publicacion-card';
                 card.dataset.id = pub.id;
-                card.dataset.index = pubIndex; // Índice para el lightbox
+                card.dataset.index = pubIndex;
 
                 const fecha = new Date(pub.fecha_publicacion).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 container.appendChild(card);
             });
 
-             // Estilos del indicador (asegurar que se añadan)
              if(!document.head.querySelector('style[data-indicator-style]')) {
                  const style = document.createElement('style');
                  style.setAttribute('data-indicator-style', 'true');
@@ -219,7 +218,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if(mediaTarget && !isNaN(publicationIndex)) {
                 const pubData = cachedMiPerfilPublications[publicationIndex];
-                 // Solo abrir lightbox si hay multimedia real
                  if (pubData && pubData.multimedia && pubData.multimedia.length > 0) {
                      const mediaIndex = parseInt(mediaTarget.dataset.mediaIndex || '0', 10);
                      openLightbox(publicationIndex, mediaIndex);
@@ -229,7 +227,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (e.target.closest('.reacciones-info')) {
                 const publicacionId = card.dataset.id;
-                // Solo permitir reaccionar si está aprobada
                  const pubData = cachedMiPerfilPublications[publicationIndex];
                  if (pubData && pubData.estatus !== 'aprobada') return;
 
