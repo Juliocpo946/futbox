@@ -4,7 +4,7 @@ async function fetchAPI(endpoint, options = {}) {
     const url = `${BASE_URL}${endpoint}`;
 
     const defaultHeaders = {};
-    // Solo añade Content-Type si no es FormData
+
     if (!(options.body instanceof FormData)) {
         defaultHeaders['Content-Type'] = 'application/json';
     }
@@ -67,7 +67,7 @@ async function fetchAPI(endpoint, options = {}) {
         if (contentType && contentType.indexOf("application/json") !== -1) {
             return await response.json();
         } else {
-            return await response.text(); // Devuelve texto si no es JSON
+            return await response.text();
         }
 
 
