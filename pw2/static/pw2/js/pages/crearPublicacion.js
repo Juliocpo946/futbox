@@ -133,6 +133,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                  return;
             }
 
+            if (selectedFiles.length === 0) {
+                mostrarError('Debes subir al menos una imagen o video.');
+                if(submitButton) submitButton.disabled = false;
+                if(submitButton) submitButton.textContent = 'Publicar';
+                return;
+            }
+
             let nuevaPublicacion;
             try {
                 nuevaPublicacion = await window.api.fetchAPI('/publicaciones/', {

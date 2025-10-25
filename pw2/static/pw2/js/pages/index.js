@@ -43,12 +43,18 @@ function renderizarCarrusel(publicaciones) {
     let carruselHTML = '<div class="carrusel-inner">';
     publicaciones.forEach((pub, index) => {
         const activeClass = index === 0 ? 'active' : '';
+        
         const firstImage = pub.multimedia.find(m => m.media_type === 'image');
-        const imagenUrl = firstImage ? firstImage.path : null;
+        const firstVideo = !firstImage ? pub.multimedia.find(m => m.media_type === 'video') : null;
 
-        const mediaElement = imagenUrl
-            ? `<img src="${imagenUrl}" alt="${pub.titulo}">`
-            : `<span class="media-placeholder-icon"><i class="far fa-image"></i></span>`;
+        let mediaElement = '';
+        if (firstImage) {
+            mediaElement = `<img src="${firstImage.path}" alt="${pub.titulo}">`;
+        } else if (firstVideo) {
+            mediaElement = `<video src="${firstVideo.path}" muted loop autoplay playsinline alt="${pub.titulo}"></video>`;
+        } else {
+            mediaElement = `<span class="media-placeholder-icon"><i class="far fa-image"></i></span>`;
+        }
 
         carruselHTML += `
             <div class="carrusel-item ${activeClass}">

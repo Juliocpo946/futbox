@@ -131,8 +131,7 @@
 
 .comentario-card {
     background-color: #f9f9f9;
-    /* Corrección: Reducir padding vertical */
-    padding: 8px 15px; /* Menos espacio arriba/abajo, mantener horizontal */
+    padding: 12px 15px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
     height: auto;
@@ -143,7 +142,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 6px; /* Ligeramente reducido */
+    margin-bottom: 8px;
 }
 
 
@@ -179,12 +178,16 @@
 
 
 .comentario-body {
-    margin-top: 6px; /* Ligeramente reducido */
+    margin-top: 0;
     color: #444;
     font-size: 0.95em;
     line-height: 1.5;
-    white-space: pre-wrap;
+    /* white-space: pre-wrap; */
     word-wrap: break-word;
+}
+
+.comentario-body p {
+    margin: 0;
 }
 
 .nuevo-comentario-form {

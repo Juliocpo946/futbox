@@ -10,7 +10,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     overflow: hidden;
-    height: 480px; /* Altura fija para la tarjeta */
+    height: 480px; 
 }
 
 .publicacion-media {
@@ -51,22 +51,8 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow-y: auto; /* Habilitar scroll vertical para toda la sección */
+    overflow: hidden; 
     height: 100%;
-    scrollbar-width: thin; /* Para Firefox */
-    scrollbar-color: #ccc #f0f2f5; /* Para Firefox */
-}
-/* Estilos para scrollbar en Webkit (Chrome, Safari) */
-.publicacion-info::-webkit-scrollbar {
-    width: 6px;
-}
-.publicacion-info::-webkit-scrollbar-track {
-    background: #f0f2f5;
-    border-radius: 3px;
-}
-.publicacion-info::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
 }
 
 
@@ -75,7 +61,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
-    flex-shrink: 0; /* Evita que se encoja */
+    flex-shrink: 0; 
 }
 
 .publicacion-header img {
@@ -117,11 +103,28 @@
 }
 
 .publicacion-body {
-    flex-grow: 1; /* Permite que crezca */
+    flex-grow: 1; 
     margin-bottom: 10px;
-    min-height: 50px; /* Asegura un espacio mínimo */
-    /* overflow-y: auto; <- Eliminado de aquí */
+    min-height: 50px; 
+    overflow-y: auto;
+    padding-right: 10px; 
+    margin-right: -10px; 
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc #f0f2f5; 
 }
+
+.publicacion-body::-webkit-scrollbar {
+    width: 6px;
+}
+.publicacion-body::-webkit-scrollbar-track {
+    background: #f0f2f5;
+    border-radius: 3px;
+}
+.publicacion-body::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
 
 
 .publicacion-body h3 {
@@ -135,7 +138,7 @@
     color: #555;
     line-height: 1.5;
     word-wrap: break-word;
-    white-space: pre-wrap; /* Mantiene saltos de línea y espacios */
+    white-space: pre-wrap; 
 }
 
 .publicacion-meta {
@@ -144,12 +147,12 @@
     margin-top: 8px;
     margin-bottom: 8px;
     display: flex;
-    flex-direction: column; /* Cambiado a columna para mejor encaje */
+    flex-direction: column; 
     gap: 4px;
-    align-items: flex-start; /* Alinear a la izquierda */
+    align-items: flex-start; 
 }
 .publicacion-meta-item {
-    display: inline-flex; /* Para que el fondo solo ocupe el texto */
+    display: inline-flex; 
     align-items: center;
     gap: 5px;
     background-color: #f0f2f5;
@@ -157,16 +160,16 @@
     border-radius: 4px;
 }
 .publicacion-meta-item i {
-    color: #0d6a40; /* Color del icono */
+    color: #0d6a40; 
 }
 
 
 .publicacion-footer {
-    margin-top: auto; /* Empuja al final */
+    margin-top: auto; 
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex-shrink: 0; /* Evita que se encoja */
+    flex-shrink: 0; 
     padding-top: 10px;
     border-top: 1px solid #eee;
 }
@@ -318,20 +321,18 @@
     z-index: 5;
 }
 
-/* --- ESTILOS PARA PREVIEW DE COMENTARIOS EN TARJETA --- */
+
 .card-comentarios-preview {
-    max-height: 80px; /* Altura máxima para 2 comentarios */
-    overflow-y: auto; /* Habilita el scroll vertical si se supera */
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid #eee; /* Separador */
+    border-top: 1px solid #eee; 
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Espacio entre comentarios */
-    scrollbar-width: thin; /* Para Firefox */
-    scrollbar-color: #ccc #f8f9fa; /* Para Firefox */
+    gap: 8px; 
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc #f8f9fa; 
 }
-/* Estilos para scrollbar en Webkit */
+
 .card-comentarios-preview::-webkit-scrollbar {
     width: 5px;
 }
@@ -341,7 +342,7 @@
 }
 
 
-/* Estilo para mensajes (cargando, sin comentarios, error) */
+
 .card-comentarios-preview p.loading-comments,
 .card-comentarios-preview p.no-comments,
 .card-comentarios-preview p.error-comments {
@@ -352,11 +353,11 @@
 }
 
 .card-comentario-item {
-    font-size: 0.85em; /* Tamaño de fuente pequeño */
+    font-size: 0.85em; 
     line-height: 1.4;
     color: #555;
-    background-color: #f8f9fa; /* Fondo ligero */
-    padding: 5px 8px; /* Padding reducido */
+    background-color: #f8f9fa; 
+    padding: 5px 8px; 
     border-radius: 4px;
 }
 
@@ -364,20 +365,20 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    margin-bottom: 3px; /* Espacio antes del texto */
+    margin-bottom: 3px; 
 }
 
 .card-comentario-autor img {
-    width: 18px; /* Avatar pequeño */
+    width: 18px; 
     height: 18px;
     border-radius: 50%;
     object-fit: cover;
 }
 .card-comentario-autor .profile-placeholder-icon-small {
-    font-size: 18px; /* Icono pequeño */
+    font-size: 18px; 
     width: 18px;
     height: 18px;
-    line-height: 18px; /* Centrar icono */
+    line-height: 18px; 
     text-align: center;
     color: #ccc;
     background-color: #e9ecef;
@@ -395,6 +396,6 @@
 }
 
 .card-comentario-item p {
-    margin: 0; /* Sin margen extra para el párrafo */
-    word-wrap: break-word; /* Romper palabras largas */
+    margin: 0; 
+    word-wrap: break-word; 
 }

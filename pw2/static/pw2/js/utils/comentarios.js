@@ -4,7 +4,7 @@ async function cargarYRenderizarComentariosPreview(publicacionId) {
 
     try {
         const comentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
-        const ultimosComentarios = comentarios.slice(-2);
+        const ultimosComentarios = comentarios; 
 
         if (ultimosComentarios.length === 0) {
             previewContainer.innerHTML = '<p class="no-comments">Sin comentarios aún.</p>';

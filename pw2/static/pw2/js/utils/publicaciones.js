@@ -92,20 +92,22 @@ function crearCardPublicacion(pub, pubIndex, incluirEstatus = false) {
             ${mediaIndicatorHTML}
         </div>
         <div class="publicacion-info">
-            <div class="publicacion-header">
-                ${profilePicHTML}
-                <div class="publicacion-autor-info">
-                    <span class="nombre">${pub.autor.nombre}</span>
-                    <p class="fecha"><a href="/perfil/${pub.autor.nickname}/">@${pub.autor.nickname}</a> - ${fecha}</p>
+            <div class="publicacion-body">
+                <div class="publicacion-header">
+                    ${profilePicHTML}
+                    <div class="publicacion-autor-info">
+                        <span class="nombre">${pub.autor.nombre}</span>
+                        <p class="fecha"><a href="/perfil/${pub.autor.nickname}/">@${pub.autor.nickname}</a> - ${fecha}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="publicacion-body" ${onclickBody} style="${pub.estatus === 'aprobada' || !incluirEstatus ? 'cursor: pointer;' : ''}">
-                <h3>${pub.titulo}</h3>
-                ${metaHTML}
-                <p>${pub.descripcion}</p>
+                <div ${onclickBody} style="${pub.estatus === 'aprobada' || !incluirEstatus ? 'cursor: pointer;' : ''}">
+                    <h3>${pub.titulo}</h3>
+                    ${metaHTML}
+                    <p>${pub.descripcion}</p>
+                </div>
+                ${comentariosPreviewHTML}
             </div>
             <div class="publicacion-footer">
-                ${comentariosPreviewHTML}
                 <div class="publicacion-stats">
                     <div class="reacciones-info">
                         <i class="fas fa-heart"></i>
