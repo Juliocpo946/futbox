@@ -1,13 +1,16 @@
 from rest_framework import serializers
 from pw2.models import (
-    Usuario, Publicacion, Comentario, Reaccion, Pais, Mundial, Categoria,
-    Multimedia, MultimediaPublicacion
+    Usuario, Publicacion, Comentario, Pais, Mundial, Categoria,
+    Multimedia
 )
 
-class AuthorSerializer(serializers.ModelSerializer):
+class BaseUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['nombre', 'nickname', 'foto_perfil']
+
+class AuthorSerializer(BaseUsuarioSerializer):
+    pass
 
 class PublicProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,12 +20,14 @@ class PublicProfileSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'nickname', 'rol', 'foto_perfil', 'fecha_nacimiento', 'genero', 'is_active'] # Añadido is_active
+        fields = ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'correo', 
+                  'nickname', 'rol', 'foto_perfil', 'fecha_nacimiento', 'genero', 'is_active']
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 'password', 'nickname', 'fecha_nacimiento', 'genero']
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'correo', 
+                  'password', 'nickname', 'fecha_nacimiento', 'genero']
         extra_kwargs = {
             'password': {'write_only': True},
             'apellido_paterno': {'required': False},
@@ -40,7 +45,8 @@ class ActualizarUsuarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'nickname', 'fecha_nacimiento', 'genero', 'password']
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 
+                  'nickname', 'fecha_nacimiento', 'genero', 'password']
         extra_kwargs = {
             'password': {'required': False, 'allow_blank': True}
         }
@@ -55,10 +61,10 @@ class MultimediaSerializer(serializers.ModelSerializer):
         model = Multimedia
         fields = ['id', 'path', 'media_type']
 
-
 class MundialSerializer(serializers.ModelSerializer):
     sedes = serializers.PrimaryKeyRelatedField(queryset=Pais.objects.all(), many=True, required=False)
     imagen = serializers.PrimaryKeyRelatedField(queryset=Multimedia.objects.all(), required=False, allow_null=True)
+    
     class Meta:
         model = Mundial
         fields = ['id', 'nombre', 'año', 'descripcion', 'sedes', 'imagen']
@@ -82,7 +88,9 @@ class PublicacionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Publicacion
-        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 'categoria', 'mundial', 'reacciones_count', 'comentarios_count', 'multimedia', 'estatus']
+        fields = ['id', 'titulo', 'descripcion', 'fecha_publicacion', 'autor', 
+                  'categoria', 'mundial', 'reacciones_count', 'comentarios_count', 
+                  'multimedia', 'estatus']
 
     def get_reacciones_count(self, obj):
         return obj.reaccion_set.count()
@@ -91,7 +99,11 @@ class PublicacionSerializer(serializers.ModelSerializer):
         return obj.comentario_set.filter(estatus='aprobado').count()
 
     def get_multimedia(self, obj):
-        multimedia_relations = MultimediaPublicacion.objects.filter(publicacion=obj, estatus='agregada')
+        from pw2.models import MultimediaPublicacion
+        multimedia_relations = MultimediaPublicacion.objects.filter(
+            publicacion=obj, 
+            estatus='agregada'
+        )
         multimedia_items = [relation.multimedia for relation in multimedia_relations]
         return MultimediaSerializer(multimedia_items, many=True).data
 
@@ -102,6 +114,7 @@ class PublicacionCreateSerializer(serializers.ModelSerializer):
 
 class ComentarioSerializer(serializers.ModelSerializer):
     usuario = AuthorSerializer(read_only=True)
+    
     class Meta:
         model = Comentario
         fields = ['id', 'comentario', 'fecha_creacion', 'usuario']
@@ -110,8 +123,3 @@ class ComentarioCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comentario
         fields = ['comentario']
-
-class ReaccionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reaccion
-        fields = '__all__'

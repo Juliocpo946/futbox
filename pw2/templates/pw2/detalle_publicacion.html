@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="{% static 'pw2/css/BarraNavegacion.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/PaginaPrincipal.css' %}">
     <link rel="stylesheet" href="{% static 'pw2/css/DetallePublicacion.css' %}">
-    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}"> <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}"> </head>
+    <link rel="stylesheet" href="{% static 'pw2/css/Perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'pw2/css/Modal.css' %}">
+</head>
 <body>
     <nav class="barra">
         <div class="logo">
@@ -25,25 +27,14 @@
                 <p>Cargando publicación...</p>
             </div>
         </div>
-
         {% include 'pw2/includes/sidebar.html' %}
-
     </main>
-
-     <div id="media-lightbox" class="media-lightbox-modal">
-        <span class="lightbox-close">&times;</span>
-        <div class="media-lightbox-content">
-             <button class="media-lightbox-control prev" style="display: none;">&#10094;</button>
-             <div class="media-lightbox-carousel">
-                 <div class="media-lightbox-carousel-inner"></div>
-             </div>
-             <button class="media-lightbox-control next" style="display: none;">&#10095;</button>
-        </div>
-    </div>
-
     <script>const PUBLICACION_ID = {{ publicacion_id }};</script>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/components/barraNavegacion.js' %}"></script>
     <script src="{% static 'pw2/js/pages/detallePublicacion.js' %}"></script>
-    <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script> <script src="{% static 'pw2/js/components/sidebar.js' %}"></script> <script src="{% static 'pw2/js/components/AdminNav.js' %}"></script> </body>
+    <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
+    <script src="{% static 'pw2/js/components/sidebar.js' %}"></script>
+</body>
 </html>

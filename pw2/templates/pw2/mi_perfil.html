@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div id="image-lightbox" class="modal">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
-    </div>
     <nav class="barra">
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
+        </div>
+        <div class="nav-user-section">
+            <div id="admin-nav-link-container"></div>
         </div>
     </nav>
     <main class="pantallaprincipal">
@@ -36,8 +35,22 @@
         </div>
         {% include 'pw2/includes/sidebar.html' %}
     </main>
+    <div id="media-lightbox" class="media-lightbox-modal">
+        <span class="lightbox-close">&times;</span>
+        <div class="media-lightbox-content">
+            <button class="media-lightbox-control prev" style="display: none;">&#10094;</button>
+            <div class="media-lightbox-carousel">
+                <div class="media-lightbox-carousel-inner"></div>
+            </div>
+            <button class="media-lightbox-control next" style="display: none;">&#10095;</button>
+        </div>
+    </div>
     <script src="{% static 'pw2/js/api/api.js' %}"></script>
     <script src="{% static 'pw2/js/api/auth.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/lightbox.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/comentarios.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/publicaciones.js' %}"></script>
+    <script src="{% static 'pw2/js/components/barraNavegacion.js' %}"></script>
     <script src="{% static 'pw2/js/pages/miPerfil.js' %}"></script>
     <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>
     <script src="{% static 'pw2/js/components/sidebar.js' %}"></script>

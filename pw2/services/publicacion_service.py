@@ -7,9 +7,6 @@ class PublicacionService:
     def crear_publicacion(self, autor, data):
         return self.repo.create(autor, data)
 
-    def listar_publicaciones(self, search_query=None):
-        return self.repo.get_all_aprobadas(search_query)
-
     def listar_publicaciones_por_autor(self, user_id):
         return self.repo.get_by_author(user_id)
     

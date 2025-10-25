@@ -16,61 +16,62 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderizarComentarios(comentarios);
             configurarFormularioComentario();
             configurarBotonReaccion(publicacion.reacciones_count);
-
         } catch (error) {
-            if(container) container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
+            if (container) container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
             console.error(error);
         }
     }
 
     function renderizarDetalle(pub) {
-         if (!container) return;
-        const fechaPub = new Date(pub.fecha_publicacion).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
+        if (!container) return;
+        const fechaPub = new Date(pub.fecha_publicacion).toLocaleString('es-ES', {
+            dateStyle: 'long',
+            timeStyle: 'short'
+        });
 
         const profilePicHTML = pub.autor.foto_perfil
             ? `<img class="autor-pic" src="${pub.autor.foto_perfil}" alt="Foto de perfil">`
             : `<i class="fas fa-user-circle profile-placeholder-icon"></i>`;
 
-
         let multimediaHTML = '';
         if (pub.multimedia && pub.multimedia.length > 0) {
-             if (pub.multimedia.length === 1) {
-                    const item = pub.multimedia[0];
-                    if (item.media_type === 'image') {
-                        multimediaHTML = `<div class="detalle-multimedia"><img src="${item.path}" alt="${pub.titulo}"></div>`;
-                    } else if (item.media_type === 'video') {
-                        multimediaHTML = `<div class="detalle-multimedia"><video controls><source src="${item.path}" type="video/mp4">Tu navegador no soporta videos.</video></div>`;
-                    } else {
-                         multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="fas fa-ban"></i></div>`;
-                    }
+            if (pub.multimedia.length === 1) {
+                const item = pub.multimedia[0];
+                if (item.media_type === 'image') {
+                    multimediaHTML = `<div class="detalle-multimedia"><img src="${item.path}" alt="${pub.titulo}"></div>`;
+                } else if (item.media_type === 'video') {
+                    multimediaHTML = `<div class="detalle-multimedia"><video controls><source src="${item.path}" type="video/mp4">Tu navegador no soporta videos.</video></div>`;
                 } else {
-                    multimediaHTML = `
-                        <div class="detalle-multimedia">
-                            <div class="media-carousel" id="carousel-detail-${pub.id}">
-                                <div class="media-carousel-inner">
-                                    ${pub.multimedia.map((item, index) => `
-                                        <div class="media-carousel-item ${index === 0 ? 'active' : ''}">
-                                            ${item.media_type === 'image'
-                                                ? `<img src="${item.path}" alt="Slide ${index + 1}">`
-                                                : item.media_type === 'video'
-                                                ? `<video controls><source src="${item.path}" type="video/mp4">Video no soportado.</video>`
-                                                : `<span class="media-placeholder-icon"><i class="fas fa-ban"></i></span>`}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                ${pub.multimedia.length > 1 ? `
-                                <button class="media-carousel-control prev" data-carousel-id="carousel-detail-${pub.id}" data-slide="prev">&#10094;</button>
-                                <button class="media-carousel-control next" data-carousel-id="carousel-detail-${pub.id}" data-slide="next">&#10095;</button>
-                                <div class="media-carousel-indicators">
-                                    ${pub.multimedia.map((_, index) => `<button class="media-carousel-indicator ${index === 0 ? 'active' : ''}" data-carousel-id="carousel-detail-${pub.id}" data-slide-to="${index}"></button>`).join('')}
-                                </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
+                    multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="fas fa-ban"></i></div>`;
                 }
+            } else {
+                multimediaHTML = `
+                    <div class="detalle-multimedia">
+                        <div class="media-carousel" id="carousel-detail-${pub.id}">
+                            <div class="media-carousel-inner">
+                                ${pub.multimedia.map((item, index) => `
+                                    <div class="media-carousel-item ${index === 0 ? 'active' : ''}">
+                                        ${item.media_type === 'image'
+                                            ? `<img src="${item.path}" alt="Slide ${index + 1}">`
+                                            : item.media_type === 'video'
+                                            ? `<video controls><source src="${item.path}" type="video/mp4">Video no soportado.</video>`
+                                            : `<span class="media-placeholder-icon"><i class="fas fa-ban"></i></span>`}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${pub.multimedia.length > 1 ? `
+                            <button class="media-carousel-control prev" data-carousel-id="carousel-detail-${pub.id}" data-slide="prev">&#10094;</button>
+                            <button class="media-carousel-control next" data-carousel-id="carousel-detail-${pub.id}" data-slide="next">&#10095;</button>
+                            <div class="media-carousel-indicators">
+                                ${pub.multimedia.map((_, index) => `<button class="media-carousel-indicator ${index === 0 ? 'active' : ''}" data-carousel-id="carousel-detail-${pub.id}" data-slide-to="${index}"></button>`).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
         } else {
-             multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="far fa-image"></i></div>`;
+            multimediaHTML = `<div class="detalle-multimedia media-placeholder-icon"><i class="far fa-image"></i></div>`;
         }
 
         container.innerHTML = `
@@ -107,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
     }
 
-     function initializeDetailCarousel() {
+    function initializeDetailCarousel() {
         const carouselElement = container.querySelector('.media-carousel');
         if (!carouselElement) return;
 
@@ -116,20 +117,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const indicators = carouselElement.querySelectorAll('.media-carousel-indicator');
         const totalItems = items.length;
         if (totalItems <= 1) return;
-        
+
         let currentIndex = 0;
 
         function updateCarousel(newIndex) {
             currentIndex = newIndex;
-            
             if (inner) {
                 inner.style.transform = `translateX(-${currentIndex * 100}%)`;
             }
-            
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentIndex);
             });
-
             items.forEach((item, index) => {
                 const video = item.querySelector('video');
                 if (video && index !== currentIndex) {
@@ -143,24 +141,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!target) return;
 
             let newIndex = currentIndex;
-            
             if (target.matches('[data-slide="next"]')) {
                 newIndex = (currentIndex + 1) % totalItems;
             } else if (target.matches('[data-slide="prev"]')) {
                 newIndex = (currentIndex - 1 + totalItems) % totalItems;
             } else if (target.matches('[data-slide-to]')) {
-                 const slideTo = parseInt(target.dataset.slideTo, 10);
-                 if (!isNaN(slideTo)) {
+                const slideTo = parseInt(target.dataset.slideTo, 10);
+                if (!isNaN(slideTo)) {
                     newIndex = slideTo;
-                 }
+                }
             }
 
-             if (newIndex !== currentIndex) {
-                 updateCarousel(newIndex);
-             }
+            if (newIndex !== currentIndex) {
+                updateCarousel(newIndex);
+            }
         });
     }
-
 
     function renderizarComentarios(comentarios) {
         const listaComentarios = document.getElementById('comentarios-lista');
@@ -186,17 +182,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             listaComentarios.innerHTML = '';
         }
 
-        const profilePicComentarioHTML = com.usuario.foto_perfil
+        const profilePicHTML = com.usuario.foto_perfil
             ? `<img src="${com.usuario.foto_perfil}" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">`
             : `<i class="fas fa-user-circle profile-placeholder-icon" style="font-size: 30px; width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px;"></i>`;
 
-
-        const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
+        const fechaCom = new Date(com.fecha_creacion).toLocaleString('es-ES', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        });
         const comentarioCard = document.createElement('div');
         comentarioCard.className = 'comentario-card';
         comentarioCard.innerHTML = `
             <div class="comentario-header">
-                ${profilePicComentarioHTML}
+                ${profilePicHTML}
                 <div class="comentario-autor-info">
                     <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a></strong>
                     <span>- ${fechaCom}</span>
@@ -221,8 +219,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const boton = form.querySelector('button');
             try {
-                if(boton) boton.disabled = true;
-                if(boton) boton.textContent = 'Enviando...';
+                if (boton) boton.disabled = true;
+                if (boton) boton.textContent = 'Enviando...';
 
                 const nuevoComentario = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`, {
                     method: 'POST',
@@ -231,12 +229,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 textarea.value = '';
                 anadirComentarioALista(nuevoComentario);
-
             } catch (error) {
                 alert('Error al enviar el comentario.');
             } finally {
-                if(boton) boton.disabled = false;
-                if(boton) boton.textContent = 'Comentar';
+                if (boton) boton.disabled = false;
+                if (boton) boton.textContent = 'Comentar';
             }
         });
     }
@@ -262,8 +259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     currentCount = Math.max(0, currentCount - 1);
                     btn.classList.remove('reaccionado');
                 }
-                 countSpan.textContent = currentCount;
-
+                countSpan.textContent = currentCount;
             } catch (error) {
                 alert('Error al procesar la reacción.');
             } finally {
@@ -272,5 +268,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    await window.inicializarBarraNavegacion({ mostrarBuscador: false });
     cargarDetalleCompleto();
 });
