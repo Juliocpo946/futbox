@@ -94,6 +94,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                  mediaHTML = `<span class="media-placeholder-icon"><i class="far fa-image"></i></span>`;
             }
 
+            let metaHTML = '<div class="publicacion-meta">';
+            if (pub.categoria && pub.categoria.nombre) {
+                metaHTML += `<span class="publicacion-meta-item"><i class="fas fa-tags"></i> ${pub.categoria.nombre}</span>`;
+            }
+            if (pub.mundial && pub.mundial.año) {
+                metaHTML += `<span class="publicacion-meta-item"><i class="fas fa-trophy"></i> ${pub.mundial.nombre || `Mundial ${pub.mundial.año}`}</span>`;
+            }
+            metaHTML += '</div>';
 
             card.innerHTML = `
                 <div class="publicacion-media">
@@ -110,7 +118,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     <div class="publicacion-body" style="cursor: pointer;" onclick="window.location.href='/publicaciones/${pub.id}/'">
                         <h3>${pub.titulo}</h3>
-                        <p>${pub.descripcion.substring(0, 150)}${pub.descripcion.length > 150 ? '...' : ''}</p>
+                        ${metaHTML}
+                        <p>${pub.descripcion}</p>
                     </div>
                     <div class="publicacion-footer">
                        <div class="card-comentarios-preview" data-pub-id="${pub.id}">

@@ -51,16 +51,31 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow: hidden; /* Cambiado para controlar el scroll interno */
-    height: 100%; /* Asegura que tome toda la altura */
+    overflow-y: auto; /* Habilitar scroll vertical para toda la sección */
+    height: 100%;
+    scrollbar-width: thin; /* Para Firefox */
+    scrollbar-color: #ccc #f0f2f5; /* Para Firefox */
 }
+/* Estilos para scrollbar en Webkit (Chrome, Safari) */
+.publicacion-info::-webkit-scrollbar {
+    width: 6px;
+}
+.publicacion-info::-webkit-scrollbar-track {
+    background: #f0f2f5;
+    border-radius: 3px;
+}
+.publicacion-info::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
 
 .publicacion-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Evita que se encoja */
 }
 
 .publicacion-header img {
@@ -80,7 +95,7 @@
     justify-content: center;
     border-radius: 50%;
     background-color: #f0f2f5;
-    line-height: 0; /* Para mejor centrado vertical */
+    line-height: 0;
 }
 
 
@@ -103,10 +118,11 @@
 
 .publicacion-body {
     flex-grow: 1; /* Permite que crezca */
-    margin-bottom: 10px; /* Reducido */
-    overflow: hidden; /* Oculta el texto largo si es necesario */
+    margin-bottom: 10px;
     min-height: 50px; /* Asegura un espacio mínimo */
+    /* overflow-y: auto; <- Eliminado de aquí */
 }
+
 
 .publicacion-body h3 {
     margin-top: 0;
@@ -119,23 +135,40 @@
     color: #555;
     line-height: 1.5;
     word-wrap: break-word;
-    /* Evitar que el párrafo empuje todo hacia abajo */
-    max-height: 6em; /* Limita altura (ajustar aprox 4 líneas) */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 4; /* Número de líneas a mostrar */
-    -webkit-box-orient: vertical;
+    white-space: pre-wrap; /* Mantiene saltos de línea y espacios */
 }
+
+.publicacion-meta {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para mejor encaje */
+    gap: 4px;
+    align-items: flex-start; /* Alinear a la izquierda */
+}
+.publicacion-meta-item {
+    display: inline-flex; /* Para que el fondo solo ocupe el texto */
+    align-items: center;
+    gap: 5px;
+    background-color: #f0f2f5;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+.publicacion-meta-item i {
+    color: #0d6a40; /* Color del icono */
+}
+
 
 .publicacion-footer {
     margin-top: auto; /* Empuja al final */
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Reducido */
-    flex-shrink: 0;
-    padding-top: 10px; /* Separación */
-    border-top: 1px solid #eee; /* Separador visual */
+    gap: 10px;
+    flex-shrink: 0; /* Evita que se encoja */
+    padding-top: 10px;
+    border-top: 1px solid #eee;
 }
 
 .publicacion-stats {
@@ -287,7 +320,7 @@
 
 /* --- ESTILOS PARA PREVIEW DE COMENTARIOS EN TARJETA --- */
 .card-comentarios-preview {
-    max-height: 80px; /* Altura máxima para 2-3 comentarios */
+    max-height: 80px; /* Altura máxima para 2 comentarios */
     overflow-y: auto; /* Habilita el scroll vertical si se supera */
     margin-top: 10px;
     padding-top: 10px;
@@ -295,7 +328,18 @@
     display: flex;
     flex-direction: column;
     gap: 8px; /* Espacio entre comentarios */
+    scrollbar-width: thin; /* Para Firefox */
+    scrollbar-color: #ccc #f8f9fa; /* Para Firefox */
 }
+/* Estilos para scrollbar en Webkit */
+.card-comentarios-preview::-webkit-scrollbar {
+    width: 5px;
+}
+.card-comentarios-preview::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
 
 /* Estilo para mensajes (cargando, sin comentarios, error) */
 .card-comentarios-preview p.loading-comments,

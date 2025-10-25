@@ -115,38 +115,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         const items = carouselElement.querySelectorAll('.media-carousel-item');
         const indicators = carouselElement.querySelectorAll('.media-carousel-indicator');
         const totalItems = items.length;
+        if (totalItems <= 1) return;
+        
         let currentIndex = 0;
 
-        function updateCarousel() {
-            items.forEach((item, index) => {
-                 item.classList.toggle('active', index === currentIndex);
-            });
-             indicators.forEach((indicator, index) => {
+        function updateCarousel(newIndex) {
+            currentIndex = newIndex;
+            
+            if (inner) {
+                inner.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+            
+            indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentIndex);
-             });
+            });
+
+            items.forEach((item, index) => {
+                const video = item.querySelector('video');
+                if (video && index !== currentIndex) {
+                    video.pause();
+                }
+            });
         }
 
         carouselElement.addEventListener('click', (e) => {
-            const target = e.target;
+            const target = e.target.closest('.media-carousel-control, .media-carousel-indicator');
+            if (!target) return;
+
             let newIndex = currentIndex;
-            if (target.matches('.media-carousel-control.next') || target.closest('.media-carousel-control.next')) {
+            
+            if (target.matches('[data-slide="next"]')) {
                 newIndex = (currentIndex + 1) % totalItems;
-            } else if (target.matches('.media-carousel-control.prev') || target.closest('.media-carousel-control.prev')) {
+            } else if (target.matches('[data-slide="prev"]')) {
                 newIndex = (currentIndex - 1 + totalItems) % totalItems;
-            } else if (target.matches('.media-carousel-indicator') || target.closest('.media-carousel-indicator')) {
-                const slideTo = parseInt(target.dataset.slideTo || target.closest('.media-carousel-indicator').dataset.slideTo, 10);
+            } else if (target.matches('[data-slide-to]')) {
+                 const slideTo = parseInt(target.dataset.slideTo, 10);
                  if (!isNaN(slideTo)) {
                     newIndex = slideTo;
                  }
             }
 
              if (newIndex !== currentIndex) {
-                 const currentVideo = items[currentIndex].querySelector('video');
-                 if (currentVideo) currentVideo.pause();
-                 currentIndex = newIndex;
-                 updateCarousel();
+                 updateCarousel(newIndex);
              }
-
         });
     }
 
