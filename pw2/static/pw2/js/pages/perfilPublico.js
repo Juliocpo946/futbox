@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     let cachedPerfilPublicoPublications = [];
     let perfilData = null;
 
+    const filtros = new window.FiltrosPublicaciones({
+        tituloSeccionId: null,
+        onFilterChange: (endpoint) => {
+            const params = new URLSearchParams(endpoint.split('?')[1]);
+            window.location.href = `/publicaciones/?${params.toString()}`;
+        }
+    });
+
     async function cargarPerfilPublico() {
         if (!container) return;
         try {
@@ -19,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderizarPublicaciones(publicaciones, perfilData);
         } catch (error) {
             container.innerHTML = `<h1>Usuario no encontrado</h1><p>El perfil de @${nickname} no existe o no está disponible.</p>`;
-            console.error(error);
+
         }
     }
 
@@ -102,6 +110,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    await window.inicializarBarraNavegacion({ mostrarBuscador: false });
+    await window.inicializarBarraNavegacion();
     cargarPerfilPublico();
 });

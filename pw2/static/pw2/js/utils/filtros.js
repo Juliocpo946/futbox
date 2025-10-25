@@ -5,25 +5,40 @@ class FiltrosPublicaciones {
         this.mundialSelect = document.getElementById(config.mundialSelectId || 'mundial-filter-nav');
         this.tituloSeccion = document.getElementById(config.tituloSeccionId);
         this.onFilterChange = config.onFilterChange;
-        
+
         this.currentSearchQuery = '';
         this.currentMundialId = '';
         this.currentCategoriaId = '';
         this.currentCategoriaNombre = '';
-        
+
+        this.mundialesCargados = false;
+
         this.init();
     }
 
     init() {
+        this.cargarFiltrosDesdeURL();
         this.cargarMundialesSelect();
         this.setupEventListeners();
-        this.cargarFiltrosDesdeURL();
+        if (this.currentCategoriaId) {
+             this.cargarNombreCategoria().then(() => this.actualizarTitulo());
+        } else {
+            this.actualizarTitulo();
+        }
     }
 
     async cargarMundialesSelect() {
-        if (!this.mundialSelect) return;
+        if (!this.mundialSelect || this.mundialesCargados) return;
+
         try {
             const mundiales = await window.api.fetchAPI('/publicaciones/mundiales/');
+
+            const tieneOpciones = this.mundialSelect.options.length > 1;
+            if (tieneOpciones) {
+                this.mundialesCargados = true;
+                return;
+            }
+
             mundiales.sort((a, b) => b.año - a.año);
             mundiales.forEach(mundial => {
                 const option = document.createElement('option');
@@ -32,8 +47,9 @@ class FiltrosPublicaciones {
                 this.mundialSelect.appendChild(option);
             });
             if (this.currentMundialId) this.mundialSelect.value = this.currentMundialId;
+            this.mundialesCargados = true;
         } catch (error) {
-            console.error("Error al cargar mundiales para filtro:", error);
+
         }
     }
 
@@ -42,6 +58,8 @@ class FiltrosPublicaciones {
             this.searchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 this.currentSearchQuery = this.searchInput.value.trim();
+                this.currentCategoriaId = '';
+                this.currentCategoriaNombre = '';
                 this.aplicarFiltros();
             });
         }
@@ -69,23 +87,29 @@ class FiltrosPublicaciones {
         this.currentCategoriaId = urlParams.get('categoria') || '';
         this.currentMundialId = urlParams.get('mundial') || '';
         this.currentSearchQuery = urlParams.get('search') || '';
-        
+
         if (this.currentSearchQuery && this.searchInput) {
             this.searchInput.value = this.currentSearchQuery;
         }
 
-        if (this.currentCategoriaId) {
-            this.cargarNombreCategoria();
-        }
     }
 
     async cargarNombreCategoria() {
+        if (!this.currentCategoriaId) {
+            this.currentCategoriaNombre = '';
+            return;
+        }
         try {
             const categorias = await window.api.fetchAPI('/publicaciones/categorias/');
             const cat = categorias.find(c => c.id == this.currentCategoriaId);
-            if (cat) this.currentCategoriaNombre = cat.nombre;
+            if (cat) {
+                this.currentCategoriaNombre = cat.nombre;
+            } else {
+                 this.currentCategoriaNombre = '';
+                 this.currentCategoriaId = '';
+            }
         } catch (e) {
-            console.error("Error obteniendo nombre de categoría inicial");
+             this.currentCategoriaNombre = '';
         }
     }
 
@@ -109,7 +133,7 @@ class FiltrosPublicaciones {
         if (!this.tituloSeccion) return;
         let titulo = 'Comunidad';
         const filtros = [];
-        
+
         if (this.currentCategoriaNombre) {
             filtros.push(`Categoría: "${this.currentCategoriaNombre}"`);
         }

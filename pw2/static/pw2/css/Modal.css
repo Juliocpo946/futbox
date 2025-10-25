@@ -39,11 +39,13 @@
     padding: 25px;
     border-radius: 15px;
     width: 90%;
-    max-width: 800px;
+    max-width: 600px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.3);
     position: relative;
     transform: scale(0.95);
     transition: transform 0.2s ease-in-out;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal.is-visible .mundial-modal-contenido {
@@ -52,32 +54,64 @@
 
 .mundial-modal-contenido .lightbox-close {
     color: #333;
+    z-index: 10;
 }
 
 .mundial-modal-body {
     display: flex;
-    gap: 25px;
+    flex-direction: column;
+    gap: 20px;
     text-align: left;
 }
 
-.mundial-modal-col-30 {
-    flex: 3;
-}
-.mundial-modal-col-70 {
-    flex: 7;
+.mundial-modal-img-container {
+    width: 100%;
+    max-height: 40vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5;
+    border-radius: 8px;
 }
 
 #mundial-modal-img {
-    width: 100%;
+    width: auto;
     height: auto;
+    max-width: 100%;
+    max-height: 40vh;
+    object-fit: contain;
     border-radius: 8px;
-    object-fit: cover;
 }
+
+.mundial-modal-img-container .media-placeholder-icon {
+    font-size: 60px;
+    color: #b0b0b0;
+}
+
+
+.mundial-modal-details {
+    width: 100%;
+}
+
 
 #mundial-modal-nombre {
     margin-top: 0;
+    margin-bottom: 15px;
     color: #0d6a40;
+    font-size: 1.8em;
 }
+
+.mundial-modal-details p {
+    margin-bottom: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.mundial-modal-details p strong {
+    color: #333;
+}
+
 
 .lightbox-close {
     position: absolute;
@@ -149,7 +183,7 @@
     display: none;
     justify-content: center;
     align-items: center;
-    padding: 10px; /* Reducido para más espacio */
+    padding: 10px;
     box-sizing: border-box;
 }
 
@@ -168,7 +202,6 @@
 
 .media-lightbox-carousel {
     position: relative;
-    /* Quitamos max-width/height del contenedor, lo aplicamos al item */
     width: 100%;
     height: 100%;
     display: flex;
@@ -181,8 +214,8 @@
     width: 100%;
     height: 100%;
     transition: transform 0.4s ease;
-    align-items: center; /* Centrar items verticalmente */
-    justify-content: flex-start; /* Alinear items al inicio */
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .media-lightbox-carousel-item {
@@ -193,26 +226,25 @@
     align-items: center;
     opacity: 0;
     transition: opacity 0.4s ease, visibility 0.4s;
-    visibility: hidden; /* Ocultar completamente */
-    position: absolute; /* Superponer items */
+    visibility: hidden;
+    position: absolute;
     top: 0;
     left: 0;
 }
 .media-lightbox-carousel-item.active {
     opacity: 1;
-    position: relative; /* El activo ocupa espacio */
-    visibility: visible; /* Hacer visible */
+    position: relative;
+    visibility: visible;
 }
 
 .media-lightbox-carousel-item img,
 .media-lightbox-carousel-item video {
     display: block;
-    /* Tamaño máximo relativo al viewport menos padding/controles */
-    max-width: calc(100vw - 80px); /* 100% ancho viewport menos espacio para controles/padding */
-    max-height: calc(100vh - 80px); /* 100% alto viewport menos espacio para controles/padding */
-    width: auto; /* Mantiene proporción */
-    height: auto; /* Mantiene proporción */
-    object-fit: contain; /* Encaja sin cortar */
+    max-width: calc(100vw - 80px);
+    max-height: calc(100vh - 80px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
     border-radius: 4px;
 }
 

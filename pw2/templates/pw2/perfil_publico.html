@@ -17,6 +17,17 @@
         <div class="logo">
             <a href="{% url 'pw2:index' %}"><img src="{% static 'pw2/images/LogoFutBOX.png' %}" alt="LogoPagina"></a>
         </div>
+        <div class="barra_busqueda">
+            <form class="buscador" id="search-form-nav">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input-nav" placeholder="Buscar publicaciones...">
+            </form>
+            <div class="filtro-mundial-container">
+                <select id="mundial-filter-nav" class="filtro-mundial-select">
+                    <option value="">Todos los Mundiales</option>
+                </select>
+            </div>
+        </div>
         <div class="nav-user-section">
             <div id="admin-nav-link-container"></div>
         </div>
@@ -43,6 +54,7 @@
     <script src="{% static 'pw2/js/utils/lightbox.js' %}"></script>
     <script src="{% static 'pw2/js/utils/comentarios.js' %}"></script>
     <script src="{% static 'pw2/js/utils/publicaciones.js' %}"></script>
+    <script src="{% static 'pw2/js/utils/filtros.js' %}"></script>
     <script src="{% static 'pw2/js/components/barraNavegacion.js' %}"></script>
     <script src="{% static 'pw2/js/pages/perfilPublico.js' %}"></script>
     <script src="{% static 'pw2/js/components/MenuPerfil.js' %}"></script>

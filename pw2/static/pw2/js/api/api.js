@@ -20,11 +20,6 @@ async function fetchAPI(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // El navegador establece Content-Type automáticamente para FormData
-    // if (options.body instanceof FormData) {
-    //     delete headers['Content-Type']; // Asegúrate que esta línea NO esté si usas defaultHeaders
-    // }
-
 
     const config = {
         ...options,
@@ -68,7 +63,6 @@ async function fetchAPI(endpoint, options = {}) {
             return null;
         }
 
-        // Intenta parsear como JSON, si falla devuelve texto plano (útil para debug)
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
             return await response.json();
@@ -79,7 +73,7 @@ async function fetchAPI(endpoint, options = {}) {
 
     } catch (error) {
         console.error('Error en la petición a la API:', error);
-        throw error; // Re-lanzar para que el .catch() en la llamada original funcione
+        throw error; 
     }
 }
 

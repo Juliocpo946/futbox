@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (error) {
             mostrarError('No se pudieron cargar las categorias o mundiales.');
-            console.error(error);
+
         }
     }
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     mediaElement.muted = true;
                 } else {
                     mediaElement = document.createElement('div');
-                    mediaElement.textContent = file.name.substring(0, 10) + '...'; // Acortar nombre
+                    mediaElement.textContent = file.name.substring(0, 10) + '...';
                     mediaElement.style.fontSize = '10px';
                     mediaElement.style.textAlign = 'center';
                     mediaElement.style.padding = '5px';
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 removeBtn.type = 'button';
                 removeBtn.onclick = () => {
                     selectedFiles.splice(index, 1);
-                    // Actualizar el valor del input file para reflejar la eliminación
+
                     const dataTransfer = new DataTransfer();
                     selectedFiles.forEach(f => dataTransfer.items.add(f));
                     if (multimediaInput) multimediaInput.files = dataTransfer.files;
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
                 reader.readAsDataURL(file);
             } else {
-                 // No leer Data URL para archivos no visualizables
-                 reader.onload({ target: null }); // Llamar onload sin resultado para mostrar nombre
+
+                 reader.onload({ target: null });
             }
 
             previewContainer.appendChild(previewItem);
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(errorMessageDiv) errorMessageDiv.style.display = 'none';
             const submitButton = form.querySelector('button[type="submit"]');
             if(submitButton) submitButton.disabled = true;
+            if(submitButton) submitButton.textContent = 'Publicando...';
 
             const datosPublicacion = {
                 titulo: form.titulo.value,
@@ -128,46 +129,64 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!datosPublicacion.categoria) {
                  mostrarError('Debes seleccionar una categoría.');
                  if(submitButton) submitButton.disabled = false;
+                 if(submitButton) submitButton.textContent = 'Publicar';
                  return;
             }
 
-
+            let nuevaPublicacion;
             try {
-                const nuevaPublicacion = await window.api.fetchAPI('/publicaciones/', {
+                nuevaPublicacion = await window.api.fetchAPI('/publicaciones/', {
                     method: 'POST',
                     body: JSON.stringify(datosPublicacion),
                 });
 
-                // Verifica si hay archivos ANTES de intentar subirlos
-                if (selectedFiles.length > 0) {
-                    const formData = new FormData();
-                    selectedFiles.forEach(file => {
-                        formData.append('files', file); // Clave 'files'
-                    });
+            } catch (error) {
+                mostrarError(`Hubo un error al crear la publicación: ${error.message}`);
+                if(submitButton) submitButton.disabled = false;
+                if(submitButton) submitButton.textContent = 'Publicar';
+                return;
+            }
 
-                    // Verifica que formData tenga entradas
-                    if (formData.has('files')) {
-                        await window.api.fetchAPI(`/publicaciones/${nuevaPublicacion.id}/multimedia/`, {
+
+            if (selectedFiles.length > 0) {
+                if(submitButton) submitButton.textContent = 'Subiendo archivos...';
+
+                const formData = new FormData();
+                selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
+
+                if (formData.has('files')) {
+                    try {
+
+                        const mediaResponse = await window.api.fetchAPI(`/publicaciones/${nuevaPublicacion.id}/multimedia/`, {
                             method: 'POST',
                             body: formData
-                            // No se especifica 'headers' para que el navegador ponga el correcto
                         });
-                    } else {
-                         console.warn("FormData estaba vacío antes de enviar multimedia.");
-                    }
 
+
+                        if (mediaResponse && Array.isArray(mediaResponse.errors) && mediaResponse.errors.length > 0) {
+                             mostrarError(`Publicación creada (ID: ${nuevaPublicacion.id}), pero falló la subida de algunos archivos.`);
+                             if(submitButton) submitButton.textContent = 'Error al subir';
+
+                        } else {
+
+                            window.location.href = `/publicaciones/${nuevaPublicacion.id}/`;
+                        }
+                    } catch (mediaError) {
+
+                         mostrarError(`Publicación creada (ID: ${nuevaPublicacion.id}), pero falló la subida de archivos: ${mediaError.message}`);
+                         if(submitButton) submitButton.textContent = 'Error al subir';
+
+                    }
                 } else {
-                     console.log("No files selected to upload.");
+
+                    window.location.href = `/publicaciones/${nuevaPublicacion.id}/`;
                 }
+            } else {
 
                 window.location.href = `/publicaciones/${nuevaPublicacion.id}/`;
-
-            } catch (error) {
-                mostrarError(`Hubo un error al crear la publicacion: ${error.message}`);
-                console.error('Detalle del error:', error);
-                if(submitButton) submitButton.disabled = false; // Habilitar botón en caso de error
             }
-            // No habilitar el botón aquí si tiene éxito, porque redirige
         });
     }
 

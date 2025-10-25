@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('detalle-container');
     const publicacionId = PUBLICACION_ID;
 
+    const filtros = new window.FiltrosPublicaciones({
+        tituloSeccionId: null,
+        onFilterChange: (endpoint) => {
+            const params = new URLSearchParams(endpoint.split('?')[1]);
+            window.location.href = `/publicaciones/?${params.toString()}`;
+        }
+    });
+
     async function cargarDetalleCompleto() {
         try {
             const [publicacion, comentarios] = await Promise.all([
@@ -18,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             configurarBotonReaccion(publicacion.reacciones_count);
         } catch (error) {
             if (container) container.innerHTML = `<p>Error al cargar la publicación. Es posible que no exista o haya sido eliminada.</p>`;
-            console.error(error);
+
         }
     }
 
@@ -268,6 +276,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    await window.inicializarBarraNavegacion({ mostrarBuscador: false });
+    await window.inicializarBarraNavegacion();
     cargarDetalleCompleto();
 });

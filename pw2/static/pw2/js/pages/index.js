@@ -27,7 +27,7 @@ async function cargarPublicacionesRecientes() {
         renderizarCarrusel(topPublicaciones);
     } catch (error) {
         carruselContainer.innerHTML = '<p>No se pudieron cargar las publicaciones recientes.</p>';
-        console.error(error);
+
     }
 }
 
@@ -101,7 +101,7 @@ async function cargarMundiales() {
             const mundialSeleccionado = mundiales.find(m => m.id === mundialId);
 
             if (mundialSeleccionado) {
-                const imgContainerModal = document.querySelector('.mundial-modal-col-30');
+                const imgContainerModal = modal.querySelector('.mundial-modal-img-container');
                 const nombreModal = document.getElementById('mundial-modal-nombre');
                 const anioModal = document.getElementById('mundial-modal-año');
                 const sedesModal = document.getElementById('mundial-modal-sedes');
@@ -111,7 +111,7 @@ async function cargarMundiales() {
                     if (mundialSeleccionado.imagen?.path) {
                         imgContainerModal.innerHTML = `<img id="mundial-modal-img" src="${mundialSeleccionado.imagen.path}" alt="Imagen del Mundial">`;
                     } else {
-                        imgContainerModal.innerHTML = `<span class="media-placeholder-icon" style="font-size: 60px;"><i class="fas fa-trophy"></i></span>`;
+                        imgContainerModal.innerHTML = `<span class="media-placeholder-icon"><i class="fas fa-trophy"></i></span>`;
                     }
                 }
 
@@ -120,11 +120,15 @@ async function cargarMundiales() {
                 if (sedesModal) sedesModal.textContent = mundialSeleccionado.sedes.map(s => s.pais).join(', ') || 'N/A';
                 if (descModal) descModal.textContent = mundialSeleccionado.descripcion;
 
-                modal.classList.add('is-visible');
+                modal.classList.remove('modal-oculto');
+                modal.classList.add('modal-visible');
             }
         });
 
-        const cerrarModal = () => modal.classList.remove('is-visible');
+        const cerrarModal = () => {
+            modal.classList.remove('modal-visible');
+            modal.classList.add('modal-oculto');
+        };
         modalClose.addEventListener('click', cerrarModal);
         modal.addEventListener('click', (e) => {
             if (e.target === modal) cerrarModal();
@@ -132,7 +136,7 @@ async function cargarMundiales() {
 
     } catch (error) {
         if (mundialesContainer) mundialesContainer.innerHTML = '<p>No se pudieron cargar los mundiales.</p>';
-        console.error(error);
+
     }
 }
 
@@ -157,17 +161,4 @@ function renderizarMundiales(mundiales) {
         `;
     });
     mundialesContainer.innerHTML = mundialesHTML;
-
-    if (!document.head.querySelector('style[data-mundial-placeholder]')) {
-        const style = document.createElement('style');
-        style.setAttribute('data-mundial-placeholder', 'true');
-        style.textContent = `
-            .tarjeta-img-placeholder {
-                width: 100%; height: 160px; background-color: #e0e0e0;
-                display: flex; justify-content: center; align-items: center;
-            }
-            .tarjeta-img-placeholder i { font-size: 70px; color: #b0b0b0; }
-        `;
-        document.head.appendChild(style);
-    }
 }
