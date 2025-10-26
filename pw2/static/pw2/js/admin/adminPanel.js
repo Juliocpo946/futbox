@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function cargarEstadisticas() {
         try {
-            // Hacemos las llamadas en paralelo para más eficiencia
+
             const [pendientes, usuarios] = await Promise.all([
                 window.api.fetchAPI('/admin/publicaciones/pendientes/'),
                 window.api.fetchAPI('/admin/usuarios/')

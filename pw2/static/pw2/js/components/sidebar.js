@@ -5,7 +5,7 @@ async function renderizarComponentesDeUsuarioSidebar() {
 
         const profileName = document.getElementById('profile-name');
         const profileNickname = document.getElementById('profile-nickname');
-        const profilePicContainer = document.getElementById('sidebar-profile-pic-container'); // Cambiado a contenedor
+        const profilePicContainer = document.getElementById('sidebar-profile-pic-container');
         const logoutBtn = document.getElementById('logout-button');
 
         if(profileName) profileName.textContent = user.nombre;
@@ -13,10 +13,10 @@ async function renderizarComponentesDeUsuarioSidebar() {
 
         if (profilePicContainer) {
             if (user.foto_perfil) {
-                // Crear y añadir imagen si existe
+     
                 profilePicContainer.innerHTML = `<img id="profile-pic" src="${user.foto_perfil}" alt="Foto de perfil">`;
             } else {
-                // Mostrar icono si no existe
+         
                 profilePicContainer.innerHTML = `<i class="fas fa-user-circle profile-placeholder-icon"></i>`;
             }
         }
