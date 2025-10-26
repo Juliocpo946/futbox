@@ -42,6 +42,7 @@
     gap: 15px;
     cursor: pointer;
     text-decoration: none;
+    color: inherit;
 }
 
 .perfilseccion img {
@@ -49,6 +50,21 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
+}
+
+.perfilseccion #sidebar-profile-pic-container .profile-placeholder-icon {
+    font-size: 45px;
+    width: 50px;  
+    height: 50px;
+    color: #b0b0b0;
+    background-color: #f0f2f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
 .usuarioinfo .nombreusuario {
