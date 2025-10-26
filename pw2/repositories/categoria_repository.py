@@ -2,11 +2,14 @@ from pw2.models import Categoria
 
 class CategoriaRepository:
     def get_all(self):
-        return Categoria.objects.all().order_by('nombre')
+        return Categoria.objects.filter(activa=True).order_by('nombre')
+    
+    def get_all_active(self):
+        return Categoria.objects.filter(activa=True).order_by('nombre')
 
     def get_by_id(self, categoria_id):
         try:
-            return Categoria.objects.get(id=categoria_id)
+            return Categoria.objects.get(id=categoria_id, activa=True)
         except Categoria.DoesNotExist:
             return None
 
@@ -19,4 +22,5 @@ class CategoriaRepository:
         return categoria_instance
 
     def delete(self, categoria_instance):
-        categoria_instance.delete()
+        categoria_instance.activa = False
+        categoria_instance.save()

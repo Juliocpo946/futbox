@@ -52,6 +52,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 class Pais(models.Model):
     pais = models.CharField(max_length=255)
+    activo = models.BooleanField(default=True)
     def __str__(self): return self.pais
 
 class Mundial(models.Model):
@@ -60,6 +61,7 @@ class Mundial(models.Model):
     descripcion = models.TextField()
     sedes = models.ManyToManyField("Pais", through="Sede")
     multimedia = models.ManyToManyField("Multimedia", through="MultimediaMundial", blank=True)
+    activo = models.BooleanField(default=True)
     def __str__(self): return self.nombre or f"Mundial {self.año}"
 
 class Sede(models.Model):
@@ -69,6 +71,7 @@ class Sede(models.Model):
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=255)
+    activa = models.BooleanField(default=True)
     def __str__(self): return self.nombre
 
 class Publicacion(models.Model):

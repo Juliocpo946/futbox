@@ -27,6 +27,9 @@ class AuthService:
         
         if usuario is None:
             raise ValueError("Credenciales invalidas.")
+        
+        if not usuario.is_active:
+            raise ValueError("Esta cuenta ha sido desactivada.")
             
         login(request, usuario)
             
@@ -63,7 +66,8 @@ class AuthService:
         return PublicProfileSerializer(usuario).data
 
     def delete_account(self, usuario):
-        self.usuario_repo.delete(usuario)
+        usuario.is_active = False
+        usuario.save()
 
     def get_all_users(self):
         return self.usuario_repo.get_all()

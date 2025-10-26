@@ -5,7 +5,7 @@ class PaisService:
         self.repo = PaisRepository()
 
     def get_all(self):
-        return self.repo.get_all()
+        return self.repo.get_all_active()
 
     def create(self, data):
         return self.repo.create(data)
@@ -22,4 +22,5 @@ class PaisService:
 
     def delete(self, pais_id):
         pais = self.get_by_id(pais_id)
-        self.repo.delete(pais)
+        pais.activo = False
+        pais.save()

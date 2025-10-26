@@ -184,7 +184,7 @@ class AdminUsuarioDetalleView(APIView):
         service = AuthService()
         try:
             if 'rol' in request.data:
-                last_admin = Usuario.objects.filter(rol='admin').count() == 1 and service.usuario_repo.get_by_id(pk).rol == 'admin'
+                last_admin = Usuario.objects.filter(rol='admin', is_active=True).count() == 1 and service.usuario_repo.get_by_id(pk).rol == 'admin'
                 if last_admin:
                     return Response({'error': 'No se puede cambiar el rol del último administrador.'}, status=status.HTTP_400_BAD_REQUEST)
                 

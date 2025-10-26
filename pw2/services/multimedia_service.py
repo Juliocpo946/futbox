@@ -16,8 +16,6 @@ class MultimediaService:
         if not multimedia:
             raise ValueError("El archivo multimedia no existe.")
         
-        # Opcional: Validar que el usuario sea el dueño de la publicación asociada
-        # Esta lógica puede ser más compleja dependiendo de las reglas de negocio
 
         public_id_match = re.search(r'futbox_multimedia/(.+?)\.\w+$', multimedia.path)
         if public_id_match:

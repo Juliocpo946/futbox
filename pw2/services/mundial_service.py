@@ -6,7 +6,7 @@ class MundialService:
         self.repo = MundialRepository()
 
     def get_all(self):
-        return self.repo.get_all()
+        return self.repo.get_all_active()
 
     def get_by_id(self, mundial_id):
         mundial = self.repo.get_by_id(mundial_id)
@@ -51,4 +51,5 @@ class MundialService:
 
     def delete(self, mundial_id):
         mundial = self.get_by_id(mundial_id)
-        self.repo.delete(mundial)
+        mundial.activo = False
+        mundial.save()

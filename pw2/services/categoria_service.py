@@ -5,7 +5,7 @@ class CategoriaService:
         self.repo = CategoriaRepository()
 
     def get_all(self):
-        return self.repo.get_all()
+        return self.repo.get_all_active()
 
     def get_by_id(self, categoria_id):
         categoria = self.repo.get_by_id(categoria_id)
@@ -22,4 +22,5 @@ class CategoriaService:
 
     def delete(self, categoria_id):
         categoria = self.get_by_id(categoria_id)
-        self.repo.delete(categoria)
+        categoria.activa = False
+        categoria.save()

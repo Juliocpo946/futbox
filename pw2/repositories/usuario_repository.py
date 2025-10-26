@@ -8,19 +8,19 @@ class UsuarioRepository:
 
     def get_by_email(self, correo):
         try:
-            return Usuario.objects.get(correo=correo)
+            return Usuario.objects.get(correo=correo, is_active=True)
         except Usuario.DoesNotExist:
             return None
 
     def get_by_nickname(self, nickname):
         try:
-            return Usuario.objects.get(nickname=nickname)
+            return Usuario.objects.get(nickname=nickname, is_active=True)
         except Usuario.DoesNotExist:
             return None
             
     def get_by_id(self, user_id):
         try:
-            return Usuario.objects.get(id=user_id)
+            return Usuario.objects.get(id=user_id, is_active=True)
         except Usuario.DoesNotExist:
             return None
 
@@ -31,13 +31,14 @@ class UsuarioRepository:
         return usuario_instance
         
     def delete(self, usuario_instance):
-        usuario_instance.delete()
+        usuario_instance.is_active = False
+        usuario_instance.save()
 
     def exists_by_email(self, correo):
-        return Usuario.objects.filter(correo=correo).exists()
+        return Usuario.objects.filter(correo=correo, is_active=True).exists()
 
     def exists_by_nickname(self, nickname):
-        return Usuario.objects.filter(nickname=nickname).exists()
+        return Usuario.objects.filter(nickname=nickname, is_active=True).exists()
     
     def get_all(self):
-        return Usuario.objects.all().order_by('nombre')
+        return Usuario.objects.filter(is_active=True).order_by('nombre')
