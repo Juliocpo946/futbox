@@ -59,7 +59,7 @@ class Mundial(models.Model):
     año = models.PositiveIntegerField()
     descripcion = models.TextField()
     sedes = models.ManyToManyField("Pais", through="Sede")
-    imagen = models.ForeignKey("Multimedia", on_delete=models.SET_NULL, null=True, blank=True)
+    multimedia = models.ManyToManyField("Multimedia", through="MultimediaMundial", blank=True)
     def __str__(self): return self.nombre or f"Mundial {self.año}"
 
 class Sede(models.Model):

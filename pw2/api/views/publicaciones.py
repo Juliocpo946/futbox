@@ -46,7 +46,8 @@ class MisPublicacionesView(APIView):
 
     def get(self, request):
         service = PublicacionService()
-        publicaciones = service.listar_publicaciones_por_autor(request.user.id)
+        estatus_filter = request.query_params.get('estatus', None)
+        publicaciones = service.listar_publicaciones_por_autor(request.user.id, estatus=estatus_filter)
         serializer = PublicacionSerializer(publicaciones, many=True)
         return Response(serializer.data)
 
@@ -91,7 +92,7 @@ class SubirMultimediaView(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def post(self, request, publicacion_pk):
-        files = request.FILES.getlist('files') # Cambiado a 'files' y getlist
+        files = request.FILES.getlist('files') 
         if not files:
             return Response({'error': 'No se encontraron archivos en la peticion.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,7 +116,7 @@ class SubirMultimediaView(APIView):
                     errors.append({'file': file.name, 'error': str(upload_error)})
 
             if errors:
-                 # Decide cómo manejar errores parciales (puedes devolver 207 Multi-Status)
+                 
                  return Response({
                      'uploaded': multimedia_results,
                      'errors': errors

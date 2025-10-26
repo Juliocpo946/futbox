@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const lightbox = new window.MediaLightbox('media-lightbox');
     let cachedMiPerfilPublications = [];
+    const filtroEstatusSelect = document.getElementById('filtro-estatus-perfil');
 
     async function cargarDatosPerfil() {
         const container = document.getElementById('perfil-header-container');
@@ -35,14 +36,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function cargarMisPublicaciones() {
+    async function cargarMisPublicaciones(estatus = '') {
         const container = document.getElementById('mis-publicaciones-container');
         if (!container) return;
+        container.innerHTML = '<p>Cargando publicaciones...</p>'; 
         try {
-            const publicaciones = await window.api.fetchAPI('/usuarios/mis-publicaciones/');
-            cachedMiPerfilPublications = publicaciones;
+            
+            let endpoint = '/usuarios/mis-publicaciones/';
+            if (estatus) {
+                endpoint += `?estatus=${estatus}`;
+            }
+            
+            const publicaciones = await window.api.fetchAPI(endpoint);
+            cachedMiPerfilPublications = publicaciones; 
+
             if (publicaciones.length === 0) {
-                container.innerHTML = "<p>Aun no has creado ninguna publicacion.</p>";
+                let mensaje = "Aun no has creado ninguna publicacion.";
+                if (estatus) {
+                    mensaje = `No tienes publicaciones con el estado '${estatus}'.`;
+                }
+                container.innerHTML = `<p>${mensaje}</p>`;
                 return;
             }
 
@@ -60,6 +73,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             container.innerHTML = "<p>Error al cargar tus publicaciones.</p>";
             console.error(error);
         }
+    }
+
+    if (filtroEstatusSelect) {
+        filtroEstatusSelect.addEventListener('change', (e) => {
+            cargarMisPublicaciones(e.target.value);
+        });
     }
 
     const pubContainer = document.getElementById('mis-publicaciones-container');
@@ -94,6 +113,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (!card) return;
                 const publicacionId = card.dataset.id;
                 const publicationIndex = parseInt(card.dataset.index, 10);
+                const pubData = cachedMiPerfilPublications[publicationIndex];
+                if (pubData && pubData.estatus !== 'aprobada') {
+                    e.preventDefault(); 
+                    return;
+                }
                 window.comentariosUtils.manejarComentario(e, publicacionId, card, cachedMiPerfilPublications, publicationIndex);
             }
         });
@@ -101,5 +125,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await window.inicializarBarraNavegacion({ mostrarBuscador: false });
     cargarDatosPerfil();
-    cargarMisPublicaciones();
+    cargarMisPublicaciones(); 
 });

@@ -7,15 +7,19 @@ class PublicacionService:
     def crear_publicacion(self, autor, data):
         return self.repo.create(autor, data)
 
-    def listar_publicaciones_por_autor(self, user_id):
-        return self.repo.get_by_author(user_id)
+    def listar_publicaciones_por_autor(self, user_id, estatus=None):
+        return self.repo.get_by_author(user_id, estatus=estatus)
     
     def obtener_detalle(self, publicacion_id, usuario):
         publicacion = self.repo.get_by_id(publicacion_id)
         if not publicacion:
             raise ValueError("Publicación no encontrada.")
         
-        if publicacion.estatus == 'aprobada' or publicacion.autor == usuario:
+        is_admin = usuario.rol == 'admin'
+        is_author = publicacion.autor == usuario
+        is_approved = publicacion.estatus == 'aprobada'
+
+        if is_approved or is_author or is_admin:
             return publicacion
         
         raise ValueError("Publicación no encontrada o no disponible.")

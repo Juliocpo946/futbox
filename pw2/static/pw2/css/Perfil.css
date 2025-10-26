@@ -37,7 +37,7 @@
     flex-shrink: 0;
     box-sizing: border-box; 
     text-align: center;
-    padding-top: 30px; /* Empuja el contenido hacia abajo */
+    padding-top: 30px; 
     line-height: 140px;
 }
 
@@ -103,6 +103,25 @@
     background-color: #ccc;
 }
 
+.perfil-filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.perfil-filtros h2 {
+    margin: 0;
+    font-size: 1.8em;
+    border-bottom: none; 
+    padding-bottom: 0;
+}
+
+.perfil-filtros #filtro-estatus-perfil {
+    min-width: 150px; 
+}
+
+
 .perfil-contenido h2 {
     font-size: 1.8em;
     border-bottom: 2px solid #0d6a40;
@@ -147,10 +166,9 @@
     background-color: #f0f2f5;
     box-sizing: border-box;
 
-    /* Corrección: Mover 8px hacia abajo */
     text-align: center;
-    padding-top: 8px; /* Empuja el contenido hacia abajo */
-    line-height: 112px; /* Ajustado: height (120) - padding-top (8) */
+    padding-top: 8px; 
+    line-height: 112px; 
 }
 
 

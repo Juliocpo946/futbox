@@ -204,6 +204,7 @@
     font-size: 1em;
     box-sizing: border-box;
     margin-bottom: 10px;
+    resize: none;
 }
 
 .nuevo-comentario-form button {

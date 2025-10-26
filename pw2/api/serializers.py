@@ -63,15 +63,15 @@ class MultimediaSerializer(serializers.ModelSerializer):
 
 class MundialSerializer(serializers.ModelSerializer):
     sedes = serializers.PrimaryKeyRelatedField(queryset=Pais.objects.all(), many=True, required=False)
-    imagen = serializers.PrimaryKeyRelatedField(queryset=Multimedia.objects.all(), required=False, allow_null=True)
+    multimedia = serializers.PrimaryKeyRelatedField(queryset=Multimedia.objects.all(), many=True, required=False)
     
     class Meta:
         model = Mundial
-        fields = ['id', 'nombre', 'año', 'descripcion', 'sedes', 'imagen']
+        fields = ['id', 'nombre', 'año', 'descripcion', 'sedes', 'multimedia']
 
 class MundialDetalleSerializer(MundialSerializer):
     sedes = PaisSerializer(many=True, read_only=True)
-    imagen = MultimediaSerializer(read_only=True)
+    multimedia = MultimediaSerializer(many=True, read_only=True)
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:

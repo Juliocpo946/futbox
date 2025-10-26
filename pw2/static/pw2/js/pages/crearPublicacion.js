@@ -104,7 +104,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (multimediaInput) {
         multimediaInput.addEventListener('change', (e) => {
             if (e.target.files) {
-                 selectedFiles = Array.from(e.target.files);
+                 const newFiles = Array.from(e.target.files);
+                 selectedFiles = selectedFiles.concat(newFiles);
+
+                 const dataTransfer = new DataTransfer();
+                 selectedFiles.forEach(f => dataTransfer.items.add(f));
+                 if (multimediaInput) multimediaInput.files = dataTransfer.files;
+                 
                  renderPreview();
             }
         });

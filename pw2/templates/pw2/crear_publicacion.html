@@ -91,8 +91,11 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="multimedia">Archivos (Imágenes/Videos)</label>
-                        <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" multiple>
+                        <label>Archivos (Imágenes/Videos)</label>
+                        <label for="multimedia" class="file-input-label btn-publicar">
+                            <i class="fas fa-upload"></i> Seleccionar Archivos
+                        </label>
+                        <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" multiple style="display: none;">
                         <div id="preview-container" class="preview-container"></div>
                     </div>
                     <div class="form-actions">

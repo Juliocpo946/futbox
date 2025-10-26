@@ -44,6 +44,7 @@
     font-size: 1em;
     font-family: 'Roboto', sans-serif;
     transition: border-color 0.3s ease;
+    resize: none;
 }
 
 .input-group input:focus,
@@ -69,7 +70,8 @@
     margin-top: 30px;
 }
 
-.form-actions button {
+.form-actions button,
+.file-input-label {
     padding: 12px 25px;
     border: none;
     border-radius: 8px;
@@ -77,14 +79,23 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 35%;
+    background-color: #147b4d;
+    color: white; 
 }
 
-.form-actions .btn-publicar {
+.form-actions .btn-publicar,
+.file-input-label.btn-publicar { 
     background-color: #147b4d;
     color: white;
 }
 
-.form-actions .btn-publicar:hover {
+.form-actions .btn-publicar:hover,
+.file-input-label.btn-publicar:hover {
     background-color: #0d6a40;
     transform: translateY(-2px);
 }

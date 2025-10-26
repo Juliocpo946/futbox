@@ -14,26 +14,40 @@ class MundialService:
             raise ValueError("Mundial no encontrado.")
         return mundial
 
-    def create(self, data):
+    def create(self, data, files):
         sedes_ids = data.pop('sedes', [])
-        imagen_file = data.pop('imagen', None)
+        data.pop('imagenes', None) 
         
-        if imagen_file:
-            multimedia_obj = upload_image(imagen_file)
-            data['imagen_id'] = multimedia_obj.id
+        mundial = self.repo.create(data, sedes_ids)
+        
+        if not files:
+            self.repo.delete(mundial) 
+            raise ValueError("Se requiere al menos un archivo multimedia para crear un mundial.")
 
-        return self.repo.create(data, sedes_ids)
+        try:
+            for file in files:
+                multimedia_obj = upload_image(file)
+                self.repo.associate_multimedia(mundial, multimedia_obj)
+        except Exception as e:
+             self.repo.delete(mundial)
+             raise e
 
-    def update(self, mundial_id, data):
+        return mundial
+
+    def update(self, mundial_id, data, files):
         mundial = self.get_by_id(mundial_id)
         sedes_ids = data.pop('sedes', None)
-        imagen_file = data.pop('imagen', None)
-        
-        if imagen_file:
-            multimedia_obj = upload_image(imagen_file)
-            data['imagen_id'] = multimedia_obj.id
+        data.pop('imagenes', None) 
 
-        return self.repo.update(mundial, data, sedes_ids)
+        mundial = self.repo.update(mundial, data, sedes_ids)
+
+        if files:
+            self.repo.clear_multimedia(mundial) 
+            for file in files:
+                multimedia_obj = upload_image(file)
+                self.repo.associate_multimedia(mundial, multimedia_obj)
+
+        return mundial
 
     def delete(self, mundial_id):
         mundial = self.get_by_id(mundial_id)

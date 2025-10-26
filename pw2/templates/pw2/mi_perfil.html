@@ -27,7 +27,15 @@
                 <p>Cargando perfil...</p>
             </div>
             <div class="perfil-contenido">
-                <h2>Mis Publicaciones</h2>
+                <div class="perfil-filtros">
+                    <h2>Mis Publicaciones</h2>
+                    <select id="filtro-estatus-perfil" class="filtro-mundial-select">
+                        <option value="">Todas</option>
+                        <option value="aprobada">Aprobadas</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="rechazada">Rechazadas</option>
+                    </select>
+                </div>
                 <div id="mis-publicaciones-container" class="publicaciones-grid">
                     <p>Cargando publicaciones...</p>
                 </div>

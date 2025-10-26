@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalMainContent = modal ? modal.querySelector('.admin-modal-content') : null;
     const closeModalBtn = modal ? modal.querySelector('.admin-modal-close') : null;
     let todosLosPaises = [];
+    let selectedFiles = [];
+    let currentCarouselIndex = 0;
 
     if (!modal || !modalContentContainer || !closeModalBtn || !modalMainContent) {
         console.error('Error: Elementos del modal no encontrados en el HTML.');
@@ -22,6 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalContentContainer.innerHTML = '';
         modal.classList.remove('visible');
         modalMainContent.classList.remove('simple-form');
+        selectedFiles = [];
+        currentCarouselIndex = 0;
     }
 
     closeModalBtn.addEventListener('click', ocultarModal);
@@ -88,19 +92,112 @@ document.addEventListener('DOMContentLoaded', async () => {
         container.innerHTML = tableHTML;
     }
 
+    function renderNewPreview() {
+        const previewContainer = document.getElementById('preview-container-new');
+        if (!previewContainer) return;
+        previewContainer.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+
+            reader.onload = function(e) {
+                let mediaElement;
+                if (file.type.startsWith('image/')) {
+                    mediaElement = document.createElement('img');
+                } else if (file.type.startsWith('video/')) {
+                    mediaElement = document.createElement('video');
+                    mediaElement.muted = true;
+                } else {
+                    mediaElement = document.createElement('div');
+                    mediaElement.textContent = '...';
+                }
+                if(e.target && mediaElement.tagName !== 'DIV') mediaElement.src = e.target.result;
+                previewItem.appendChild(mediaElement);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.type = 'button';
+                removeBtn.onclick = () => {
+                    selectedFiles.splice(index, 1);
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(f => dataTransfer.items.add(f));
+                    const input = document.getElementById('input-imagenes');
+                    if (input) input.files = dataTransfer.files;
+
+                    renderNewPreview();
+                    const existingPreviewContainer = document.querySelector('.image-preview-container');
+                    const noMediaLabel = document.getElementById('image-preview-label');
+                    if (selectedFiles.length === 0 && existingPreviewContainer?.style.display === 'none' && noMediaLabel) {
+                        noMediaLabel.style.display = 'block';
+                    }
+                };
+                previewItem.appendChild(removeBtn);
+            }
+            if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+                reader.readAsDataURL(file);
+            } else {
+                 reader.onload({ target: null });
+            }
+            previewContainer.appendChild(previewItem);
+        });
+        const noMediaLabel = document.getElementById('image-preview-label');
+        if (noMediaLabel && selectedFiles.length > 0) {
+            noMediaLabel.style.display = 'none';
+        }
+    }
+
+    function showExistingMediaSlide(mundialMultimedia, index) {
+        const previewContainer = document.querySelector('.image-preview-container');
+        if (!previewContainer || !mundialMultimedia || mundialMultimedia.length === 0) return;
+
+        currentCarouselIndex = index;
+        const item = mundialMultimedia[index];
+        let mediaHTML = '';
+
+        if (item.media_type === 'image') {
+            mediaHTML = `<img src="${item.path}" class="image-preview">`;
+        } else if (item.media_type === 'video') {
+            mediaHTML = `<video src="${item.path}" class="image-preview" controls muted></video>`;
+        } else {
+            mediaHTML = `<span class="image-preview-label">Archivo no soportado</span>`;
+        }
+
+        let controlsHTML = '';
+        if (mundialMultimedia.length > 1) {
+            controlsHTML = `
+                <button type="button" class="mini-carousel-control prev" ${index === 0 ? 'disabled' : ''}>&#10094;</button>
+                <button type="button" class="mini-carousel-control next" ${index === mundialMultimedia.length - 1 ? 'disabled' : ''}>&#10095;</button>
+            `;
+        }
+
+        previewContainer.innerHTML = mediaHTML + controlsHTML;
+
+        previewContainer.querySelector('.prev')?.addEventListener('click', () => showExistingMediaSlide(mundialMultimedia, currentCarouselIndex - 1));
+        previewContainer.querySelector('.next')?.addEventListener('click', () => showExistingMediaSlide(mundialMultimedia, currentCarouselIndex + 1));
+    }
+
+
     function mostrarFormulario(mundial = null) {
+        selectedFiles = [];
+        currentCarouselIndex = 0;
         modalMainContent.classList.remove('simple-form');
+
+        let initialPreviewHTML = `<span id="image-preview-label" style="display: block;">Sin multimedia</span>`; 
+
         modalContentContainer.innerHTML = `
             <form id="mundial-form">
                 <h2>${mundial ? 'Editar Mundial' : 'Nuevo Mundial'}</h2>
                 <div class="form-layout">
                     <div class="form-col-30">
                         <div class="image-preview-container">
-                            <img src="${mundial?.imagen?.path || ''}" id="image-preview" class="image-preview" style="${!mundial?.imagen?.path ? 'display:none;' : ''}">
-                            <span id="image-preview-label" style="${mundial?.imagen?.path ? 'display:none;' : ''}">Sin imagen</span>
+                            ${initialPreviewHTML}
                         </div>
-                        <input type="file" id="input-imagen" accept="image/*" style="display: none;">
-                        <button type="button" class="btn-publicar" id="btn-upload-image">Subir/Cambiar Imagen</button>
+                        <input type="file" id="input-imagenes" accept="image/*,video/*" multiple style="display: none;">
+                        <button type="button" class="btn-publicar" id="btn-upload-image">${mundial ? 'Subir Nuevos Archivos' : 'Subir Archivos'}</button>
+                        <p style="font-size: 0.8em; color: #555; margin-top: 5px;">${mundial ? 'Subir nuevos archivos reemplazará todos los existentes.' : ''}</p>
+                        <div id="preview-container-new" class="preview-container" style="margin-top: 10px; flex-wrap: wrap; gap: 5px; max-height: 100px; overflow-y: auto;"></div>
                     </div>
                     <div class="form-col-70">
                         <div class="input-row">
@@ -133,6 +230,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             </form>
         `;
         modal.classList.add('visible');
+
+        if (mundial?.multimedia && mundial.multimedia.length > 0) {
+            const noMediaLabel = document.getElementById('image-preview-label');
+            if (noMediaLabel) noMediaLabel.style.display = 'none'; 
+            showExistingMediaSlide(mundial.multimedia, 0); 
+        }
 
         const availableBox = document.getElementById('available-countries');
         const selectedBox = document.getElementById('selected-countries');
@@ -178,26 +281,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         const uploadBtn = document.getElementById('btn-upload-image');
         if(uploadBtn) {
             uploadBtn.addEventListener('click', () => {
-                const inputImg = document.getElementById('input-imagen');
+                const inputImg = document.getElementById('input-imagenes');
                 if(inputImg) inputImg.click();
             });
         }
 
 
-        const inputImagen = document.getElementById('input-imagen');
-         if(inputImagen) {
-            inputImagen.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                         const preview = document.getElementById('image-preview');
-                         const label = document.getElementById('image-preview-label');
-                         if(preview && event.target) preview.src = event.target.result;
-                         if(preview) preview.style.display = 'block';
-                         if(label) label.style.display = 'none';
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
+        const inputImagenes = document.getElementById('input-imagenes');
+         if(inputImagenes) {
+            inputImagenes.addEventListener('change', (e) => {
+                const existingPreviewContainer = document.querySelector('.image-preview-container');
+                const newPreviewContainer = document.getElementById('preview-container-new');
+                const noMediaLabel = document.getElementById('image-preview-label');
+
+                if (e.target.files && e.target.files.length > 0) {
+                    if(existingPreviewContainer) existingPreviewContainer.style.display = 'none';
+                    if (noMediaLabel) noMediaLabel.style.display = 'none';
+                    if(newPreviewContainer) newPreviewContainer.style.display = 'flex'; 
+
+                    const newFiles = Array.from(e.target.files);
+                    selectedFiles = selectedFiles.concat(newFiles);
+
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(f => dataTransfer.items.add(f));
+                    if (inputImagenes) inputImagenes.files = dataTransfer.files;
+
+                    renderNewPreview();
                 }
+   
             });
          }
 
@@ -215,7 +326,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const nombreInput = document.getElementById('nombre-mundial');
                 const anioInput = document.getElementById('año-mundial');
                 const descInput = document.getElementById('descripcion-mundial');
-                const imagenInputSubmit = document.getElementById('input-imagen');
 
                 const añoValue = anioInput ? anioInput.value : '';
                 const descValue = descInput ? descInput.value : '';
@@ -226,20 +336,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
+                const añoNum = parseInt(añoValue, 10);
+                if (isNaN(añoNum) || añoNum <= 0) {
+                     alert('El año debe ser un número positivo (mayor que 0).');
+                     if(submitButton) submitButton.disabled = false;
+                     return;
+                }
+
+                if (!mundial && selectedFiles.length === 0) {
+                     alert('Debes subir al menos un archivo multimedia para crear un mundial.');
+                     if(submitButton) submitButton.disabled = false;
+                     return;
+                }
 
                 if (nombreInput) formData.append('nombre', nombreInput.value);
                 formData.append('año', añoValue);
                 formData.append('descripcion', descValue);
 
-
                 const sedesIds = Array.from(selectedPaises.keys());
                 sedesIds.forEach(id => formData.append('sedes', id));
 
-                if (imagenInputSubmit && imagenInputSubmit.files[0]) {
-                    formData.append('imagen', imagenInputSubmit.files[0]);
-                } else if (mundial && !mundial.imagen) {
-                    formData.append('imagen', '');
-                }
+                selectedFiles.forEach(file => {
+                    formData.append('imagenes', file);
+                });
 
 
                 try {
@@ -297,10 +416,53 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btnNuevoMundial = document.getElementById('btn-nuevo-mundial');
      if(btnNuevoMundial) {
-        btnNuevoMundial.addEventListener('click', () => mostrarFormulario());
+        btnNuevoMundial.addEventListener('click', () => {
+            if (todosLosPaises.length === 0) {
+                alert('No se pueden crear mundiales porque no hay países registrados. Por favor, añada países primero.');
+                return;
+            }
+            mostrarFormulario();
+        });
      } else {
         console.error('Botón #btn-nuevo-mundial no encontrado.');
      }
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .image-preview-container { position: relative; } /* Necesario para posicionar controles */
+        .mini-carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px; /* Más pequeño */
+            height: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 25px;
+        }
+        .mini-carousel-control.prev { left: 5px; }
+        .mini-carousel-control.next { right: 5px; }
+        .mini-carousel-control:disabled { opacity: 0.3; cursor: not-allowed; }
+        .preview-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; max-height: 120px; overflow-y:auto; }
+        .preview-item { position: relative; width: 50px; height: 50px; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; background-color: #eee;}
+        .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; }
+        .preview-item div { font-size: 10px; text-align: center; padding: 2px; color: #555; } /* Estilo para placeholder '...' */
+        .preview-item .remove-btn {
+            position: absolute; top: 0; right: 0; background-color: rgba(255, 0, 0, 0.7); color: white;
+            border: none; border-radius: 0 0 0 3px; width: 15px; height: 15px; font-size: 10px;
+            line-height: 15px; text-align: center; cursor: pointer; padding: 0;
+        }
+    `;
+    document.head.appendChild(style);
 
     await cargarPaises();
     cargarMundiales();

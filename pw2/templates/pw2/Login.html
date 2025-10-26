@@ -14,8 +14,8 @@
         </div>
         <div class="form-section">
             <div class="login-box">
-                <div id="error-message" style="color: red; margin-bottom: 15px;"></div>
-                
+                <div id="error-message" style="color: red; margin-bottom: 15px; display: none;"></div>
+
                 <form id="login-form" method="post">
                     {% csrf_token %}
                     <h2>Iniciar Sesión</h2>
@@ -33,7 +33,7 @@
                 <form id="register-form" method="post" style="display: none;">
                     {% csrf_token %}
                     <h2>Crear una Cuenta</h2>
-                    
+
                     <div class="input-row">
                         <div class="input-group">
                             <label for="nombres">Nombre(s) *</label>
@@ -78,7 +78,7 @@
 
                     <div class="input-group">
                         <label for="reg-password">Contraseña *</label>
-                        <input type="password" id="reg-password" name="password" placeholder="Crea una contraseña" required>
+                        <input type="password" id="reg-password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
                     </div>
 
                     <button type="submit" class="login-button">Registrarme</button>

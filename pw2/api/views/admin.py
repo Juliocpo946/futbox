@@ -64,8 +64,12 @@ class AdminMundialesView(APIView):
 
     def post(self, request):
         service = MundialService()
-        mundial = service.create(request.data.dict())
-        return Response(MundialDetalleSerializer(mundial).data, status=status.HTTP_201_CREATED)
+        files = request.FILES.getlist('imagenes')
+        try:
+            mundial = service.create(request.data.dict(), files)
+            return Response(MundialDetalleSerializer(mundial).data, status=status.HTTP_201_CREATED)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class AdminMundialDetalleView(APIView):
     permission_classes = [IsAdminUser]
@@ -82,7 +86,8 @@ class AdminMundialDetalleView(APIView):
     def post(self, request, pk):
         try:
             service = MundialService()
-            mundial = service.update(pk, request.data.dict())
+            files = request.FILES.getlist('imagenes')
+            mundial = service.update(pk, request.data.dict(), files)
             return Response(MundialDetalleSerializer(mundial).data)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)

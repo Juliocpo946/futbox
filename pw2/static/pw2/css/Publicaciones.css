@@ -209,6 +209,7 @@
     height: 38px;
     font-size: 0.9em;
     box-sizing: border-box;
+    resize: none;
 }
 
 .comentario-form button {

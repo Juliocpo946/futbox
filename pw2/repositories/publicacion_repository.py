@@ -3,11 +3,14 @@ from pw2.models import Publicacion
 
 class PublicacionRepository:
     def get_all_aprobadas(self, search_query=None, mundial_id=None, categoria_id=None):
-        queryset = Publicacion.objects.filter(estatus='aprobada')
+        queryset = Publicacion.objects.filter(estatus='aprobada').select_related('autor', 'categoria', 'mundial')
         
         if search_query:
             queryset = queryset.filter(
-                Q(titulo__icontains=search_query) | Q(descripcion__icontains=search_query)
+                Q(titulo__icontains=search_query) | 
+                Q(descripcion__icontains=search_query) |
+                Q(autor__nickname__icontains=search_query) |
+                Q(autor__nombre__icontains=search_query)
             )
             
         if mundial_id:
@@ -18,8 +21,12 @@ class PublicacionRepository:
             
         return queryset.order_by('-fecha_publicacion')
 
-    def get_by_author(self, user_id):
-        return Publicacion.objects.filter(autor_id=user_id).order_by('-fecha_publicacion')
+    def get_by_author(self, user_id, estatus=None):
+        queryset = Publicacion.objects.filter(autor_id=user_id)
+        if estatus and estatus in ['aprobada', 'pendiente', 'rechazada', 'eliminada']:
+            queryset = queryset.filter(estatus=estatus)
+        return queryset.order_by('-fecha_publicacion')
+
 
     def get_approved_by_author(self, user_id):
         return Publicacion.objects.filter(autor_id=user_id, estatus='aprobada').order_by('-fecha_publicacion')

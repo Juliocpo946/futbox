@@ -48,6 +48,13 @@
     background-color: #28a745;
 }
 
+.btn-preview {
+    background-color: #17a2b8;
+}
+.btn-preview:hover {
+    background-color: #138496;
+}
+
 .btn-reject {
     background-color: #dc3545;
 }
@@ -100,9 +107,9 @@
 
 .form-layout {
     display: flex;
-    gap: 20px; /* Reducido gap */
+    gap: 20px;
     background-color: #fff;
-    padding: 10px 0; /* Ajustado padding */
+    padding: 10px 0;
     border-radius: 8px;
 }
 .form-col-30 { flex: 3; }
@@ -114,7 +121,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px; /* Reducida altura */
+    height: 200px;
     background-color: #f9f9f9;
     position: relative;
     overflow: hidden;
@@ -123,6 +130,7 @@
 .image-preview {
     max-width: 100%;
     max-height: 100%;
+    object-fit: contain;
 }
 
 .image-preview-label {
@@ -132,24 +140,24 @@
 
 #btn-upload-image {
     width: 100%;
-    margin-top: 10px; /* Reducido margen */
-    padding: 10px 15px; /* Ajustado padding */
-    font-size: 0.9em; /* Reducida fuente */
+    margin-top: 10px;
+    padding: 10px 15px;
+    font-size: 0.9em;
 }
 
 .country-selector-container {
     display: flex;
-    gap: 15px; /* Reducido gap */
-    margin-top: 10px; /* Reducido margen */
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .country-list-box {
     flex: 1;
     border: 1px solid #ccc;
     border-radius: 8px;
-    height: 150px; /* Reducida altura */
+    height: 150px;
     overflow-y: auto;
-    padding: 8px; /* Ajustado padding */
+    padding: 8px;
     background-color: #f9f9f9;
 }
 
@@ -157,18 +165,18 @@
     margin: 0 0 8px 0;
     padding-bottom: 5px;
     border-bottom: 1px solid #eee;
-    font-size: 0.9em; /* Reducida fuente */
+    font-size: 0.9em;
     color: #555;
 }
 
 .country-item {
-    padding: 6px 8px; /* Ajustado padding */
-    margin-bottom: 4px; /* Ajustado margen */
-    background-color: #e9ecef; /* Ligero cambio color */
-    border-radius: 4px; /* Reducido radio */
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background-color: #e9ecef;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
-    font-size: 0.85em; /* Reducida fuente */
+    font-size: 0.85em;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -178,7 +186,7 @@
 }
 
 .selected-countries .country-item {
-    background-color: #d4edda; /* Verde más suave */
+    background-color: #d4edda;
     border: 1px solid #c3e6cb;
 }
 
@@ -187,7 +195,7 @@
     border: none;
     color: #dc3545;
     cursor: pointer;
-    font-size: 1.1em; /* Ligeramente más grande */
+    font-size: 1.1em;
     padding: 0 3px;
     line-height: 1;
 }
@@ -221,14 +229,33 @@
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    width: 100%; /* Full width up to max-width */
+    width: 100%;
     max-width: 750px;
     position: relative;
 }
 
-/* Modal más pequeño para forms simples */
 .admin-modal-content.simple-form {
     max-width: 450px;
+}
+
+.admin-modal-content.preview-mode {
+    max-width: 900px;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.admin-modal-content.preview-mode .admin-modal-close {
+    color: #fff;
+    top: -30px;
+    right: 0;
+    font-size: 40px;
+    transform: scale(1.5);
+}
+
+.admin-modal-content.preview-mode .publicacion-card {
+    height: 600px;
+    max-height: 80vh;
 }
 
 .admin-modal-close {
@@ -255,12 +282,11 @@
 
 .admin-modal-content h2 {
     margin-top: 0;
-    margin-bottom: 20px; /* Añadido margen */
+    margin-bottom: 20px;
     text-align: center;
     color: #0d6a40;
 }
 
-/* Ajustes para forms dentro del modal */
 .admin-modal-content .input-group label {
     font-size: 0.9em;
     margin-bottom: 5px;
@@ -268,29 +294,28 @@
 .admin-modal-content .input-group input[type="text"],
 .admin-modal-content .input-group input[type="number"],
 .admin-modal-content .input-group textarea {
-    padding: 10px; /* Ligeramente reducido */
+    padding: 10px;
     font-size: 0.95em;
 }
 
 .admin-modal-content .form-actions {
-    margin-top: 25px; /* Ajustado margen */
-    justify-content: flex-end; /* Alinear a la derecha */
+    margin-top: 25px;
+    justify-content: flex-end;
 }
 
 .admin-modal-content .form-actions button {
-    padding: 10px 20px; /* Reducido padding */
-    font-size: 0.9em; /* Reducida fuente */
+    padding: 10px 20px;
+    font-size: 0.9em;
 }
 
 .admin-modal-content .form-layout .input-row {
     display: flex;
-    gap: 15px; /* Reducido gap */
+    gap: 15px;
 }
 .admin-modal-content .form-layout .input-row .input-group {
     flex: 1;
 }
 
-/* Específico para el modal simple */
 .admin-modal-content.simple-form .input-group {
     margin-bottom: 15px;
 }
