@@ -14,7 +14,10 @@ class PublicacionRepository:
             )
             
         if mundial_id:
-            queryset = queryset.filter(mundial_id=mundial_id)
+            if mundial_id == 'none':
+                queryset = queryset.filter(mundial_id__isnull=True)
+            else:
+                queryset = queryset.filter(mundial_id=mundial_id)
             
         if categoria_id:
             queryset = queryset.filter(categoria_id=categoria_id)

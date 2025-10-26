@@ -35,9 +35,16 @@ class FiltrosPublicaciones {
 
             const tieneOpciones = this.mundialSelect.options.length > 1;
             if (tieneOpciones) {
-                this.mundialesCargados = true;
-                return;
+                if (this.mundialSelect.querySelector('option[value="none"]')) {
+                    this.mundialesCargados = true;
+                    return;
+                }
             }
+            
+            const sinMundialOption = document.createElement('option');
+            sinMundialOption.value = "none";
+            sinMundialOption.textContent = "Sin Mundiales";
+            this.mundialSelect.appendChild(sinMundialOption);
 
             mundiales.sort((a, b) => b.año - a.año);
             mundiales.forEach(mundial => {
