@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 const añoNum = parseInt(añoValue, 10);
-                if (isNaN(añoNum) || añoNum <= 0) {
+                if (isNaN(añoNum) || añoNum <= 1930) {
                      alert('El año debe ser un número positivo (mayor que 0).');
                      if(submitButton) submitButton.disabled = false;
                      return;
