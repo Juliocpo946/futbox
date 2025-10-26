@@ -4,7 +4,7 @@ async function cargarYRenderizarComentariosPreview(publicacionId) {
 
     try {
         const comentarios = await window.api.fetchAPI(`/publicaciones/${publicacionId}/comentarios/`);
-        const ultimosComentarios = comentarios; 
+        const ultimosComentarios = comentarios;
 
         if (ultimosComentarios.length === 0) {
             previewContainer.innerHTML = '<p class="no-comments">Sin comentarios aún.</p>';
@@ -13,22 +13,10 @@ async function cargarYRenderizarComentariosPreview(publicacionId) {
 
         let comentariosHTML = '';
         ultimosComentarios.forEach(com => {
-            const profilePicHTML = com.usuario.foto_perfil
-                ? `<img src="${com.usuario.foto_perfil}" alt="Avatar">`
-                : `<i class="fas fa-user-circle profile-placeholder-icon-small"></i>`;
-            
+            const profilePicHTML = com.usuario.foto_perfil ? `<img src="${com.usuario.foto_perfil}" alt="Avatar">` : `<i class="fas fa-user-circle profile-placeholder-icon-small"></i>`;
             const textoCorto = com.comentario.substring(0, 50);
             const textoFinal = com.comentario.length > 50 ? textoCorto + '...' : textoCorto;
-            
-            comentariosHTML += `
-                <div class="card-comentario-item">
-                    <div class="card-comentario-autor">
-                        ${profilePicHTML}
-                        <strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a>:</strong>
-                    </div>
-                    <p>${textoFinal}</p>
-                </div>
-            `;
+            comentariosHTML += `<div class="card-comentario-item"><div class="card-comentario-autor">${profilePicHTML}<strong><a href="/perfil/${com.usuario.nickname}/">@${com.usuario.nickname}</a>:</strong></div><p>${textoFinal}</p></div>`;
         });
         previewContainer.innerHTML = comentariosHTML;
 
@@ -44,11 +32,8 @@ async function manejarReaccion(publicacionId, card, cachedPublications, publicat
         const countSpan = card.querySelector('.reaccion-count');
         if (countSpan) {
             let currentCount = parseInt(countSpan.textContent, 10);
-            if (resultado.status === 'reaccion_creada') {
-                countSpan.textContent = currentCount + 1;
-            } else if (resultado.status === 'reaccion_eliminada' && currentCount > 0) {
-                countSpan.textContent = currentCount - 1;
-            }
+            if (resultado.status === 'reaccion_creada') countSpan.textContent = currentCount + 1;
+            else if (resultado.status === 'reaccion_eliminada' && currentCount > 0) countSpan.textContent = currentCount - 1;
             if (cachedPublications && cachedPublications[publicationIndex]) {
                 cachedPublications[publicationIndex].reacciones_count = parseInt(countSpan.textContent, 10);
             }

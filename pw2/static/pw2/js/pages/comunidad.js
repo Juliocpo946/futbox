@@ -4,42 +4,90 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('publicaciones-container');
     const lightbox = new window.MediaLightbox('media-lightbox');
     let cachedPublications = [];
+    let pollingIntervalId = null;
+    let lastFetchTimestamp = 0;
 
     const filtros = new window.FiltrosPublicaciones({
         tituloSeccionId: 'titulo-seccion',
-        onFilterChange: cargarPublicaciones
+        onFilterChange: (endpoint) => {
+            stopPolling();
+            cargarPublicaciones(endpoint, true);
+        }
     });
 
-    async function cargarPublicaciones(endpoint) {
+    async function cargarPublicaciones(endpoint, isFilterChange = false) {
         if (!container) return;
-        container.innerHTML = '<p>Cargando publicaciones...</p>';
-        cachedPublications = [];
+        if (isFilterChange) {
+            container.innerHTML = '<p>Cargando publicaciones...</p>';
+            cachedPublications = [];
+            lastFetchTimestamp = 0;
+        }
+
+        const currentEndpoint = endpoint || filtros.getEndpointConFiltros();
+        const fetchUrl = lastFetchTimestamp > 0
+            ? `${currentEndpoint}&since=${lastFetchTimestamp}`
+            : currentEndpoint;
 
         try {
-            const publicaciones = await window.api.fetchAPI(endpoint || filtros.getEndpointConFiltros());
-            cachedPublications = publicaciones;
-            renderPublicaciones(publicaciones);
+            const nuevasPublicaciones = await window.api.fetchAPI(fetchUrl);
+
+            if (nuevasPublicaciones.length > 0) {
+                 lastFetchTimestamp = Date.now();
+                 
+                 const combined = [...nuevasPublicaciones, ...cachedPublications];
+                 const uniqueIds = new Set();
+                 cachedPublications = combined.filter(pub => {
+                     if (!uniqueIds.has(pub.id)) {
+                         uniqueIds.add(pub.id);
+                         return true;
+                     }
+                     return false;
+                 }).sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion));
+
+                 renderPublicaciones(cachedPublications);
+            } else if (isFilterChange && cachedPublications.length === 0) {
+                 container.innerHTML = '<p>No se encontraron publicaciones con los filtros aplicados.</p>';
+            }
+
+            if (!pollingIntervalId) {
+                startPolling(currentEndpoint);
+            }
+
         } catch (error) {
-            container.innerHTML = '<p>Error al cargar las publicaciones. Inténtalo de nuevo más tarde.</p>';
+            if (isFilterChange) {
+                container.innerHTML = '<p>Error al cargar las publicaciones.</p>';
+            }
             console.error(error);
+            stopPolling();
         }
     }
 
     function renderPublicaciones(publicaciones) {
         if (!container) return;
+        container.innerHTML = '';
         if (publicaciones.length === 0) {
-            container.innerHTML = '<p>No se encontraron publicaciones con los filtros aplicados. ¡Sé el primero en publicar!</p>';
+            container.innerHTML = '<p>No se encontraron publicaciones.</p>';
             return;
         }
 
-        container.innerHTML = '';
         publicaciones.forEach((pub, pubIndex) => {
             const card = window.publicacionesUtils.crearCardPublicacion(pub, pubIndex, false);
             container.appendChild(card);
             window.comentariosUtils.cargarYRenderizarComentariosPreview(pub.id);
         });
-
         window.publicacionesUtils.agregarEstilosIndicador();
+    }
+
+    function startPolling(endpoint) {
+        stopPolling();
+        pollingIntervalId = setInterval(() => cargarPublicaciones(endpoint, false), 20000);
+    }
+
+    function stopPolling() {
+        if (pollingIntervalId) {
+            clearInterval(pollingIntervalId);
+            pollingIntervalId = null;
+        }
     }
 
     if (container) {
@@ -79,4 +127,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await window.inicializarBarraNavegacion();
     await filtros.cargarNombreCategoria();
     filtros.aplicarFiltros();
+
+    window.addEventListener('beforeunload', stopPolling);
 });

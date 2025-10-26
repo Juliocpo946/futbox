@@ -1,25 +1,41 @@
+async function actualizarBadgeAdmin() {
+    if (!window.auth.isLoggedIn() || !window.auth.isAdmin()) {
+        const adminNavContainer = document.getElementById('admin-nav-link-container');
+        if (adminNavContainer) adminNavContainer.innerHTML = '';
+        if (window.adminStatsPoller) {
+            clearInterval(window.adminStatsPoller);
+        }
+        return;
+    }
+
+    const adminNavContainer = document.getElementById('admin-nav-link-container');
+    if (!adminNavContainer) return;
+
+    try {
+        const stats = await window.api.fetchAPI('/admin/stats/');
+        const pendingCount = stats.publicaciones_pendientes;
+        const badgeHtml = pendingCount > 0
+            ? `<span class="notification-badge">${pendingCount}</span>`
+            : '';
+        const newHTML = `<a href="/admin/" class="admin-nav-link">Admin Panel ${badgeHtml}</a>`;
+        if (adminNavContainer.innerHTML !== newHTML) {
+            adminNavContainer.innerHTML = newHTML;
+        }
+    } catch (error) {
+        console.error("Error al actualizar stats de admin:", error);
+    }
+}
+
 async function inicializarBarraNavegacion(config = {}) {
     const mostrarAdminLink = config.mostrarAdminLink !== false;
 
     if (mostrarAdminLink && window.auth.isAdmin()) {
-        const adminNavContainer = document.getElementById('admin-nav-link-container');
-        if (adminNavContainer) {
-            try {
-                const stats = await window.api.fetchAPI('/admin/stats/');
-                const pendingCount = stats.publicaciones_pendientes;
-                const badgeHtml = pendingCount > 0
-                    ? `<span class="notification-badge">${pendingCount}</span>`
-                    : '';
-                adminNavContainer.innerHTML = `
-                    <a href="/admin/" class="admin-nav-link">
-                        Admin Panel ${badgeHtml}
-                    </a>
-                `;
-            } catch (error) {
-                adminNavContainer.innerHTML = '<a href="/admin/" class="admin-nav-link">Admin Panel</a>';
-
-            }
+        if (window.adminStatsPoller) {
+            clearInterval(window.adminStatsPoller);
         }
+        await actualizarBadgeAdmin();
+        //aqui
+        window.adminStatsPoller = setInterval(actualizarBadgeAdmin, 15000);
     }
 }
 
