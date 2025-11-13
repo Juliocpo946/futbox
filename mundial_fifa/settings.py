@@ -9,16 +9,16 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'django.contrib.admin', 
-    'django.contrib.auth', 
+    'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions', 
-    'django.contrib.messages', 
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pw2', 
-    'rest_framework', 
-    'rest_framework_simplejwt', 
-    'corsheaders', 
+    'pw2',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
     'cloudinary',
 ]
 
@@ -29,12 +29,12 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware', 
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware', 
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -42,12 +42,12 @@ ROOT_URLCONF = 'mundial_fifa.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates', 
-        'DIRS': [], 
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request', 
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -75,6 +75,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 LANGUAGE_CODE = 'es-mx'
 TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
@@ -97,7 +101,7 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000", 
+    "http://localhost:8000",
     "http://127.0.0.1:8000"
 ]
 
@@ -113,3 +117,26 @@ cloudinary.config(
     api_key="357696619194841",
     api_secret="5YtB5DwBMMnESfwzNZMba4Ef_Y0"
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'futbox_critical.log'),
+        },
+    },
+    'loggers': {
+        'pw2': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)

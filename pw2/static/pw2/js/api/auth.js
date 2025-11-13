@@ -12,9 +12,9 @@ function getUserData() {
     return userData ? JSON.parse(userData) : null;
 }
 
-function isAdmin() {
-    const userData = getUserData();
-    return userData && userData.rol === 'admin';
+function clearAuthData() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
 }
 
 function isLoggedIn() {
@@ -23,42 +23,35 @@ function isLoggedIn() {
     return !!(token && userData);
 }
 
-function clearAuthData() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
+function protectRoute() {
+    if (!isLoggedIn()) {
+        clearAuthData();
+        window.location.replace('/login.html');
+    }
+}
+
+function isAdmin() {
+    const userData = getUserData();
+    return userData && userData.rol === 'admin';
 }
 
 async function logout() {
     clearAuthData();
-    
     try {
-        await fetch('/api/usuarios/logout/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        await window.api.fetchAPI('/usuarios/logout/', { method: 'POST' });
     } catch (error) {
-        console.error("Error al cerrar sesión en el servidor:", error);
+        console.error("Error al cerrar sesión en servidor:", error);
     }
-    
-    window.location.replace('/login/');
-}
-
-function protectRoute() {
-    if (!isLoggedIn()) {
-        clearAuthData();
-        window.location.replace('/login/');
-    }
+    window.location.replace('/login.html');
 }
 
 window.auth = {
     saveAuthData,
     getAuthToken,
     getUserData,
-    isAdmin,
-    isLoggedIn,
-    logout,
     clearAuthData,
+    isLoggedIn,
     protectRoute,
+    isAdmin,
+    logout
 };

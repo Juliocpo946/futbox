@@ -27,12 +27,25 @@ async function fetchAPI(endpoint, options = {}) {
     try {
         const response = await fetch(url, config);
 
+        const isLoginEndpoint = endpoint.includes('/usuarios/login/');
+
         if (response.status === 401 || response.status === 403) {
-            window.auth.clearAuthData();
-            if (window.location.pathname !== '/login/') {
-                window.location.replace('/login/');
+            if (isLoginEndpoint) {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { error: 'Correo o contraseña incorrectos.' };
+                }
+                let errorMessage = errorData?.error || 'Correo o contraseña incorrectos.';
+                throw new Error(errorMessage);
+            } else {
+                window.auth.clearAuthData();
+                if (window.location.pathname !== '/login.html') {
+                    window.location.replace('/login.html');
+                }
+                throw new Error('Sesión expirada o sin permisos');
             }
-            throw new Error('Sesión expirada o sin permisos');
         }
 
         if (response.status === 404) {

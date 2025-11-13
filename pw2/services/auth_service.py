@@ -1,5 +1,4 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth import login
 from rest_framework_simplejwt.tokens import RefreshToken
 from pw2.repositories.usuario_repository import UsuarioRepository
 from pw2.api.serializers import UsuarioSerializer, PublicProfileSerializer
@@ -20,19 +19,20 @@ class AuthService:
         return UsuarioSerializer(usuario).data
 
     def login_user(self, request, data):
-        usuario = authenticate(
-            username=data['correo'], 
-            password=data['password']
-        )
+        correo = data['correo']
+        password = data['password']
         
-        if usuario is None:
-            raise ValueError("Credenciales invalidas.")
+        usuario = self.usuario_repo.get_by_email(correo)
+        if not usuario:
+            raise ValueError("Correo electronico o contraseña incorrectos.")
+        
+        if not usuario.check_password(password):
+            raise ValueError("Correo electronico o contraseña incorrectos.")
         
         if not usuario.is_active:
             raise ValueError("Esta cuenta ha sido desactivada.")
             
         login(request, usuario)
-            
         refresh = RefreshToken.for_user(usuario)
         
         return {
