@@ -29,7 +29,7 @@ async function fetchAPI(endpoint, options = {}) {
 
         const isLoginEndpoint = endpoint.includes('/usuarios/login/');
 
-        if (response.status === 401 || response.status === 403) {
+        if (response.status === 401) {
             if (isLoginEndpoint) {
                 let errorData;
                 try {
@@ -41,11 +41,22 @@ async function fetchAPI(endpoint, options = {}) {
                 throw new Error(errorMessage);
             } else {
                 window.auth.clearAuthData();
-                if (window.location.pathname !== '/login.html') {
-                    window.location.replace('/login.html');
+                if (window.location.pathname !== '/login/') {
+                    window.location.replace('/login/');
                 }
-                throw new Error('Sesión expirada o sin permisos');
+                throw new Error('Sesión expirada');
             }
+        }
+
+        if (response.status === 403) {
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = { error: 'No tienes permisos para esta acción.' };
+            }
+            let errorMessage = errorData?.error || 'No tienes permisos para esta acción.';
+            throw new Error(errorMessage);
         }
 
         if (response.status === 404) {
@@ -60,35 +71,7 @@ async function fetchAPI(endpoint, options = {}) {
                 errorData = { error: `Error HTTP ${response.status}: ${response.statusText}` };
             }
 
-            let errorMessage = 'Ocurrió un error inesperado.';
-
-            if (errorData) {
-                if (typeof errorData === 'string') {
-                    errorMessage = errorData;
-                }
-                else if (errorData.error) {
-                    if (Array.isArray(errorData.error)) {
-                        errorMessage = errorData.error[0] || errorData.error;
-                    } else {
-                        errorMessage = errorData.error;
-                    }
-                }
-                else if (errorData.detail) {
-                    errorMessage = errorData.detail;
-                }
-                else if (Object.keys(errorData).length > 0) {
-                    const firstKey = Object.keys(errorData)[0];
-                    const fieldError = errorData[firstKey];
-                    if (Array.isArray(fieldError)) {
-                        errorMessage = fieldError[0];
-                    } else {
-                        errorMessage = fieldError;
-                    }
-                } else {
-                    errorMessage = JSON.stringify(errorData);
-                }
-            }
-
+            let errorMessage = errorData?.error || errorData?.detail || JSON.stringify(errorData);
             throw new Error(errorMessage);
         }
 
@@ -97,7 +80,7 @@ async function fetchAPI(endpoint, options = {}) {
         }
 
         const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
+        if (contentType && contentType.includes("application/json")) {
             return await response.json();
         } else {
             return await response.text();

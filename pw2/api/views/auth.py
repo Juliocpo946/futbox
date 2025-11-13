@@ -39,7 +39,7 @@ class LoginView(APIView):
                 tokens = service.login_user(request, serializer.validated_data)
                 return Response(tokens, status=status.HTTP_200_OK)
             except ValueError as e:
-                return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 log_critical_error("Error inesperado en el inicio de sesión.", e)
                 return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -106,11 +106,14 @@ class ActualizarFotoPerfilView(APIView):
             return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PerfilPublicoView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     def get(self, request, nickname):
-        service = AuthService()
         try:
-            perfil_publico = service.get_public_profile(nickname)
-            return Response(perfil_publico)
+            service = AuthService()
+            usuario_publico = service.get_public_profile(nickname)
+            return Response(usuario_publico, status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            log_critical_error("Error al obtener perfil público.", e)
+            return Response({'error': 'Ocurrió un error en el servidor.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

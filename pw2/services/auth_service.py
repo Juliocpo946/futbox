@@ -24,10 +24,10 @@ class AuthService:
         
         usuario = self.usuario_repo.get_by_email(correo)
         if not usuario:
-            raise ValueError("Correo electronico o contraseña incorrectos.")
+            raise ValueError("Este correo no esta registrado en el sistema.")
         
         if not usuario.check_password(password):
-            raise ValueError("Correo electronico o contraseña incorrectos.")
+            raise ValueError("Contraseña incorrecta.")
         
         if not usuario.is_active:
             raise ValueError("Esta cuenta ha sido desactivada.")
@@ -76,7 +76,3 @@ class AuthService:
         user = self.usuario_repo.get_by_id(user_id)
         if not user:
             raise ValueError("Usuario no encontrado.")
-        user.rol = new_role
-        user.is_staff = new_role == 'admin'
-        user.save()
-        return user

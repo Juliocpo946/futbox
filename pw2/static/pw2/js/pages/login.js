@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorMessage = error.message || error;
         const lowerMessage = errorMessage.toLowerCase();
 
+        if (lowerMessage.includes('este correo no esta registrado')) {
+            return 'Este correo no está registrado. Por favor regístrate primero.';
+        }
+        if (lowerMessage.includes('contraseña incorrecta')) {
+            return 'La contraseña es incorrecta.';
+        }
         if (lowerMessage.includes('credenciales invalidas') || lowerMessage.includes('credentials')) {
             return 'Correo electrónico o contraseña incorrectos.';
         }
@@ -212,41 +218,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayError('Se registró correctamente, pero hubo un error al iniciar sesión. Por favor intenta nuevamente.');
                     if (submitBtn) {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = 'Registrarme';
+                        submitBtn.textContent = 'Crear Cuenta';
                     }
                 }
 
             } catch (error) {
-                const errorMsg = error.message || 'Error en el registro.';
-                displayError(errorMsg);
+                displayError(error.message);
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Registrarme';
+                    submitBtn.textContent = 'Crear Cuenta';
                 }
             }
         });
     }
 
-    if (registerLink) {
+    if (registerLink && loginForm) {
         registerLink.addEventListener('click', (e) => {
             e.preventDefault();
-            if (loginForm) loginForm.style.display = 'none';
-            if (registerForm) registerForm.style.display = 'block';
-            registerLink.style.display = 'none';
-            if (loginLink) loginLink.style.display = 'block';
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
             clearError();
         });
     }
 
-    if (loginLink) {
+    if (loginLink && registerForm) {
         loginLink.addEventListener('click', (e) => {
             e.preventDefault();
-            if (loginForm) loginForm.style.display = 'block';
-            if (registerForm) registerForm.style.display = 'none';
-            if (registerLink) registerLink.style.display = 'block';
-            loginLink.style.display = 'none';
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
             clearError();
         });
-        loginLink.style.display = 'none';
     }
 });
