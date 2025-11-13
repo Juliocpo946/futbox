@@ -9,7 +9,6 @@ async function fetchAPI(endpoint, options = {}) {
         defaultHeaders['Content-Type'] = 'application/json';
     }
 
-
     const headers = {
         ...defaultHeaders,
         ...options.headers,
@@ -19,7 +18,6 @@ async function fetchAPI(endpoint, options = {}) {
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
-
 
     const config = {
         ...options,
@@ -37,25 +35,47 @@ async function fetchAPI(endpoint, options = {}) {
             throw new Error('Sesión expirada o sin permisos');
         }
 
+        if (response.status === 404) {
+            throw new Error('Recurso no encontrado');
+        }
+
         if (!response.ok) {
             let errorData;
             try {
-                 errorData = await response.json();
+                errorData = await response.json();
             } catch (e) {
-                 errorData = { error: `Error HTTP ${response.status}: ${response.statusText}` };
+                errorData = { error: `Error HTTP ${response.status}: ${response.statusText}` };
             }
 
             let errorMessage = 'Ocurrió un error inesperado.';
-            if (errorData) {
-                 if (typeof errorData === 'string') {
-                     errorMessage = errorData;
-                 } else {
-                     errorMessage = errorData.error || errorData.detail || JSON.stringify(errorData);
-                 }
 
-            } else {
-                errorMessage = `Error HTTP: ${response.status}`;
+            if (errorData) {
+                if (typeof errorData === 'string') {
+                    errorMessage = errorData;
+                }
+                else if (errorData.error) {
+                    if (Array.isArray(errorData.error)) {
+                        errorMessage = errorData.error[0] || errorData.error;
+                    } else {
+                        errorMessage = errorData.error;
+                    }
+                }
+                else if (errorData.detail) {
+                    errorMessage = errorData.detail;
+                }
+                else if (Object.keys(errorData).length > 0) {
+                    const firstKey = Object.keys(errorData)[0];
+                    const fieldError = errorData[firstKey];
+                    if (Array.isArray(fieldError)) {
+                        errorMessage = fieldError[0];
+                    } else {
+                        errorMessage = fieldError;
+                    }
+                } else {
+                    errorMessage = JSON.stringify(errorData);
+                }
             }
+
             throw new Error(errorMessage);
         }
 
@@ -70,10 +90,9 @@ async function fetchAPI(endpoint, options = {}) {
             return await response.text();
         }
 
-
     } catch (error) {
         console.error('Error en la petición a la API:', error);
-        throw error; 
+        throw error;
     }
 }
 
