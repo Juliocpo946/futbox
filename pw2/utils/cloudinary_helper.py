@@ -19,7 +19,7 @@ def upload_image(file):
     try:
         upload_result = cloudinary.uploader.upload(
             file,
-            folder="futbox_multimedia",
+            folder="pw2",
             resource_type="auto"
         )
     except Exception as e:

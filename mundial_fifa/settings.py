@@ -62,7 +62,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'futbox_db',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -113,9 +113,9 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 cloudinary.config(
-    cloud_name="doeofn1nd",
-    api_key="357696619194841",
-    api_secret="5YtB5DwBMMnESfwzNZMba4Ef_Y0"
+    cloud_name="ddrffjanq",
+    api_key="682414114981164",
+    api_secret="-3W7LQIY-kuTb-6QJqt7XNX8E-E"
 )
 
 LOGGING = {
