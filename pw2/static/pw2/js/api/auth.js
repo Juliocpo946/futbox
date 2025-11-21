@@ -26,7 +26,7 @@ function isLoggedIn() {
 function protectRoute() {
     if (!isLoggedIn()) {
         clearAuthData();
-        window.location.replace('/login.html');
+        window.location.replace('/login/');
     }
 }
 
@@ -42,7 +42,7 @@ async function logout() {
     } catch (error) {
         console.error("Error al cerrar sesión en servidor:", error);
     }
-    window.location.replace('/login.html');
+    window.location.replace('/login/');
 }
 
 window.auth = {
